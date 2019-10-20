@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 
 
-original_image = Image.open("images\\birdcopy.png")
+original_image = Image.open("images\\birdcopy small.png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
@@ -102,7 +102,7 @@ for y in range(image_size[1]):
    
       # determining if the current pixel is the leftmost pixel
       # no need to compare with top left, left, bottom left
-      if x == 0:
+      if x == 0 :
          neighbor_position_dict['top_left'] = True
          neighbor_position_dict['left'] = True
          neighbor_position_dict['bottom_left'] = True
@@ -110,7 +110,7 @@ for y in range(image_size[1]):
 
       # determing the first row
       # no need to compare with top left, top, top right
-      if current_pixel_index <= image_size[0]:
+      if current_pixel_index < image_size[0]:
          neighbor_position_dict['top_left'] = True
          neighbor_position_dict['top'] = True
          neighbor_position_dict['top_right'] = True
@@ -119,7 +119,7 @@ for y in range(image_size[1]):
 
       # determining the rightmost pixel. x counts from 0 to width - 1
       # no need to compare with top right, right, bottom right
-      if x == image_size[0]:
+      if x == image_size[0] -1:
          neighbor_position_dict['top_right'] = True
          neighbor_position_dict['right'] = True
          neighbor_position_dict['bottom_right'] = True
