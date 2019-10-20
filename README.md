@@ -3,6 +3,7 @@ finding shapes based on the appearance change. my first attempt to analyze pictu
 
 
 warning!
+Make sure to use the small picture! about 50 x 50 
 
 This requres a very heavy processing. It will take about 10 - 20 minutes to complete. the search algorithm for figuring out
 if current pixel is already in other pixel's shape needs work.
