@@ -102,7 +102,7 @@ for y in range(image_size[1]):
    
       # determining if the current pixel is the leftmost pixel
       # no need to compare with top left, left, bottom left
-      if x == 0 :
+      if x == 0:
          neighbor_position_dict['top_left'] = True
          neighbor_position_dict['left'] = True
          neighbor_position_dict['bottom_left'] = True
@@ -110,7 +110,7 @@ for y in range(image_size[1]):
 
       # determing the first row
       # no need to compare with top left, top, top right
-      if current_pixel_index < image_size[0]:
+      if current_pixel_index <= image_size[0]:
          neighbor_position_dict['top_left'] = True
          neighbor_position_dict['top'] = True
          neighbor_position_dict['top_right'] = True
@@ -119,7 +119,7 @@ for y in range(image_size[1]):
 
       # determining the rightmost pixel. x counts from 0 to width - 1
       # no need to compare with top right, right, bottom right
-      if x == image_size[0] -1:
+      if x == image_size[0] - 1:
          neighbor_position_dict['top_right'] = True
          neighbor_position_dict['right'] = True
          neighbor_position_dict['bottom_right'] = True
@@ -157,10 +157,17 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                 try:
-                    shapes[current_pixel_shape].append(top_pixel_index)
-                 except KeyError:
-                    shapes[current_pixel_shape] = [top_pixel_index]
+  
+                try:   
+                   # before putting this neighbor pixel in shape, check if it is already in the shape.
+                   if (top_pixel_index in  shapes[current_pixel_shape] ) == False:
+                      # current pixel shape contains other values but not curent neighbor pixel 
+                      shapes[current_pixel_shape].append(top_pixel_index)
+                except KeyError:
+                   # current pixel is not even initialized. 
+                   shapes[current_pixel_shape] = [top_pixel_index]
+      
+      
       
       
       if neighbor_position_dict['top_right'] == False:
@@ -179,10 +186,17 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                try:
-                 shapes[current_pixel_shape].append(top_right_pixel_index)
-                except KeyError:           
-                 shapes[current_pixel_shape] = [top_right_pixel_index]            
+              
+                try: 
+                   # before putting this neighbor pixel in shape, check if it is already in the shape.
+                   if (top_right_pixel_index in  shapes[current_pixel_shape] ) == False:
+                     # current pixel shape contains other values but not curent neighbor pixel  
+                     shapes[current_pixel_shape].append(top_right_pixel_index)
+                except KeyError:       
+                   # current pixel is not even initialized.              
+                   shapes[current_pixel_shape] = [top_right_pixel_index]  
+                  
+          
               
               
 
@@ -203,10 +217,15 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                try:
-                 shapes[current_pixel_shape].append(right_pixel_index)
+              
+                try:    
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.               
+                  if (right_pixel_index in  shapes[current_pixel_shape] ) == False:   
+                    # current pixel shape contains other values but not curent neighbor pixel                     
+                    shapes[current_pixel_shape].append(right_pixel_index)
                 except KeyError:     
-                 shapes[current_pixel_shape] = [right_pixel_index]
+                  # current pixel is not even initialized.
+                  shapes[current_pixel_shape] = [right_pixel_index]
 
 
 
@@ -228,10 +247,15 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                try:
-                 shapes[current_pixel_shape].append(bottom_right_pixel_index)
+              
+                try:  
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
+                  if (bottom_right_pixel_index in  shapes[current_pixel_shape] ) == False:     
+                    # current pixel shape contains other values but not curent neighbor pixel                     
+                    shapes[current_pixel_shape].append(bottom_right_pixel_index)
                 except KeyError: 
-                 shapes[current_pixel_shape] = [bottom_right_pixel_index]
+                  # current pixel is not even initialized.
+                  shapes[current_pixel_shape] = [bottom_right_pixel_index]
 
 
 
@@ -251,10 +275,18 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                try:
-                 shapes[current_pixel_shape].append(bottom_pixel_index)
+  
+                try:  
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
+                  if (bottom_pixel_index in  shapes[current_pixel_shape] ) == False:     
+                    # current pixel shape contains other values but not curent neighbor pixel                     
+                    shapes[current_pixel_shape].append(bottom_pixel_index)
                 except KeyError: 
-                 shapes[current_pixel_shape] = [bottom_pixel_index]
+                  # current pixel is not even initialized.  
+                  shapes[current_pixel_shape] = [bottom_pixel_index]
+
+
+
 
 
 
@@ -274,10 +306,15 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
+ 
                 try:
-                 shapes[current_pixel_shape].append(bottom_left_pixel_index)
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
+                  if (bottom_left_pixel_index in  shapes[current_pixel_shape] ) == False:        
+                    # current pixel shape contains other values but not curent neighbor pixel                     
+                    shapes[current_pixel_shape].append(bottom_left_pixel_index)
                 except KeyError: 
-                 shapes[current_pixel_shape] = [bottom_left_pixel_index ]
+                  # current pixel is not even initialized.  
+                  shapes[current_pixel_shape] = [bottom_left_pixel_index ]
 
 
 
@@ -300,10 +337,15 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
-                try:
-                 shapes[current_pixel_shape].append(left_pixel_index)
+        
+                try:    
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.                   
+                  if (left_pixel_index in  shapes[current_pixel_shape] ) == False:      
+                    # current pixel shape contains other values but not curent neighbor pixel                     
+                    shapes[current_pixel_shape].append(left_pixel_index)
                 except KeyError: 
-                 shapes[current_pixel_shape] = [left_pixel_index]
+                  # current pixel is not even initialized.              
+                  shapes[current_pixel_shape] = [left_pixel_index]
 
 
 
@@ -324,10 +366,17 @@ for y in range(image_size[1]):
               
               # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
               if total_appearance_difference_threshold - appearance_diff_result >= 0:
+              
                 try:
-                 shapes[current_pixel_shape].append(top_left_pixel_index)
+                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
+                  if (top_left_pixel_index in  shapes[current_pixel_shape] ) == False:       
+                    # current pixel shape contains other values but not curent neighbor pixel                 
+                    shapes[current_pixel_shape].append(top_left_pixel_index)
                 except KeyError: 
-                 shapes[current_pixel_shape] = [top_left_pixel_index]
+                  # current pixel is not even initialized.
+                  shapes[current_pixel_shape] = [top_left_pixel_index]
+
+
 
 
 
@@ -341,7 +390,7 @@ for y in range(image_size[1]):
 
 
 
-file = open('InputText.txt', 'w')
+file = open('birdcopy small shapes.txt', 'w')
 file.write(str(shapes))
 file.close()
 
