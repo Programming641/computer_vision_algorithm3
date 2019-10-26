@@ -10,12 +10,10 @@ from collections import OrderedDict
 
 
 
-original_image = Image.open("images\\birdcopy small.png")
+original_image = Image.open("images/easy image to analyze for practice.png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
-# assigning the positions for comparing neighbor pixels. starting with top going clockwise.
-neighbor_position_dict = { 'top' : False, 'top_right' : False, 'right' : False, 'bottom_right': False, 'bottom': False, 'bottom_left' : False, 'lft': False, 'top_left': False }
 
 already_compared_pixels = []
 
@@ -24,9 +22,9 @@ shapes = OrderedDict()
 
 
 
-def compute_appearance_difference(original_pixel, compare_pixel):
+def compute_appearance_difference(current_pix, compare_pixel):
 
-   original_red, original_green, original_blue, alpha = original_pixel
+   original_red, original_green, original_blue, alpha = current_pix
 
    compare_red, compare_green, compare_blue, alpha = compare_pixel
     
@@ -69,10 +67,18 @@ def exclude_negative_Num(num):
 for y in range(image_size[1]):
    print("y is " + str(y))
 
+
    for x in range(image_size[0]):
    
+      # assigning the positions for comparing neighbor pixels. starting with top going clockwise.
+      neighbor_position_dict = { 'top' : False, 'top_right' : False, 'right' : False, 'bottom_right': False, 'bottom': False, 'bottom_left' : False, 'left': False, 'top_left': False }
+
+   
       # converting for the getdata(). y is the row that you want to get data for. current_pixel_index is the current pixel's index number
-      current_pixel_index = (y * image_size[0])+ x       
+      current_pixel_index = (y * image_size[0])+ x    
+
+      if current_pixel_index == 377:
+         debug = True	  
       
       # initializing current pixel' shape number. This 
       current_pixel_shape = None
@@ -83,16 +89,16 @@ for y in range(image_size[1]):
       # check if current pixel is in other pixel's shapes.
       if len(shapes) != 0:
         # last in first out
-        for key, value_list in reversed(shapes.items()):
+        for shape_id, value_list in reversed(shapes.items()):
           for values in value_list:
              if values == current_pixel_index:
-                current_pixel_shape = key
+                current_pixel_shape = shape_id
 
       # if current pixel is not in other pixel's shape, then create shape based on current pixel's index number
       if current_pixel_shape == None:
          current_pixel_shape = current_pixel_index
-
-
+         # make sure to put current pixel in current pixel shape
+         shapes[current_pixel_shape] = [current_pixel_shape]
 
 
 
@@ -110,7 +116,7 @@ for y in range(image_size[1]):
 
       # determing the first row
       # no need to compare with top left, top, top right
-      if current_pixel_index <= image_size[0]:
+      if current_pixel_index <= image_size[0] -1:
          neighbor_position_dict['top_left'] = True
          neighbor_position_dict['top'] = True
          neighbor_position_dict['top_right'] = True
@@ -149,24 +155,19 @@ for y in range(image_size[1]):
          top_pixel_index = current_pixel_index - image_size[0]
       
          # check if top neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != top_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, top_pixel_RGB)
+         if top_pixel_index not in already_compared_pixels:
+
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, top_pixel_RGB)
               
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-  
-                try:   
-                   # before putting this neighbor pixel in shape, check if it is already in the shape.
-                   if (top_pixel_index in  shapes[current_pixel_shape] ) == False:
-                      # current pixel shape contains other values but not curent neighbor pixel 
-                      shapes[current_pixel_shape].append(top_pixel_index)
-                except KeyError:
-                   # current pixel is not even initialized. 
-                   shapes[current_pixel_shape] = [top_pixel_index]
-      
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+
+               # before putting this neighbor pixel in shape, check if it is already in the shape.
+               if (top_pixel_index in  shapes[current_pixel_shape] ) == False:
+                  # current pixel shape contains other values but not curent neighbor pixel 
+                  shapes[current_pixel_shape].append(top_pixel_index)
+
       
       
       
@@ -178,26 +179,19 @@ for y in range(image_size[1]):
          top_right_pixel_index = current_pixel_index - image_size[0] + 1
 
          # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != top_right_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, top_right_pixel_RGB)
-              
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-              
-                try: 
-                   # before putting this neighbor pixel in shape, check if it is already in the shape.
-                   if (top_right_pixel_index in  shapes[current_pixel_shape] ) == False:
-                     # current pixel shape contains other values but not curent neighbor pixel  
-                     shapes[current_pixel_shape].append(top_right_pixel_index)
-                except KeyError:       
-                   # current pixel is not even initialized.              
-                   shapes[current_pixel_shape] = [top_right_pixel_index]  
-                  
+         if top_right_pixel_index not in already_compared_pixels:
+
+           # what's returned is total appearance difference value
+           appearance_difference = compute_appearance_difference(current_pixel_RGB, top_right_pixel_RGB)
           
-              
+           # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+           if total_appearance_difference_threshold - appearance_difference >= 0:
+
+              # before putting this neighbor pixel in shape, check if it is already in the shape.
+              if (top_right_pixel_index in  shapes[current_pixel_shape] ) == False:
+                 # current pixel shape contains other values but not curent neighbor pixel  
+                 shapes[current_pixel_shape].append(top_right_pixel_index)
+          
               
 
 
@@ -209,23 +203,18 @@ for y in range(image_size[1]):
          right_pixel_index = current_pixel_index + 1
 
          # check if right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != right_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, right_pixel_RGB)
+         if  right_pixel_index not in already_compared_pixels:
+
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, right_pixel_RGB)
               
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-              
-                try:    
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.               
-                  if (right_pixel_index in  shapes[current_pixel_shape] ) == False:   
-                    # current pixel shape contains other values but not curent neighbor pixel                     
-                    shapes[current_pixel_shape].append(right_pixel_index)
-                except KeyError:     
-                  # current pixel is not even initialized.
-                  shapes[current_pixel_shape] = [right_pixel_index]
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+   
+               # before putting this neighbor pixel in shape, check if it is already in the shape.               
+               if (right_pixel_index in  shapes[current_pixel_shape] ) == False:   
+                  # current pixel shape contains other values but not curent neighbor pixel                     
+                  shapes[current_pixel_shape].append(right_pixel_index)
 
 
 
@@ -239,24 +228,18 @@ for y in range(image_size[1]):
          bottom_right_pixel_index = current_pixel_index + image_size[0] + 1
 
          # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != bottom_right_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, bottom_right_pixel_RGB)
-              
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-              
-                try:  
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
-                  if (bottom_right_pixel_index in  shapes[current_pixel_shape] ) == False:     
-                    # current pixel shape contains other values but not curent neighbor pixel                     
-                    shapes[current_pixel_shape].append(bottom_right_pixel_index)
-                except KeyError: 
-                  # current pixel is not even initialized.
-                  shapes[current_pixel_shape] = [bottom_right_pixel_index]
+         if bottom_right_pixel_index not in already_compared_pixels:
 
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, bottom_right_pixel_RGB)
+              
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+ 
+               # before putting this neighbor pixel in shape, check if it is already in the shape.   
+               if (bottom_right_pixel_index in  shapes[current_pixel_shape] ) == False:     
+                  # current pixel shape contains other values but not curent neighbor pixel                     
+                  shapes[current_pixel_shape].append(bottom_right_pixel_index)
 
 
       if neighbor_position_dict['bottom'] == False:
@@ -267,24 +250,18 @@ for y in range(image_size[1]):
          bottom_pixel_index = current_pixel_index + image_size[0]
 
          # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != bottom_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, bottom_pixel_RGB)
-              
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
+         if bottom_pixel_index not in already_compared_pixels:
   
-                try:  
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
-                  if (bottom_pixel_index in  shapes[current_pixel_shape] ) == False:     
-                    # current pixel shape contains other values but not curent neighbor pixel                     
-                    shapes[current_pixel_shape].append(bottom_pixel_index)
-                except KeyError: 
-                  # current pixel is not even initialized.  
-                  shapes[current_pixel_shape] = [bottom_pixel_index]
-
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, bottom_pixel_RGB)
+              
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+ 
+               # before putting this neighbor pixel in shape, check if it is already in the shape.   
+               if (bottom_pixel_index in  shapes[current_pixel_shape] ) == False:     
+                  # current pixel shape contains other values but not curent neighbor pixel                     
+                  shapes[current_pixel_shape].append(bottom_pixel_index)
 
 
 
@@ -298,23 +275,18 @@ for y in range(image_size[1]):
          bottom_left_pixel_index = current_pixel_index + image_size[0] - 1
 
          # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != bottom_left_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, bottom_left_pixel_RGB)
+         if bottom_left_pixel_index not in already_compared_pixels:
+
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, bottom_left_pixel_RGB)
               
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
- 
-                try:
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
-                  if (bottom_left_pixel_index in  shapes[current_pixel_shape] ) == False:        
-                    # current pixel shape contains other values but not curent neighbor pixel                     
-                    shapes[current_pixel_shape].append(bottom_left_pixel_index)
-                except KeyError: 
-                  # current pixel is not even initialized.  
-                  shapes[current_pixel_shape] = [bottom_left_pixel_index ]
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+
+               # before putting this neighbor pixel in shape, check if it is already in the shape.   
+               if (bottom_left_pixel_index in  shapes[current_pixel_shape] ) == False:        
+                  # current pixel shape contains other values but not curent neighbor pixel                     
+                  shapes[current_pixel_shape].append(bottom_left_pixel_index)
 
 
 
@@ -329,23 +301,18 @@ for y in range(image_size[1]):
          left_pixel_index = current_pixel_index - 1
 
          # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != left_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, left_pixel_RGB)
+         if left_pixel_index not in already_compared_pixels:
+
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, left_pixel_RGB)
               
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-        
-                try:    
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.                   
-                  if (left_pixel_index in  shapes[current_pixel_shape] ) == False:      
-                    # current pixel shape contains other values but not curent neighbor pixel                     
-                    shapes[current_pixel_shape].append(left_pixel_index)
-                except KeyError: 
-                  # current pixel is not even initialized.              
-                  shapes[current_pixel_shape] = [left_pixel_index]
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+   
+                # before putting this neighbor pixel in shape, check if it is already in the shape.                   
+                if (left_pixel_index in  shapes[current_pixel_shape] ) == False:      
+                   # current pixel shape contains other values but not curent neighbor pixel                     
+                   shapes[current_pixel_shape].append(left_pixel_index)
 
 
 
@@ -357,27 +324,26 @@ for y in range(image_size[1]):
 
          top_left_pixel_index = current_pixel_index - image_size[0] - 1
 
-         # check if top right neighbor pixel is already compared. if not, then execute compare.
-         for v in already_compared_pixels:
-           if v != top_left_pixel_index:
-           
-              # what's returned is total appearance difference value
-              appearance_diff_result = compute_appearance_difference(current_pixel_RGB, top_left_pixel_RGB)
+         # check if this neighbor pixel is already compared. if not, then execute compare.
+         if top_left_pixel_index not in already_compared_pixels:
+
+            # what's returned is total appearance difference value
+            appearance_difference = compute_appearance_difference(current_pixel_RGB, top_left_pixel_RGB)
               
-              # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
-              if total_appearance_difference_threshold - appearance_diff_result >= 0:
-              
-                try:
-                  # before putting this neighbor pixel in shape, check if it is already in the shape.   
-                  if (top_left_pixel_index in  shapes[current_pixel_shape] ) == False:       
-                    # current pixel shape contains other values but not curent neighbor pixel                 
-                    shapes[current_pixel_shape].append(top_left_pixel_index)
-                except KeyError: 
-                  # current pixel is not even initialized.
-                  shapes[current_pixel_shape] = [top_left_pixel_index]
+            # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
+            if total_appearance_difference_threshold - appearance_difference >= 0:
+
+                # before putting this neighbor pixel in shape, check if it is already in the shape.   
+                if (top_left_pixel_index in  shapes[current_pixel_shape] ) == False:       
+                   # current pixel shape contains other values but not curent neighbor pixel                 
+                   shapes[current_pixel_shape].append(top_left_pixel_index)
 
 
 
+
+
+      # current pixel is compared
+      already_compared_pixels.append(current_pixel_index)
 
 
 #  ----------------------------------------------------      start comparing with neighbor pixel    END       -------------------------------------------------
@@ -385,12 +351,9 @@ for y in range(image_size[1]):
 
 
 
-   # current pixel is compared
-   already_compared_pixels.append(current_pixel_index)
 
 
-
-file = open('birdcopy small shapes.txt', 'w')
+file = open('easy image to analyze for practice shapes.txt', 'w')
 file.write(str(shapes))
 file.close()
 
