@@ -18,7 +18,5 @@ the pixels will be put in the same shape.
 
 At the end of the processing, it will write all shapes with all pixel numbers into file.
 
-reading shapes file.py now takes it further with the shapes file created. But I am still working on the actual stuff....
-
-Upcoming next is reading the shapes in the file and recreate each shape as a image.
+recreate shapes.py takes it further with the shapes file created above. It reads the shape's file created and recreates each shape. But finding shape algorithm is weak! I need to work on this.....
 
