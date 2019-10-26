@@ -4,11 +4,11 @@ import os
 
 from PIL import Image
 
-shapes_filename = "bird01 shapes.txt"
+shapes_filename = "easy image to analyze for practice shapes.txt"
 
 # shapes file has the rule for its filename. Its filename consists of name of the image shape + shapes.txt.
 # so to extract the shapes image name only, you just remove last space + shapes.txt
-original_image_filename = shapes_filename.strip(' shapes.txt')
+original_image_filename = shapes_filename[:-11]
 
 if os.path.exists(shapes_filename.strip('.txt')) == False:
    os.mkdir(shapes_filename.strip('.txt'))
