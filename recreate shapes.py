@@ -10,8 +10,8 @@ shapes_filename = "easy image to analyze for practice shapes.txt"
 # so to extract the shapes image name only, you just remove last space + shapes.txt
 original_image_filename = shapes_filename[:-11]
 
-if os.path.exists(shapes_filename.strip('.txt')) == False:
-   os.mkdir(shapes_filename.strip('.txt'))
+if os.path.exists(shapes_filename[:-4]) == False:
+   os.mkdir(shapes_filename[:-4])
 
 
 original_image = Image.open("images/" + original_image_filename + ".png")
@@ -95,7 +95,7 @@ for shape in match:
 
 
   # saving one shape
-  new_image.save(shapes_filename.strip('.txt') + '/' + shapes_id + '.png')
+  new_image.save(shapes_filename[:-4] + '/' + shapes_id + '.png')
   
   
   
