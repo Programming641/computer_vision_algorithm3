@@ -18,5 +18,5 @@ the pixels will be put in the same shape.
 
 At the end of the processing, it will write all shapes with all pixel numbers into file.
 
-recreate shapes.py takes it further with the shapes file created above. It reads the shape's file created and recreates each shape. But finding shape algorithm is weak! I need to work on this.....
+recreate shapes.py takes it further with the shapes file created above. It reads the shape's file created and recreates each shape. But finding shape algorithm does not work as I expect.. I am working on fixing this.
 
