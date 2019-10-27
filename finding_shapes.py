@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 
 
-original_image = Image.open("images/easy image to analyze for practice.png")
+original_image = Image.open("images/bird01.png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
@@ -19,7 +19,6 @@ already_compared_pixels = []
 
 # shapes[shape's index value ] = [ pixel index1, pixel index2, .... ]
 shapes = OrderedDict()
-
 
 
 def compute_appearance_difference(current_pix, compare_pixel):
@@ -78,7 +77,7 @@ for y in range(image_size[1]):
       current_pixel_index = (y * image_size[0])+ x    
 
       if current_pixel_index == 377:
-         debug = True	  
+         debug = True     
       
       # initializing current pixel' shape number. This 
       current_pixel_shape = None
@@ -99,8 +98,7 @@ for y in range(image_size[1]):
          current_pixel_shape = current_pixel_index
          # make sure to put current pixel in current pixel shape
          shapes[current_pixel_shape] = [current_pixel_shape]
-
-
+         
 
 
       
@@ -163,10 +161,19 @@ for y in range(image_size[1]):
             # check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape
             if total_appearance_difference_threshold - appearance_difference >= 0:
 
-               # before putting this neighbor pixel in shape, check if it is already in the shape.
+               # before putting this neighbor pixel in shape, check if it is already in the shape to avoid duplicates
                if (top_pixel_index in  shapes[current_pixel_shape] ) == False:
-                  # current pixel shape contains other values but not curent neighbor pixel 
-                  shapes[current_pixel_shape].append(top_pixel_index)
+                  
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, top_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:
+                     shapes[current_pixel_shape].append(top_pixel_index)
 
       
       
@@ -189,8 +196,17 @@ for y in range(image_size[1]):
 
               # before putting this neighbor pixel in shape, check if it is already in the shape.
               if (top_right_pixel_index in  shapes[current_pixel_shape] ) == False:
-                 # current pixel shape contains other values but not curent neighbor pixel  
-                 shapes[current_pixel_shape].append(top_right_pixel_index)
+              
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, top_right_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:
+                     shapes[current_pixel_shape].append(top_right_pixel_index)
           
               
 
@@ -213,8 +229,18 @@ for y in range(image_size[1]):
    
                # before putting this neighbor pixel in shape, check if it is already in the shape.               
                if (right_pixel_index in  shapes[current_pixel_shape] ) == False:   
-                  # current pixel shape contains other values but not curent neighbor pixel                     
-                  shapes[current_pixel_shape].append(right_pixel_index)
+               
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, right_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:                                    
+                     shapes[current_pixel_shape].append(right_pixel_index)
+
 
 
 
@@ -238,8 +264,21 @@ for y in range(image_size[1]):
  
                # before putting this neighbor pixel in shape, check if it is already in the shape.   
                if (bottom_right_pixel_index in  shapes[current_pixel_shape] ) == False:     
-                  # current pixel shape contains other values but not curent neighbor pixel                     
-                  shapes[current_pixel_shape].append(bottom_right_pixel_index)
+               
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, bottom_right_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:                                     
+                     shapes[current_pixel_shape].append(bottom_right_pixel_index)
+
+
+
+
 
 
       if neighbor_position_dict['bottom'] == False:
@@ -259,9 +298,18 @@ for y in range(image_size[1]):
             if total_appearance_difference_threshold - appearance_difference >= 0:
  
                # before putting this neighbor pixel in shape, check if it is already in the shape.   
-               if (bottom_pixel_index in  shapes[current_pixel_shape] ) == False:     
-                  # current pixel shape contains other values but not curent neighbor pixel                     
-                  shapes[current_pixel_shape].append(bottom_pixel_index)
+               if (bottom_pixel_index in  shapes[current_pixel_shape] ) == False:   
+               
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, bottom_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:                      
+                     shapes[current_pixel_shape].append(bottom_pixel_index)
 
 
 
@@ -285,8 +333,17 @@ for y in range(image_size[1]):
 
                # before putting this neighbor pixel in shape, check if it is already in the shape.   
                if (bottom_left_pixel_index in  shapes[current_pixel_shape] ) == False:        
-                  # current pixel shape contains other values but not curent neighbor pixel                     
-                  shapes[current_pixel_shape].append(bottom_left_pixel_index)
+
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, bottom_left_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:    
+                     shapes[current_pixel_shape].append(bottom_left_pixel_index)
 
 
 
@@ -311,8 +368,17 @@ for y in range(image_size[1]):
    
                 # before putting this neighbor pixel in shape, check if it is already in the shape.                   
                 if (left_pixel_index in  shapes[current_pixel_shape] ) == False:      
-                   # current pixel shape contains other values but not curent neighbor pixel                     
-                   shapes[current_pixel_shape].append(left_pixel_index)
+
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, left_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:    
+                     shapes[current_pixel_shape].append(left_pixel_index)
 
 
 
@@ -335,8 +401,17 @@ for y in range(image_size[1]):
 
                 # before putting this neighbor pixel in shape, check if it is already in the shape.   
                 if (top_left_pixel_index in  shapes[current_pixel_shape] ) == False:       
-                   # current pixel shape contains other values but not curent neighbor pixel                 
-                   shapes[current_pixel_shape].append(top_left_pixel_index)
+
+                  # before adding this neighbor pixel to current shape, make sure that it also has similar appearance with the 
+                  # pixel shape id's RGB because if it does not then it means that appearance is gradually changing its appearance.
+                  # If the appearance is gradually changing and no longer look similar with the shape id's pixels, then it should not
+                  # be put in the same shape as the current pixel shape id.
+                  current_pixel_shape_RGB = original_pixel[current_pixel_shape]
+                  
+                  appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, top_left_pixel_RGB)
+                  
+                  if total_appearance_difference_threshold - appearance_difference >= 0:    
+                     shapes[current_pixel_shape].append(top_left_pixel_index)
 
 
 
@@ -353,7 +428,7 @@ for y in range(image_size[1]):
 
 
 
-file = open('easy image to analyze for practice shapes.txt', 'w')
+file = open('bird01 shapes.txt', 'w')
 file.write(str(shapes))
 file.close()
 
