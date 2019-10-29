@@ -26,6 +26,7 @@ drag_on_image.py
 this displays the image on window ( by using tkinter, python GUI library) and lets you mouse click the image and drag around the
 area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around.
 
+Upcomping next, which is what I am working on now.
 Later, this will be matched with the recreate shapes.py. recreate shapes.py created all shapes of the image. By combining drag_on_image.py with the recreate shapes.py, you will have all shapes of the interested area!
 
 
