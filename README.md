@@ -19,3 +19,17 @@ the pixels will be put in the same shape.
 At the end of the processing, it will write all shapes with all pixel numbers into file.
 
 recreate shapes.py takes it further with the shapes file created above. It reads the shape's file created and recreates each shape. 
+
+
+drag_on_image.py
+
+this displays the image on window ( by using tkinter, python GUI library) and lets you mouse click the image and drag around the
+area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around.
+
+Later, this will be matched with the recreate shapes.py. recreate shapes.py created all shapes of the image. By combining drag_on_image.py with the recreate shapes.py, you will have all shapes of the interested area!
+
+
+
+
+
+
