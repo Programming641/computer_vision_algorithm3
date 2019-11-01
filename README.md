@@ -27,5 +27,7 @@ this displays the image on window ( by using tkinter, python GUI library) and le
 area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around and it will create all images shapes that fall inside the mouse circled area! for details, please see presentation.
 
 
+NOTE:
 
+the program is constantly updated so the presentations or explanations here may not be applicable anymore.
 
