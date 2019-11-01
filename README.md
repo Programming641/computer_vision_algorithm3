@@ -24,7 +24,7 @@ recreate shapes.py takes it further with the shapes file created above. It reads
 drag_on_image.py
 
 this displays the image on window ( by using tkinter, python GUI library) and lets you mouse click the image and drag around the
-area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around.
+area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around and it will create all images shapes that fall inside the mouse circled area! for details, please see presentation.
 
 
 
