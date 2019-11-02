@@ -31,15 +31,18 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
 
 
-enlarged_image = 'images/bird01 color group x3 enlarged.png'
-image_original = 'images/bird01 color group.png'
+enlarged_image = 'images/easy image to analyze for practice4 x3 enlarged.png'
+image_original = 'images/easy image to analyze for practice4.png'
+
+# finding file name under the last directory
+image_directory_position = enlarged_image.rfind('/')
 
 
 
 # object shape's filename exclude images folder name and replacing extension with txt
-object_shape_filename = "shapes/objectshape/" + enlarged_image[7:-4] + ".txt"
+object_shape_filename = "shapes/objectshape/" + enlarged_image[image_directory_position + 1:-4] + ".txt"
 
-original_image_filename = "shapes/objectshape/" + image_original[7:-4] + " matched shape ids.txt"
+original_image_filename = "shapes/objectshape/" + image_original[image_directory_position + 1:-4] + " matched shape ids.txt"
 
 read_enlarged_image = Image.open(enlarged_image)
 read_original_image = Image.open(image_original)
@@ -111,11 +114,11 @@ def saveObjectshape(event):
    largest_y = max(int(d['y']) for d in mouse_circled_boundary.values())
 
  
-   counter = 0
+
    
  
    first = True
-   mouse_circled_boundary_counter = 1
+   mouse_circled_counter = 1
    
    # iterating all coordinate xy value pairs from smallest_y + 1 to largest_y - 1.
    #  for y in range(start, stop) stop value is excluded
@@ -125,7 +128,7 @@ def saveObjectshape(event):
       # pixel_ids_with_current_y_values contains all xy coordinate pairs that have the current running y value.
       pixel_ids_with_current_y_values = [k for k in mouse_circled_boundary  if (int(mouse_circled_boundary[k]['y'])) == y]
       
-
+      counter = 0
       # key is the coordinate pair id.
       # looking for smallest and largest x values that go with the current running y value
       for key in pixel_ids_with_current_y_values:
@@ -150,9 +153,9 @@ def saveObjectshape(event):
          if counter == len(pixel_ids_with_current_y_values):
             for x in range(smallest_x_with_current_y + 1, largest_x_with_current_y):
                        
-               mouse_circled_entire_area[mouse_circled_boundary_counter] = {}
-               mouse_circled_entire_area[mouse_circled_boundary_counter]['x'] = x
-               mouse_circled_entire_area[mouse_circled_boundary_counter]['y'] = y
+               mouse_circled_entire_area[mouse_circled_counter] = {}
+               mouse_circled_entire_area[mouse_circled_counter]['x'] = x
+               mouse_circled_entire_area[mouse_circled_counter]['y'] = y
             
                # because mouse circled area is on enlarged image, we need to convert back to the original xy coordinates
                converted_back_to_original_x =   round (x / 3)
@@ -160,7 +163,7 @@ def saveObjectshape(event):
              
                execute_mouse_circled_shapes(converted_back_to_original_x, converted_back_to_original_y )     
 			   
-               mouse_circled_boundary_counter += 1
+               mouse_circled_counter += 1
               
             
    
