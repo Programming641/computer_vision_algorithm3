@@ -4,15 +4,20 @@ import recreate_shapes
 
 matched_shape_id_with_mouse_circled_area = []
 
+whole_image_shapes = recreate_shapes.get_whole_image_shape(True)   
+
+
+
+
 def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
    global matched_shape_id_with_mouse_circled_area
-
+   global whole_image_shapes
 
 
    # we are getting xy coordinates of whole image shapes. We will then get all shapes that fall inside the 
    # mouse circled image area 
-   whole_image_shapes = recreate_shapes.get_whole_image_shape(True)   
+   
 
    for shape_id , pixel_xy_values in whole_image_shapes.items():
 
@@ -31,8 +36,8 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
 
 
-enlarged_image = 'images/easy image to analyze for practice4 x3 enlarged.png'
-image_original = 'images/easy image to analyze for practice4.png'
+enlarged_image = 'images/easy image to analyze for practice3 x3 enlarged.png'
+image_original = 'images/easy image to analyze for practice3.png'
 
 # finding file name under the last directory
 image_directory_position = enlarged_image.rfind('/')
