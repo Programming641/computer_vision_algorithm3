@@ -13,7 +13,7 @@ shape to the caller. If parameter is true then, it is a request to return xy coo
 def get_whole_image_shape(parameter, shape_id_in_need=None):
 
 
-    shapes_filename = "easy image to analyze for practice shapes.txt"
+    shapes_filename = "bird01 color group shapes.txt"
 
     # shapes file has the rule for its filename. Its filename consists of name of the image shape + shapes.txt.
     # so to extract the shapes image name only, you just remove last space + shapes.txt
