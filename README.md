@@ -2,9 +2,12 @@
 finding shapes based on the appearance change. my first attempt to analyze pictures at low level
 
 
-image format must NOT be JPG!!! JPG does not work! Use PNG instead.
+Please note that I am not using any conventional computer vision algorithm! algorithm are entirely created by me! The advantages of my algorithm are straightforward and intuitive, because for one, I am not using heavy mathmatics.
+
 
 Instructions
+
+image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
 make sure to povide image at this line
 original_image = Image.open("images\\birdcopy small.png")
