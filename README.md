@@ -1,6 +1,9 @@
 # computer_vision_algorithm3
 finding shapes based on the appearance change. my first attempt to analyze pictures at low level
 
+
+image format must NOT be JPG!!! JPG does not work! Use PNG instead.
+
 Instructions
 
 make sure to povide image at this line
