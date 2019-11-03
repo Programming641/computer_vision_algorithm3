@@ -33,6 +33,12 @@ this displays the image on window ( by using tkinter, python GUI library) and le
 area of interest. Once you let go of the mouse click, all coordinates are created for the area that you just circled around and it will create all images shapes that fall inside the mouse circled area! for details, please see presentation.
 
 
+create objectshape from matched shape ids.py
+
+this file creates whole object shape from mouse circled area. drag_on_image.py above created the individual shapes that fell inside the mouse circled area. The file is also created including all individual shapes of mouse circled area. This file reads this file (which is named "filename + matched shape ids.txt") and creates the one whole object image of the mouse circled area. For clarity and details, see presentations which I am planning to write...
+
+
+
 NOTE:
 
 the program is constantly updated so the presentations or explanations here may not be applicable anymore.
