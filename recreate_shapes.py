@@ -33,7 +33,7 @@ def get_whole_image_shape(parameter, shape_id_in_need=None):
 
 
 
-    original_image = Image.open("images/" + original_image_filename + ".png")
+    original_image = Image.open("images/bird/" + original_image_filename + ".png")
 
     image_width, image_height = original_image.size
 
