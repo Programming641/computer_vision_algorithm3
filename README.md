@@ -35,7 +35,7 @@ area of interest. Once you let go of the mouse click, all coordinates are create
 
 create objectshape from matched shape ids.py
 
-this file creates whole object shape from mouse circled area. drag_on_image.py above created the individual shapes that fell inside the mouse circled area. The file is also created including all individual shapes of mouse circled area. This file reads this file (which is named "filename + matched shape ids.txt") and creates the one whole object image of the mouse circled area. For clarity and details, see presentations which I am planning to write...
+this file creates whole object shape from mouse circled area. drag_on_image.py above created the individual shapes that fell inside the mouse circled area. The file is also created including all individual shapes of mouse circled area. This file reads this file (which is named "filename + matched shape ids.txt") and creates the one whole object image of the mouse circled area. For clarity and details, see presentations
 
 
 
