@@ -36,8 +36,8 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
 
 
-enlarged_image = 'images/easy image to analyze for practice3 x3 enlarged.png'
-image_original = 'images/easy image to analyze for practice3.png'
+enlarged_image = 'images/bird/bird6 color group x3 enlarged.png'
+image_original = 'images/bird/bird6 color group.png'
 
 # finding file name under the last directory
 image_directory_position = enlarged_image.rfind('/')
