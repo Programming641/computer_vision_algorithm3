@@ -3,9 +3,9 @@ import math
 from PIL import Image
 import pixel_shapes_functions
 
-filename = "bird01 color group"
+filename = "easy image to analyze for practice4"
 
-directory = "bird/"
+directory = ""
 
 # directory is specified but does not contain /
 if directory != "" and directory.find('/') == -1:
@@ -29,7 +29,7 @@ pixel_indexest_string = pixel_indexest_string.replace(' ', "")
 # list with all matched shape ids
 pixel_indexes = pixel_indexest_string.split(',')
 
-shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(pixel_indexes, filename, "bird")
+shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(pixel_indexes, filename, directory)
    
 print(shapeIDs_with_all_indexes)
 
