@@ -41,7 +41,7 @@ image_file_contents = image_file.read()
 
 
 checkbuttons = {}
-
+chosen_individual_shapes = []
 
 
 
@@ -56,12 +56,12 @@ def _from_rgb(rgb):
     return "#%02x%02x%02x" % rgb   
 
 
-def button1_clicked():
+def show_individual_shapes_clicked():
 
 
     global checkbuttons
+    global chosen_individual_shapes
 
-    checked_index_number = []
     
     
     for i in checkbuttons:
@@ -69,11 +69,11 @@ def button1_clicked():
 
         # チェックされているか？
         if checkbuttons[i].get():
-            checked_index_number.append(i)
-            checked_index_number = list(dict.fromkeys(checked_index_number))
+            chosen_individual_shapes.append(i)
+            chosen_individual_shapes = list(dict.fromkeys(chosen_individual_shapes))
 
 
-    shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(checked_index_number, filename, directory)
+    shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(chosen_individual_shapes, filename, directory)
 
     for shape_id in shapeIDs_with_all_indexes:
     
@@ -94,6 +94,82 @@ def button1_clicked():
            read_original_image.putpixel( (x, y) , (255, 255, 255) )
 
     read_original_image.show()
+
+
+
+
+def dermine_overall_shape_clicked():
+
+
+    if len(chosen_individual_shapes) != 0:
+
+        pixels = {}
+
+           
+        pixel_counter = 1
+
+
+        # here we get all chosen pixel shapes with their pixel index numbers
+        shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(chosen_individual_shapes, filename, directory)
+
+
+        # Now we need to get boundary pixels of chosen shapes. To do that, we want to pass chosen individual shapes to get_boundary_pixels
+		# function. But this function parameter needs to be in required dictionary form. So in this for loop, we are turning individual shapes
+		# dictionary to the required form.
+        for shape_id in shapeIDs_with_all_indexes:
+        
+
+        
+            for pixel_index in shapeIDs_with_all_indexes[shape_id]: 
+            
+            
+               pixel_index = int(pixel_index)
+               
+               y = math.floor(pixel_index / original_width)
+
+               x  = pixel_index % original_width
+
+
+               pixels[pixel_counter] = {}
+               pixels[pixel_counter] ['x'] = x
+               pixels[pixel_counter] ['y'] = y
+    
+               pixel_counter += 1
+
+
+
+
+
+
+
+        # now we can get boundary pixels of chosen individual shapes.      
+        boundary_pixels = pixel_shapes_functions.get_boundary_pixels(pixels)
+
+
+        print(boundary_pixels)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -247,18 +323,33 @@ def second_gui():
 
 
     #Button
-    button1 = ttk.Button(
+    show_individual_shapes_button = ttk.Button(
         second_window, 
         text='show chosen individual shapes', 
         padding=5,
-        command=button1_clicked)
+        command=show_individual_shapes_clicked)
 
-    button1.grid()
+    show_individual_shapes_button.grid()
+
+    #Button
+    determine_overall_shape_button = ttk.Button(
+        second_window, 
+        text='determine overall object shape', 
+        padding=5,
+        command=dermine_overall_shape_clicked)
+
+    determine_overall_shape_button.grid()
+
+
+
+
+
+
 
 
     explanation_label = tkinter.Label( second_window, text=' Here, you see individual shape color along with shape id number. \
-	                    Please put check in check box to choose individual shape.', 
-                        font=("Helvetica", 16, "bold")	)
+                        Please put check in check box to choose individual shape.', 
+                        font=("Helvetica", 16, "bold")  )
     explanation_label.grid( columnspan = 5)
 
 
