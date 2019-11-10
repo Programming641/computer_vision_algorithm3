@@ -1,11 +1,12 @@
 import tkinter
+from tkinter import *
+from tkinter import ttk
 from PIL import Image, ImageTk
 import recreate_shapes
 
 matched_shape_id_with_mouse_circled_area = []
 
 whole_image_shapes = recreate_shapes.get_whole_image_shape(True)   
-
 
 
 
@@ -36,8 +37,8 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
 
 
-enlarged_image = 'images/bird/bird6 color group x3 enlarged.png'
-image_original = 'images/bird/bird6 color group.png'
+enlarged_image = 'images/bird/bird01 color group x3 enlarged.png'
+image_original = 'images/bird/bird01 color group.png'
 
 # finding file name under the last directory
 image_directory_position = enlarged_image.rfind('/')
@@ -68,7 +69,7 @@ root = tkinter.Tk()
 
 
 # canvas作成
-test_canvas = tkinter.Canvas(root, width=read_enlarged_image.width + 200, height=read_enlarged_image.height +200)
+test_canvas = tkinter.Canvas(root, width=read_enlarged_image.width, height=read_enlarged_image.height)
 test_canvas.grid(row=0, column=0)
 
 image_origin_posX = 10
@@ -167,7 +168,7 @@ def saveObjectshape(event):
                converted_back_to_original_y =  round (y / 3)       
              
                execute_mouse_circled_shapes(converted_back_to_original_x, converted_back_to_original_y )     
-			   
+               
                mouse_circled_counter += 1
               
             
@@ -192,10 +193,10 @@ def saveObjectshape(event):
 test_canvas.bind('<B1-Motion>', onLeftDrag) 
 test_canvas.bind('<ButtonRelease-1>', saveObjectshape) 
 
+switch_window_button = ttk.Button(root, text="show all shapes in circled area", command=open_second_gui)
+switch_window_button.grid()
+
+
 
 root.mainloop()
-
-
-
-
 
