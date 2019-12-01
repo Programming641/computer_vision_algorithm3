@@ -15,7 +15,7 @@ def _from_rgb(rgb):
 
 
 
-def set_individual_shapes_clicked():
+def set_individual_shapes_clicked(finished=False):
 
 
     global checkbuttons
@@ -24,8 +24,8 @@ def set_individual_shapes_clicked():
     global filename
     global image_objects
 
-
-    if show_image_flag == True:
+    # this is to either show image or finished choosing individual shapes
+    if show_image_flag == True or finished == True:
 
         enlarged_image2 = 'shapes/objectshape/' + filename + ' shape x3 enlarged.png'
         image_magnification = 3
@@ -80,8 +80,9 @@ def set_individual_shapes_clicked():
         image_objects[0].show()
         show_image_flag = False
         
-        # deleting all chosen shapes for the next choosing of shapes
-        chosen_individual_shapes.clear()
+        if finished == False:
+           # deleting all chosen shapes for the next choosing of shapes
+           chosen_individual_shapes.clear()
 
            
 
@@ -90,12 +91,24 @@ def show_image():
 
    show_image_flag = True
    set_individual_shapes_clicked()
-   
+
+
+
+
+def set_all_checkbuttons():
+   global checkbuttons
+
+   for i in checkbuttons:
+      checkbuttons[i].set(1)
 
 
 def determine_overall_shape_clicked():
 
     global chosen_individual_shapes
+    
+    print(" am I actuall executed?" )
+    
+    set_individual_shapes_clicked(True)
 
 
     if len(chosen_individual_shapes) != 0:
@@ -144,7 +157,7 @@ def determine_overall_shape_clicked():
         # now we can get boundary pixels of chosen individual shapes.      
         boundary_pixels = pixel_shapes_functions.get_boundary_pixels(pixels)
 
-
+        print("boundary pixels " )
         print(boundary_pixels)
 
 
@@ -321,20 +334,17 @@ def second_gui():
     cancel = ttk.Button(second_window, text="close window", command=close_gui)
     cancel.grid()
 
+    show_image_button = ttk.Button(second_window, text="set all checkbuttons", command=set_all_checkbuttons)
+    show_image_button.grid()
 
     determine_overall_shape_button = ttk.Button(
         second_window, 
         text='determine overall object shape', 
-        padding=5,
         command=determine_overall_shape_clicked)
 
     determine_overall_shape_button.grid()
 
 
-    explanation_label = tkinter.Label( second_window, text=' Here, you see individual shape color along with shape id number. \
-                        Please put check in check box to choose individual shape.', 
-                        font=("Helvetica", 16, "bold")  )
-    explanation_label.grid( columnspan = 5)
 
 
     second_window.mainloop()
