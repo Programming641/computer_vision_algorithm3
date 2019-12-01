@@ -8,97 +8,94 @@ from statistics import mean
 import math
 
 
-filename = "bird01 color group"
-
-directory = "bird"
-
-# directory is specified but does not contain /
-if directory != "" and directory.find('/') == -1:
-   directory +='/'
-
-
-enlarged_image = 'shapes/objectshape/' + filename + ' shape x3 enlarged.png'
-image_original = 'shapes/objectshape/' + filename + ' shape.png'
-
-
-read_enlarged_image = Image.open(enlarged_image)
-read_original_image = Image.open(image_original)
-
-original_image_pixels = read_original_image.getdata()
-
-
-enlarged_width, enlarged_height = read_enlarged_image.size
-
-original_width, original_height = read_original_image.size
-
-
-
-
-image_file = open('shapes/objectshape/' + filename + ' matched shape ids.txt')
-image_file_contents = image_file.read()
-
-
-
-
-checkbuttons = {}
-chosen_individual_shapes = []
-
-
-
-
-
-
-
-
 def _from_rgb(rgb):
     """translates an rgb tuple of int to a tkinter friendly color code
     """
     return "#%02x%02x%02x" % rgb   
 
 
-def show_individual_shapes_clicked():
+
+def set_individual_shapes_clicked():
 
 
     global checkbuttons
     global chosen_individual_shapes
+    global show_image_flag
+    global filename
+    global image_objects
 
+
+    if show_image_flag == True:
+
+        enlarged_image2 = 'shapes/objectshape/' + filename + ' shape x3 enlarged.png'
+        image_magnification = 3
+        enlarged_width = original_width * image_magnification
     
-    
-    for i in checkbuttons:
+        if not len(image_objects) == 0:
+           print(" deleting image object")
+           image_objects.clear()
 
-
-        # チェックされているか？
-        if checkbuttons[i].get():
-            chosen_individual_shapes.append(i)
-            chosen_individual_shapes = list(dict.fromkeys(chosen_individual_shapes))
-
-
-    shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(chosen_individual_shapes, filename, directory)
-
-    for shape_id in shapeIDs_with_all_indexes:
-    
-
-    
-        for pixel_index in shapeIDs_with_all_indexes[shape_id]: 
+        image_objects.append( Image.open(enlarged_image2) ) 
         
+        for i in checkbuttons:
+
+
+            # チェックされているか？
+            if checkbuttons[i].get():
+                print(i)
+                print(checkbuttons[i].get())
+                chosen_individual_shapes.append(i)
+                chosen_individual_shapes = list(dict.fromkeys(chosen_individual_shapes))
+
+
+        shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(chosen_individual_shapes, filename, directory)
+
+        for shape_id in shapeIDs_with_all_indexes:
         
-           pixel_index = int(pixel_index)
+            for pixel_index in shapeIDs_with_all_indexes[shape_id]: 
+            
+            
+               pixel_index = int(pixel_index)
+               
+               y = math.floor(pixel_index / original_width)
+
+               x  = pixel_index % original_width
+
+               # ---------------------------      converting original image to enlarged image algorithm      ------------------------------
+               # every pixel in original image will increase by magnification amount
+               # for example, pixel 0 will be 9 in magnifcation of 3. every pixel will increase horizontally and verically by magnifcation amount
+               # In magnification of 3, 1 pixel will fill 3 pixels horizontally and vertically. so (1 pixel * 3 horizontally ) * ( 1pixel * 3 vertically ) = 9 pixels
+               for vertical_increase in range(0, image_magnification):
+                  for horizontal_increase in range(0, image_magnification ):
+                     enlarged_pixel_index = ((y * image_magnification ) + vertical_increase ) * enlarged_width + (x * image_magnification) + horizontal_increase
+                    
+                     enlarged_y = math.floor(enlarged_pixel_index / (original_width * image_magnification) )
+                     enlarged_x = enlarged_pixel_index % (original_width * image_magnification )
+
+
+                     image_objects[0].putpixel( (enlarged_x, enlarged_y) , (255, 255, 255) )
+
+
+        print(image_objects)
+        image_objects[0].show()
+        show_image_flag = False
+        
+        # deleting all chosen shapes for the next choosing of shapes
+        chosen_individual_shapes.clear()
+
            
-           y = math.floor(pixel_index / original_width)
 
-           x  = pixel_index % original_width
+def show_image():
+   global show_image_flag
 
-
-
-
-           read_original_image.putpixel( (x, y) , (255, 255, 255) )
-
-    read_original_image.show()
+   show_image_flag = True
+   set_individual_shapes_clicked()
+   
 
 
+def determine_overall_shape_clicked():
 
-
-def dermine_overall_shape_clicked():
+    global chosen_individual_shapes
 
 
     if len(chosen_individual_shapes) != 0:
@@ -114,8 +111,8 @@ def dermine_overall_shape_clicked():
 
 
         # Now we need to get boundary pixels of chosen shapes. To do that, we want to pass chosen individual shapes to get_boundary_pixels
-		# function. But this function parameter needs to be in required dictionary form. So in this for loop, we are turning individual shapes
-		# dictionary to the required form.
+        # function. But this function parameter needs to be in required dictionary form. So in this for loop, we are turning individual shapes
+        # dictionary to the required form.
         for shape_id in shapeIDs_with_all_indexes:
         
 
@@ -137,7 +134,9 @@ def dermine_overall_shape_clicked():
                pixel_counter += 1
 
 
-
+        print(" chosen individual shapes pixels")
+        print(pixels)
+        print("")
 
 
 
@@ -151,64 +150,81 @@ def dermine_overall_shape_clicked():
 
 
 
+filename = "swan color group"
+
+directory = ""
+
+# directory is specified but does not contain /
+if directory != "" and directory.find('/') == -1:
+   directory +='/'
+
+
+
+image_original = 'shapes/objectshape/' + filename + ' shape.png'
+enlarged_image = 'shapes/objectshape/' + filename + ' shape x3 enlarged.png'
+read_enlarged_image = Image.open(enlarged_image)
+
+read_original_image = Image.open(image_original)
+
+original_image_pixels = read_original_image.getdata()
+
+original_width, original_height = read_original_image.size
 
 
 
 
+image_file = open('shapes/objectshape/' + filename + ' matched shape ids.txt')
+image_file_contents = image_file.read()
 
 
 
+canvas = None
+image_on_canvas = None
+show_image_flag = False
+image_objects = []
 
+test_canvas = None
 
-
-
-
-
-
-
-
-
-
-
+checkbuttons = {}
+chosen_individual_shapes = []
 
 
 
 
 def first_gui():
+
+
     def open_second_gui():
 
         second_gui()
 
 
-    root = tkinter.Tk()
 
 
+    global canvas
+    global image_on_canvas
 
-    # canvas作成
-    test_canvas = tkinter.Canvas(root, width=read_enlarged_image.width, height=read_enlarged_image.height)
-    test_canvas.grid(row=0, column=0)
+    root = Tk()
 
-    image_origin_posX = 10
-    image_origin_posY = 10
+    # canvas for image
+    canvas = tkinter.Canvas(root)
+    canvas.grid(row=0, column=0)
 
-
-
-    # canvasに画像を表示
-    im = ImageTk.PhotoImage(image=read_enlarged_image)
-    test_canvas.create_image(image_origin_posX, image_origin_posY, anchor='nw', image=im)
+    read_enlarged_image = Image.open(enlarged_image)
 
 
-    textvar = StringVar()
+    first_image = ImageTk.PhotoImage(image = read_enlarged_image)
 
-    content = ttk.Frame(root)
-    content['padding'] = (15,10,15,0)
-    namelbl = ttk.Label(content,text='display individual shapes of this object shape')
+    # set first image on canvas
+    image_on_canvas = canvas.create_image(0, 0, anchor = NW, image = first_image)
 
-    cancel = ttk.Button(content, text="open second window", command=open_second_gui)
+    button = Button(root, text="open second window", command=open_second_gui)
+    button.grid()
 
-    content.grid(column=1, row=0)
-    namelbl.grid(column=1, row=0, columnspan=2)
-    cancel.grid(column=2, row=2)
+
+    # button to change image
+    button = Button(root, text="show image", command=show_image)
+    button.grid()
 
     root.mainloop()
 
@@ -227,11 +243,7 @@ def second_gui():
         second_window.destroy()
 
 
-
-
     second_window = tkinter.Toplevel()
-
-
 
     # removing single quote, brackets and space
     pixel_indexes_string = image_file_contents.replace('\'', '') 
@@ -243,17 +255,6 @@ def second_gui():
 
     shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(pixel_indexes, filename, directory)
        
-
-    image_original = 'images/' + directory + filename + '.png'
-
-    read_original_image = Image.open(image_original)
-
-    original_pixel = read_original_image.getdata()
-
-    image_width, image_height = read_original_image.size
-
-    new_image = Image.new('RGB', (image_width, image_height) )
-
 
     frame_row_counter = 0
     frame_column_counter = 0
@@ -272,7 +273,7 @@ def second_gui():
         for pixel_index in shapeIDs_with_all_indexes[shape_id]: 
         
            pixel_index = int(pixel_index)
-           pixel_index_R, pixel_index_G, pixel_index_B, alpha = original_pixel[ pixel_index ]
+           pixel_index_R, pixel_index_G, pixel_index_B = original_image_pixels[ pixel_index ]
 
            Red.append(pixel_index_R)
            Green.append(pixel_index_G)
@@ -281,7 +282,7 @@ def second_gui():
 
         # dynamically create individual shapes when the second window opens
 
-        #Frame作成
+
         frame_list[shape_id] = tkinter.Frame(second_window)
         
 
@@ -294,14 +295,12 @@ def second_gui():
         b = round(mean(Blue))
 
 
-
-
         background_label = tkinter.Label( frame_list[shape_id], background=_from_rgb((r, g, b)), width=5, height=2 )
         background_label.grid(row=0 ,column=1 )
 
         checkbuttons[shape_id] = tkinter.IntVar()
 
-        display_individual_shape = ttk.Checkbutton( frame_list[shape_id] , variable=checkbuttons[shape_id])
+        display_individual_shape = ttk.Checkbutton( frame_list[shape_id] , variable=checkbuttons[shape_id], command=set_individual_shapes_clicked)
         display_individual_shape.grid(row=0, column= 0)
 
         
@@ -315,36 +314,21 @@ def second_gui():
            frame_row_counter = 0
            frame_column_counter += 1
 
-
+    show_image_button = ttk.Button(second_window, text="show image", command=show_image)
+    show_image_button.grid()
+    
 
     cancel = ttk.Button(second_window, text="close window", command=close_gui)
     cancel.grid()
 
 
-
-    #Button
-    show_individual_shapes_button = ttk.Button(
-        second_window, 
-        text='show chosen individual shapes', 
-        padding=5,
-        command=show_individual_shapes_clicked)
-
-    show_individual_shapes_button.grid()
-
-    #Button
     determine_overall_shape_button = ttk.Button(
         second_window, 
         text='determine overall object shape', 
         padding=5,
-        command=dermine_overall_shape_clicked)
+        command=determine_overall_shape_clicked)
 
     determine_overall_shape_button.grid()
-
-
-
-
-
-
 
 
     explanation_label = tkinter.Label( second_window, text=' Here, you see individual shape color along with shape id number. \
@@ -353,13 +337,7 @@ def second_gui():
     explanation_label.grid( columnspan = 5)
 
 
-
-
     second_window.mainloop()
-
-
-
-
 
 
 
@@ -367,6 +345,8 @@ def second_gui():
 
 if __name__ == '__main__':
     first_gui()
+
+
 
 
 
