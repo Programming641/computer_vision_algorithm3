@@ -3,7 +3,7 @@ import math
 from PIL import Image
 import pixel_shapes_functions
 
-filename = "easy image to analyze for practice4"
+filename = "swan color group"
 
 directory = ""
 
@@ -29,10 +29,10 @@ pixel_indexest_string = pixel_indexest_string.replace(' ', "")
 # list with all matched shape ids
 pixel_indexes = pixel_indexest_string.split(',')
 
+
+
 shapeIDs_with_all_indexes = pixel_shapes_functions.get_all_pixels_of_shapes(pixel_indexes, filename, directory)
    
-print(shapeIDs_with_all_indexes)
-
 
 image_original = 'images/' + directory + filename + '.png'
 
@@ -46,8 +46,10 @@ new_image = Image.new('RGB', (image_width, image_height) )
 
 
 for shape_id in shapeIDs_with_all_indexes:
+
     for pixel_index in shapeIDs_with_all_indexes[shape_id]: 
     
+        
        pixel_index = int(pixel_index)
        pixel_index_R, pixel_index_G, pixel_index_B, alpha = original_pixel[ pixel_index ]
 
