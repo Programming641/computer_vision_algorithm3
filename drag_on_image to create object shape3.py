@@ -4,10 +4,6 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import recreate_shapes
 
-matched_shape_id_with_mouse_circled_area = []
-
-whole_image_shapes = recreate_shapes.get_whole_image_shape(True)   
-
 
 
 def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
@@ -18,7 +14,7 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
 
    # we are getting xy coordinates of whole image shapes. We will then get all shapes that fall inside the 
    # mouse circled image area 
-   
+
 
    for shape_id , pixel_xy_values in whole_image_shapes.items():
 
@@ -30,15 +26,15 @@ def execute_mouse_circled_shapes( mouse_circled_x, mouse_circled_y ):
             
                print(" shape found! shape id is " + shape_id )          
                matched_shape_id_with_mouse_circled_area.append(shape_id)
-            
 
 
+image_filename = 'swan color group';
+
+directory = ""
 
 
-
-
-enlarged_image = 'images/bird/bird01 color group x3 enlarged.png'
-image_original = 'images/bird/bird01 color group.png'
+enlarged_image = 'images/' + image_filename + ' x3 enlarged.png'
+image_original = 'images/' + image_filename + '.png'
 
 # finding file name under the last directory
 image_directory_position = enlarged_image.rfind('/')
@@ -55,6 +51,12 @@ read_original_image = Image.open(image_original)
 enlarged_width, enlarged_height = read_enlarged_image.size
 
 original_width, original_height = read_original_image.size
+
+
+
+matched_shape_id_with_mouse_circled_area = []
+
+whole_image_shapes = recreate_shapes.get_whole_image_shape(True, image_filename, directory)   
 
 
 
@@ -120,45 +122,25 @@ def saveObjectshape(event):
    largest_y = max(int(d['y']) for d in mouse_circled_boundary.values())
 
  
-
-   
- 
-   first = True
    mouse_circled_counter = 1
    
    # iterating all coordinate xy value pairs from smallest_y + 1 to largest_y - 1.
    #  for y in range(start, stop) stop value is excluded
-   for y in range(smallest_y + 1, largest_y ):
+   for y in range(smallest_y, largest_y ):
       # smallest_y + 1 because smallest_y is the very top boundary.  largest_y - 1 because largest_y is the very bottom boundary
-       
+      
       # pixel_ids_with_current_y_values contains all xy coordinate pairs that have the current running y value.
       pixel_ids_with_current_y_values = [k for k in mouse_circled_boundary  if (int(mouse_circled_boundary[k]['y'])) == y]
+   
+      first = True   
       
-      counter = 0
-      # key is the coordinate pair id.
-      # looking for smallest and largest x values that go with the current running y value
-      for key in pixel_ids_with_current_y_values:
-         counter += 1
-
-         if first != False:
-            smallest_x_with_current_y = mouse_circled_boundary[key]['x']
-            largest_x_with_current_y = mouse_circled_boundary[key]['x']
-            first = False
-           
-         if mouse_circled_boundary[key]['x'] < smallest_x_with_current_y:
-            smallest_x_with_current_y = mouse_circled_boundary[key]['x']
-            smallest_x_key_with_current_y = key
-              
-         if mouse_circled_boundary[key]['x'] > largest_x_with_current_y:
-            largest_x_with_current_y = mouse_circled_boundary[key]['x']
-            largest_x_key_with_current_y = key
-                  
-         # getting all xy values from smallest x to largest x that go with the current running y value
-         #  for y in range(start, stop) stop value is excluded
-         # but first, make sure that smallest x and largest x value are obtained from all pixel coordinates with current running y value
-         if counter == len(pixel_ids_with_current_y_values):
-            for x in range(smallest_x_with_current_y + 1, largest_x_with_current_y):
-                       
+      # there are some missing pixels. We need to fill them with the previous values
+      if len(pixel_ids_with_current_y_values) == 0:
+         print(" missing pixels found " )
+         print(" previous smallest x value is " + str(smallest_x_with_current_y))
+         print(" previous largest x value is " + str(largest_x_with_current_y))
+         for x in range(smallest_x_with_current_y, largest_x_with_current_y):
+            
                mouse_circled_entire_area[mouse_circled_counter] = {}
                mouse_circled_entire_area[mouse_circled_counter]['x'] = x
                mouse_circled_entire_area[mouse_circled_counter]['y'] = y
@@ -170,10 +152,54 @@ def saveObjectshape(event):
                execute_mouse_circled_shapes(converted_back_to_original_x, converted_back_to_original_y )     
                
                mouse_circled_counter += 1
-              
+            
+         
+         
+         
+         
+         
+         
+      
+      counter = 0
+      # key is the coordinate pair id.
+      # looking for smallest and largest x values that go with the current running y value
+      for key in pixel_ids_with_current_y_values:
+         counter += 1
+
+         if first != False:
+
+            smallest_x_with_current_y = mouse_circled_boundary[key]['x']
+            largest_x_with_current_y = mouse_circled_boundary[key]['x']
+            print("updating smallest x " + str(smallest_x_with_current_y ) + " for the current y " + str(y))
+            first = False
+           
+         if mouse_circled_boundary[key]['x'] < smallest_x_with_current_y:
+            smallest_x_with_current_y = mouse_circled_boundary[key]['x']
+
+         if mouse_circled_boundary[key]['x'] > largest_x_with_current_y:
+            largest_x_with_current_y = mouse_circled_boundary[key]['x']
+
+         # getting all xy values from smallest x to largest x that go with the current running y value
+         # for y in range(start, stop) stop value is excluded
+         # but first, make sure that smallest x and largest x value are obtained from all pixel coordinates with current running y value
+         if counter == len(pixel_ids_with_current_y_values):
+            for x in range(smallest_x_with_current_y, largest_x_with_current_y):
+            
+               mouse_circled_entire_area[mouse_circled_counter] = {}
+               mouse_circled_entire_area[mouse_circled_counter]['x'] = x
+               mouse_circled_entire_area[mouse_circled_counter]['y'] = y
+            
+               # because mouse circled area is on enlarged image, we need to convert back to the original xy coordinates
+               converted_back_to_original_x =   round (x / 3)
+               converted_back_to_original_y =  round (y / 3)       
+             
+               execute_mouse_circled_shapes(converted_back_to_original_x, converted_back_to_original_y )     
+               
+               mouse_circled_counter += 1
+            
             
    
-   recreate_shapes.get_whole_image_shape(False, matched_shape_id_with_mouse_circled_area)
+   recreate_shapes.get_whole_image_shape(False, image_filename, directory,   matched_shape_id_with_mouse_circled_area)
    
    print(matched_shape_id_with_mouse_circled_area)
    
@@ -192,9 +218,6 @@ def saveObjectshape(event):
 
 test_canvas.bind('<B1-Motion>', onLeftDrag) 
 test_canvas.bind('<ButtonRelease-1>', saveObjectshape) 
-
-switch_window_button = ttk.Button(root, text="show all shapes in circled area", command=open_second_gui)
-switch_window_button.grid()
 
 
 
