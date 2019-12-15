@@ -1,5 +1,8 @@
 import re
 from PIL import Image
+import os
+import recreate_shapes
+from statistics import mean
 
 # returns all pixel shape ids and all its pixel indexes
 # pixel id dictionary[ matched pixel shape id ] = [ pixel index1, pixel index2, ..... ]
@@ -132,11 +135,6 @@ def get_boundary_pixels(pixels_dict):
    smallest_y = min(int(d['y']) for d in pixels_dict.values())
    largest_y = max(int(d['y']) for d in pixels_dict.values())
 
-   print("smallest y value " + str(smallest_y))
-   print("largest y value " + str(largest_y))
- 
- 
- 
 
    pixel_counter = 1
 
@@ -162,7 +160,7 @@ def get_boundary_pixels(pixels_dict):
       
       With current running y value, boundary is where there is no consecutive x values. This means there is no more 
       neighbor x values on the right or left side.  The " boundary left side " has missing x values on the " left " ( no more smaller x values )
-      The " boundary right side " has missing x values on the " right " ( missing neighbor larger x values for a while )
+      The " boundary right side " has missing x values on the " right " ( missing neighbor larger x values )
       finally, the smallest and largest x values are the farthest of all pixels in the current running y value.
       '''
       
@@ -185,9 +183,6 @@ def get_boundary_pixels(pixels_dict):
 
       for x_value in x_values_list_in_current_y:
  
-         print(" y value is " + str(y) )
-         print(x_value)
-         
          # boundary is also on smallest y and largest y because very top and very bottom will be the boundaries
          # this is for the very top
          if y == smallest_y:
@@ -227,9 +222,6 @@ def get_boundary_pixels(pixels_dict):
              if abs( x_value - previous_x_value ) > 1:
                 # boundary is found
                 
-                print("boundary found. current x value is " + str(x_value))
-                print("previous x value is " + str(previous_x_value))
-
                 if x_value - previous_x_value < 0:
                    # result is negative, this means current x value is smaller ( it is on the left relative to previous )
                    # then, current x value is the boundary pixel " on the left side "
@@ -271,15 +263,13 @@ def get_boundary_pixels(pixels_dict):
    smallest_x = min(int(d['x']) for d in pixels_dict.values())
    largest_x = max(int(d['x']) for d in pixels_dict.values())
 
-   print("smallest x value " + str(smallest_y))
-   print("largest x value " + str(largest_y))
- 
 
    pixel_counter = 1
 
-   # for loop for going from smallest y value to the largest y value
-   # this means going from very top pixel to very bottom pixel
-   #  for y in range(start, stop) stop value is excluded
+   # for loop for going from smallest x value to largest x value
+   # here, we will look at each one of the columns of pixels from smallest x value to the largest x_counter_in_current_running_y
+   # for example, we will look at all pixels that lie in ( 0, all y values ), ( 1, all y values ) ..... 
+   #  for x in range(start, stop) stop value is excluded
    for x in range(smallest_x, largest_x + 1):
 
       # pixel_ids_with_current_x_values contains all xy coordinate pairs that have the current running x value.
@@ -309,19 +299,10 @@ def get_boundary_pixels(pixels_dict):
       
       # we need to sort x values so that we can work with neighbor x values
       y_values_list_in_current_x.sort()
-      
-      print(" y values list when x is " + str(x))
-      print( y_values_list_in_current_x )
-      
+        
 
       for y_value in y_values_list_in_current_x:
  
-         print(" y value is " + str(y_value) )
-         print(x)
-         
-         print("current y counter is " + str(y_counter_in_current_running_x) )
-         print(" current y count is " + str(len(y_values_list_in_current_x) ) )        
-         
          # check if current y value is the last one in the current running y
          if y_counter_in_current_running_x == len(y_values_list_in_current_x):
          
@@ -332,15 +313,10 @@ def get_boundary_pixels(pixels_dict):
             pixel_boundaries[pixel_counter]['x'] = x
             pixel_boundaries[pixel_counter]['y'] = y_value
 
-            print("boundary found. current y value is " + str(y_value) + " x value is " + str(x))
-
-         
          
          # for the current running x value (all pixels vertically ), first y is the very top pixel which should be boundary
          if first == True:
          
-            print("boundary found. current y value is " + str(y_value) + " x value is " + str(x))
-      
             pixel_boundaries[pixel_counter] = {}
 
             pixel_boundaries[pixel_counter]['x'] = x
@@ -354,8 +330,6 @@ def get_boundary_pixels(pixels_dict):
             if abs( y_value - previous_y_value ) > 1:
                # boundary is found
                 
-               print("boundary found. current y value is " + str(y_value) + " x value is " + str(x))
-
 
                pixel_boundaries[pixel_counter] = {}
 
@@ -366,14 +340,6 @@ def get_boundary_pixels(pixels_dict):
 
          pixel_counter += 1
          y_counter_in_current_running_x += 1
-
-
-
-
-      print(" end of current x ")
-
-      print("")
-
 
 
 
@@ -403,10 +369,10 @@ def get_boundary_pixels(pixels_dict):
 # return is boundary_shapes
 # boundary_shapes contains boundary shape number, pixel number, xy values
 # form is shown below
-# boundary shapes[choundary shape number ][ pixel number ]['x']
-# boundary shapes[choundary shape number ][ pixel number ]['y']
+# boundary shapes[ boundary shape number ][ pixel number ]['x']
+# boundary shapes[ boundary shape number ][ pixel number ]['y']
 
-# input parameter boundary_pixels is the one returned by get_boundary_pixels function
+# input parameter -> boundary_pixels. this is the one returned by get_boundary_pixels function
 #    pixels[pixel_counter] = {}
 #    pixels[pixel_counter] ['x'] = x
 #    pixels[pixel_counter] ['y'] = y
@@ -684,16 +650,283 @@ def get_boundary_shapes(boundary_pixels):
 
 
 
+# IN parameters
+# pixel: pixel to find its direct neighbors
+# pixel form is
+# { 'x': 100, 'y': 200 }
+# pixels: pixels to look for pixel's direct neighbors
+# pixels parameter form is....
+#    pixels[pixel_counter] = {}
+#    pixels[pixel_counter] ['x'] = x
+#    pixels[pixel_counter] ['y'] = y
+#
+# {1: {'x': 97, 'y': 52}, 2: {'x': 106, 'y': 52}......}
+#
+# returns
+# all found direct neighbors in the same form as IN pixels parameter
+
+def find_direct_neighbors(pixel, pixels):
+
+   # all found direct neighbors
+   found_neighbors = {}
+   
+   for neighbor_search_pixel_id in pixels:
+  
+      # looking for top direct neighbor
+      # direct top neighbor is: ( current x, y )  then direct top neighbor is ( top x, y - 1)
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for top right direct neighbor
+      # direct top right neighbor is: ( current x, y ) then direct top right neighbor is ( top right x + 1, y - 1 )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct right neighbor
+      # direct right neighbor is: ( current x, y )  then direct right neighbor is ( right x + 1, y )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y']:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct bottom right neighbor
+      # direct bottom right neighbor is: ( current x, y )  then direct bottom right neighbor is ( bottom right x + 1, y + 1 )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct bottom neighbor
+      # direct bottom neighbor is: ( current x, y )  then direct bottom neighbor is ( bottom x, y + 1 )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct bottom left neighbor
+      # direct bottom left neighbor is: ( current x, y )  then direct bottom left neighbor is ( bottom x - 1, y + 1 )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct left neighbor
+      # direct left neighbor is: ( current x, y )  then direct left neighbor is ( bottom x - 1, y )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y']:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+      # looking for direct top left neighbor
+      # direct top left neighbor is: ( current x, y )  then direct top left neighbor is ( bottom x - 1, y - 1 )
+      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
+         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         
+
+   return found_neighbors
 
 
 
 
 
 
+# IN parameters
+# pixels: pixels to look for pixel's direct neighbors
+# pixels parameter form is....
+#    pixels[pixel_counter] = {}
+#    pixels[pixel_counter] ['x'] = x
+#    pixels[pixel_counter] ['y'] = y
+#
+# {1: {'x': 97, 'y': 52}, 2: {'x': 106, 'y': 52}......}
+#
+# returns
+# all found direct neighbors in the same form as IN pixels parameter
+
+def get_direct_neighbors(pixels):
+
+   # all found direct neighbors
+   found_neighbors = {}
+   
+
+   
+   for pixel_id in pixels:
+   
+      pixel_counter = 1
+  
+      # getting top direct neighbor
+      # direct top neighbor is: ( current x, y )  then direct top neighbor is ( top x, y - 1)
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'], 'y': pixels[pixel_id]['y'] - 1 }
+      pixel_counter += 1
+         
+      # getting top right direct neighbor
+      # direct top right neighbor is: ( current x, y ) then direct top right neighbor is ( top right x + 1, y - 1 )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y'] - 1 }
+      pixel_counter += 1
+       
+      # getting direct right neighbor
+      # direct right neighbor is: ( current x, y )  then direct right neighbor is ( right x + 1, y )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y']}
+      pixel_counter += 1
+         
+      # getting direct bottom right neighbor
+      # direct bottom right neighbor is: ( current x, y )  then direct bottom right neighbor is ( bottom right x + 1, y + 1 )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y'] + 1 }
+      pixel_counter += 1
+         
+      # getting direct bottom neighbor
+      # direct bottom neighbor is: ( current x, y )  then direct bottom neighbor is ( bottom x, y + 1 )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'], 'y': pixels[pixel_id]['y'] + 1 }
+      pixel_counter += 1
+       
+      # getting direct bottom left neighbor
+      # direct bottom left neighbor is: ( current x, y )  then direct bottom left neighbor is ( bottom x - 1, y + 1 )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] + 1 }
+      pixel_counter += 1
+
+      # getting direct left neighbor
+      # direct left neighbor is: ( current x, y )  then direct left neighbor is ( bottom x - 1, y )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] }
+      pixel_counter += 1         
+         
+      # getting direct top left neighbor
+      # direct top left neighbor is: ( current x, y )  then direct top left neighbor is ( bottom x - 1, y - 1 )
+      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] - 1 }       
+
+   return found_neighbors
 
 
 
 
+
+def find_direct_shape_neighbors(image_filename, directory_under_images):
+
+    # directory is passed in parameter but does not contain /
+    if directory_under_images != "" and directory_under_images.find('/') == -1:
+       directory_under_images +='/'
+
+    if os.path.exists("shapes") == False:
+       os.mkdir("shapes")
+
+
+    shapes_neighbors_filename = "shapes/" + image_filename + " shapes_neighbors.txt"
+
+    image_original = 'images/' + directory_under_images + image_filename + '.png'
+
+    read_original_image = Image.open(image_original)
+
+    original_width, original_height = read_original_image.size
+
+    # for storing shape's neighbor shapes
+    # { shape id: [ neighboor shape id1 , neighbor shape id2, ..... ] }
+    shape_neighbors = {}
+
+    already_processed_shapes = []
+
+
+    whole_image_shapes = recreate_shapes.get_whole_image_shape(True, image_filename, directory_under_images)  
+
+    for pixel_shape_id , pixel_xy_values in whole_image_shapes.items():  
+       # outer loop is for current running shape which looks for direct shape neighbors
+       
+       print(pixel_shape_id)
+       # every shape has its neighbors
+       shape_neighbors[pixel_shape_id] = []
+       
+       boundary_pixels = get_boundary_pixels(pixel_xy_values)
+       
+       boundary_direct_neigbors = get_direct_neighbors(boundary_pixels)
+       
+       # for storing boundary pixels' neighbor pixel indexes. if candidate neighbor shape contains any of the 
+       # index numbers in it, then this candidate is neighbor shape
+       pixel_indexes = []
+       
+       for shape_id, xy_values in boundary_direct_neigbors.items():
+       
+          pixel_index = xy_values['y'] * original_width + xy_values['x']
+          pixel_indexes.append(pixel_index)
+          
+       for neighbor_shape_id , neighbor_pixel_xy_values in whole_image_shapes.items():         
+          # inner loop is for finding neighbors for current running shape
+          
+          neighbor_pixel_indexes = []
+          
+          for key in neighbor_pixel_xy_values:
+       
+             neighbor_pixel_index = neighbor_pixel_xy_values[key]['y'] * original_width + neighbor_pixel_xy_values[key]['x']
+             neighbor_pixel_indexes.append(neighbor_pixel_index)
+          
+             
+          if not pixel_shape_id == neighbor_shape_id:  
+             for pixel_index in pixel_indexes:
+                if pixel_index in neighbor_pixel_indexes:
+
+                   shape_neighbors[pixel_shape_id].append(neighbor_shape_id)
+                   break
+                
+          elif pixel_shape_id == neighbor_shape_id or neighbor_shape_id in already_processed_shapes:
+             break        
+             
+        
+       if len(shape_neighbors[pixel_shape_id]) == 0:
+          shape_neighbors.pop(pixel_shape_id)
+             
+       already_processed_shapes.append(pixel_shape_id)
+
+
+    f = open(shapes_neighbors_filename, 'w')
+    f.write(str(shape_neighbors))
+    f.close()
+
+
+
+
+
+    return shape_neighbors
+
+
+
+
+def get_shapes_colors(filename, directory):
+
+    # directory is specified but does not contain /
+    if directory != "" and directory.find('/') == -1:
+       directory +='/'
+
+    shapes_color_filename = "shapes/" + filename + " shapes_colors.txt"
+
+    image_original = 'images/' + directory + filename + '.png'
+
+    read_original_image = Image.open(image_original)
+
+    image_width, image_height = read_original_image.size
+
+    image_pixels = read_original_image.getdata()
+
+    shapes_colors = {}
+
+    whole_image_shapes = recreate_shapes.get_whole_image_shape(True, filename, directory)
+
+    for shape_id , pixel_xy_values in whole_image_shapes.items():
+    
+       shapes_colors[shape_id] = {}
+    
+       # for storing RGB values for each shape. Initializing for each shape
+       Red = []
+       Green = []
+       Blue = []
+    
+       for pixel_id in pixel_xy_values:
+
+          image_index = pixel_xy_values[pixel_id]['y'] * image_width + pixel_xy_values[pixel_id]['x']
+
+          r, g, b, a = image_pixels[ image_index ]
+          Red.append(r)
+          Green.append(g)
+          Blue.append(b)
+
+
+       r = round(mean(Red))
+       g = round(mean(Green))
+       b = round(mean(Blue))
+       
+       shapes_colors[shape_id] = { 'r': r, 'g': g, 'b': b }
+
+
+    f = open(shapes_color_filename, 'w')
+    f.write(str(shapes_colors))
+    f.close()
+
+    return shapes_colors
 
 
 
