@@ -96,17 +96,16 @@ def read_shapes_file(image_filename, directory_under_images):
              shapes[shapes_id][pixel_index] = {}
              shapes[shapes_id][pixel_index]['x'] = x
              shapes[shapes_id][pixel_index]['y'] = y
-
+             
+             
+    image_file.close()
     return shapes
 
-    image_file.close()
 
 
-
-
-
-
-def read_shapes_neighbors_file(image_filename, directory_under_images):
+# data inside the file has the form below
+# {'6389': ['6735', '6389'], '12308': ['12654']....}
+def read_dict_key_value_list(image_filename, directory_under_images, filepath):
 
     # directory is passed in parameter but does not contain /
     if directory_under_images != "" and directory_under_images.find('/') == -1:
@@ -118,76 +117,76 @@ def read_shapes_neighbors_file(image_filename, directory_under_images):
     image_width, image_height = original_image.size
 
 
-    image_file = open('shapes/' + image_filename + ' shapes_neighbors.txt')
+    image_file = open(filepath)
     image_file_contents = image_file.read()
 
     # this is for getting single neighbors
     # pattern is...
     # ' then comes numbers 1-image size digits then comes ' then comes : then comes space then comes [ then comes single quote
     # then comes 1-image size digits then comes single quote then comes ]
-    single_neighbor_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+    single_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
                               "}\'\]"
                            
-    match = re.findall(single_neighbor_pattern, image_file_contents)
+    match = re.findall(single_pattern, image_file_contents)
     
-    neighbor_shapes = {}
+    dictionary = {}
     
     for m in match:
     
        # getting keys from single shape neighbors
-       single_neighbor_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
-       single_key = re.search(single_neighbor_key_pattern, m).group()
+       single_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
+       single_key = re.search(single_key_pattern, m).group()
        
        # removing single quote and colon
-       single_neighbor_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
-       single_key = re.search(single_neighbor_key_pattern, single_key).group()
+       single_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
+       single_key = re.search(single_key_pattern, single_key).group()
        
-       neighbor_shapes[single_key] = ""
+       dictionary[single_key] = ""
        
        # this time is for single neighbors of single neighbor shapes
-       single_neighbor_value_pattern = "\[\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]"
-       single_value = re.search(single_neighbor_value_pattern, m).group()
+       single_value_pattern = "\[\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]"
+       single_value = re.search(single_value_pattern, m).group()
        
        # getting only numbers
-       single_neighbor_value_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
-       single_value = re.search(single_neighbor_value_pattern, single_value ).group()
+       single_value_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
+       single_value = re.search(single_value_pattern, single_value ).group()
        
-       neighbor_shapes[single_key] = [single_value]
+       dictionary[single_key] = [single_value]
        
        
     # multiple neighbor shapes
     # "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"     this is for getting shape id 
-    multiple_neighbor_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':" + " \[" + \
+    multiple_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':" + " \[" + \
                                 "(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\',\s{1})+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]"
                                 
-    match = re.findall(multiple_neighbor_pattern, image_file_contents)
+    match = re.findall(multiple_pattern, image_file_contents)
        
     
     for m in match:
 
        # getting keys from multiple shape neighbors
-       multiple_neighbor_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
-       multiple_key = re.search(multiple_neighbor_key_pattern, m).group()
+       multiple_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
+       multiple_key = re.search(multiple_key_pattern, m).group()
                 
        # removing single quote and colon
-       multiple_neighbor_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
-       multiple_key = re.search(multiple_neighbor_key_pattern, multiple_key).group()
+       multiple_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
+       multiple_key = re.search(multiple_key_pattern, multiple_key).group()
              
-       neighbor_shapes[multiple_key] = ""
+       dictionary[multiple_key] = ""
              
-       multiple_neighbor_values_pattern = "(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\',\s{1})+\'[0-9]{1," + \
+       multiple_values_pattern = "(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\',\s{1})+\'[0-9]{1," + \
                                           str(len(str(image_width * image_height))) + "}\'\]"
        
-       multiple_values = re.search(multiple_neighbor_values_pattern, m ).group()
+       multiple_values = re.search(multiple_values_pattern, m ).group()
       
        # getting only numbers
-       multiple_neighbor_values_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
-       multiple_values_list = re.findall(multiple_neighbor_values_pattern, multiple_values )    
+       multiple_values_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
+       multiple_values_list = re.findall(multiple_values_pattern, multiple_values )    
        
-       neighbor_shapes[multiple_key] = multiple_values_list
+       dictionary[multiple_key] = multiple_values_list
        
 
-    return neighbor_shapes
+    return dictionary
        
        
  
