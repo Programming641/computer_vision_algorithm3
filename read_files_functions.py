@@ -120,22 +120,46 @@ def read_dict_key_value_list(image_filename, directory_under_images, filepath):
     image_file = open(filepath)
     image_file_contents = image_file.read()
 
-    # this is for getting single neighbors
-    # pattern is...
-    # ' then comes numbers 1-image size digits then comes ' then comes : then comes space then comes [ then comes single quote
-    # then comes 1-image size digits then comes single quote then comes ]
-    single_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+    key_is_single_quoted = True
+
+    # shapes_neighbors file has key value surrounded by single quotes but repeating pattern shapes file 
+    # does not have keys surrounded by single quotes
+    key_single_quoted_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': "
+    match = re.findall(key_single_quoted_pattern, image_file_contents)
+
+    if len(match) == 0:
+       key_is_single_quoted = False
+
+    if key_is_single_quoted == True:    
+       # this is for getting single neighbors
+       # pattern is...
+       # ' then comes numbers 1-image size digits then comes ' then comes : then comes space then comes [ then comes single quote
+       # then comes 1-image size digits then comes single quote then comes ]
+       single_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
                               "}\'\]"
                            
-    match = re.findall(single_pattern, image_file_contents)
-    
+       match = re.findall(single_pattern, image_file_contents)
+
+
+    if key_is_single_quoted == False:
+       single_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}: \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+                              "}\'\]"
+                           
+       match = re.findall(single_pattern, image_file_contents)
+
     dictionary = {}
     
     for m in match:
     
-       # getting keys from single shape neighbors
-       single_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
-       single_key = re.search(single_key_pattern, m).group()
+       if key_is_single_quoted == True:
+          # getting keys from single shape neighbors
+          single_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
+          single_key = re.search(single_key_pattern, m).group()
+       
+       # for key values not surrounded by single quotes
+       if key_is_single_quoted == False:
+          single_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}:"
+          single_key = re.search(single_key_pattern, m).group()
        
        # removing single quote and colon
        single_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
@@ -153,21 +177,36 @@ def read_dict_key_value_list(image_filename, directory_under_images, filepath):
        
        dictionary[single_key] = [single_value]
        
-       
-    # multiple neighbor shapes
-    # "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"     this is for getting shape id 
-    multiple_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':" + " \[" + \
+    if key_is_single_quoted == True:   
+       # multiple neighbor shapes
+       # "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"     this is for getting shape id 
+       multiple_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':" + " \[" + \
                                 "(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\',\s{1})+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]"
                                 
-    match = re.findall(multiple_pattern, image_file_contents)
-       
-    
+       match = re.findall(multiple_pattern, image_file_contents)
+ 
+    # for key values not surrounded by single quotes
+    if key_is_single_quoted == False:
+       multiple_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}:" + " \[" + \
+                                "(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\',\s{1})+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]"
+                                
+       match = re.findall(multiple_pattern, image_file_contents)
+
+
+
     for m in match:
 
-       # getting keys from multiple shape neighbors
-       multiple_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
-       multiple_key = re.search(multiple_key_pattern, m).group()
-                
+       if key_is_single_quoted == True: 
+          # getting keys from multiple shape neighbors
+          multiple_key_pattern = "\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\':"
+          multiple_key = re.search(multiple_key_pattern, m).group()
+ 
+       # for key values not surrounded by single quotes
+       if key_is_single_quoted == False:
+          multiple_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}:"
+          multiple_key = re.search(multiple_key_pattern, m).group() 
+       
+ 
        # removing single quote and colon
        multiple_key_pattern = "[0-9]{1," + str(len(str(image_width * image_height))) + "}"
        multiple_key = re.search(multiple_key_pattern, multiple_key).group()
@@ -185,11 +224,71 @@ def read_dict_key_value_list(image_filename, directory_under_images, filepath):
        
        dictionary[multiple_key] = multiple_values_list
        
-
     return dictionary
        
        
- 
+
+
+def read_same_color_pairs_file(image_filename, directory_under_images):
+
+   repeating_pattern_filename = "shapes/" + image_filename + " with same color pairs.txt"
+
+   file_opened = open(repeating_pattern_filename)
+   file_contents = file_opened.read()
+
+   original_image = Image.open("images/" + directory_under_images + image_filename + ".png")
+
+   image_width, image_height = original_image.size
+   
+   repeating_shape_pairs = {}
+   repeating_shape_pair_counter = 1
+
+
+   # getting single pairs
+   # single pair example
+   # 31: [['827', '712']],
+   single_pair_pattern = "\[\['[0-9]{1," + str(len(str(image_width * image_height))) + "}', '[0-9]{1," + str(len(str(image_width * image_height))) + \
+                      "}'\]\]"
+
+   match = re.findall(single_pair_pattern, file_contents)
+   
+   for m in match:
+      
+      single_pair_ids_pattern = '[0-9]{1,' + str(len(str(image_width * image_height))) + '}'
+      match_temp = re.findall(single_pair_ids_pattern, m)
+      repeating_shape_pairs[repeating_shape_pair_counter] = [match_temp]
+      repeating_shape_pair_counter += 1
+
+
+
+
+
+   multiple_pair_pattern = "\[(?:\['[0-9]{1," + str(len(str(image_width * image_height))) + "}', '[0-9]{1," + str(len(str(image_width * image_height))) + \
+                      "}'\], )+\['[0-9]{1," + str(len(str(image_width * image_height))) + "}', '[0-9]{1," + str(len(str(image_width * image_height))) + \
+                      "}'\]\]"
+                      
+   match = re.findall(multiple_pair_pattern, file_contents)
+
+   for m in match:
+   
+      repeating_shape_pairs[repeating_shape_pair_counter] = []
+   
+      each_pair_pattern = "\['[0-9]{1," + str(len(str(image_width * image_height))) + "}', '[0-9]{1," + str(len(str(image_width * image_height))) + \
+                      "}'\]"
+      one_repeating_pattern_shapes = re.findall(each_pair_pattern, m)
+      
+      for each_pair in one_repeating_pattern_shapes:
+      
+         shape_id_pattern = '[0-9]{1,' + str(len(str(image_width * image_height))) + '}'
+         
+         ids_in_pair = re.findall(shape_id_pattern, each_pair)
+         
+         repeating_shape_pairs[repeating_shape_pair_counter].append(ids_in_pair)
+         
+      repeating_shape_pair_counter += 1
+
+         
+   return repeating_shape_pairs
 
 
 
