@@ -788,5 +788,39 @@ def get_direct_neighbors(pixels):
 
 
 
+def compute_appearance_difference(current_pix, compare_pixel):
+
+   original_red, original_green, original_blue, alpha = current_pix
+
+   compare_red, compare_green, compare_blue, alpha = compare_pixel
+    
+   red_difference = abs(original_red - compare_red)
+   green_difference = abs(original_green - compare_green)
+   blue_difference = abs(original_blue - compare_blue)
+    
+   total_difference = red_difference + green_difference + blue_difference
+
+   average = total_difference / 3
+
+   # exclude 0 or negatie values because 0 or negative values mean that difference is smaller than average.
+   red_how_far = exclude_negative_Num( red_difference - average )
+   green_how_far = exclude_negative_Num( green_difference - average )
+   blue_how_far = exclude_negative_Num( blue_difference - average )
+
+   total_appearance_difference = total_difference + red_how_far * 1.3 + green_how_far * 1.3 + blue_how_far * 1.3
+
+   return total_appearance_difference
+
+def exclude_negative_Num(num):
+
+   if num > 0:
+      return num
+   else:
+      return 0
+
+
+
+
+
 
 
