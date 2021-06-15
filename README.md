@@ -22,3 +22,21 @@ python3 "finding_shapes3 dbg.py"
 
 python3 recreate_shapes.py
 
+
+
+Error handling
+
+if you see error with alpha something something, then you need to add or delete alpha
+
+either
+   original_red, original_green, original_blue = current_pix
+
+   compare_red, compare_green, compare_blue = compare_pixel
+   
+or
+
+   original_red, original_green, original_blue, alpha = current_pix
+
+   compare_red, compare_green, compare_blue, alpha = compare_pixel
+   
+this works
