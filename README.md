@@ -29,6 +29,7 @@ Error handling
 if you see error with alpha something something, then you need to add or delete alpha
 
 either
+
    original_red, original_green, original_blue = current_pix
 
    compare_red, compare_green, compare_blue = compare_pixel
