@@ -41,3 +41,7 @@ or
    compare_red, compare_green, compare_blue, alpha = compare_pixel
    
 this works
+
+
+
+This is still in progress. I'm going to fix some minor bugs when I get time
