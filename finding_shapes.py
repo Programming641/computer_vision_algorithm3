@@ -8,7 +8,7 @@ import math
 
 from collections import OrderedDict
 
-image_filename = 'easy image to analyze for practice4'
+image_filename = 'easy image to analyze for practice3'
 
 directory = ""
 
@@ -29,9 +29,9 @@ shapes = OrderedDict()
 
 def compute_appearance_difference(current_pix, compare_pixel):
 
-   original_red, original_green, original_blue, alpha = current_pix
+   original_red, original_green, original_blue = current_pix
 
-   compare_red, compare_green, compare_blue, alpha = compare_pixel
+   compare_red, compare_green, compare_blue = compare_pixel
     
    red_difference = abs(original_red - compare_red)
    green_difference = abs(original_green - compare_green)
@@ -178,9 +178,9 @@ for y in range(image_size[1]):
       # check if current pixel is in other pixel's shapes.
       if len(shapes) != 0:
          # last in first out
-         for shape_id, value_list in reversed(shapes.items()):
-            for values in value_list:
-               if values == current_pixel_index:
+         for shape_id, shapes_lists in reversed(shapes.items()):
+            for shapes_pixel in shapes_lists:
+               if shapes_pixel == current_pixel_index:
                   # current pixel is found in existing shape. current shape will be this found shape
                   current_pixel_shape = shape_id
 
@@ -193,9 +193,9 @@ for y in range(image_size[1]):
          for neighbor in cur_pixel_neighbors:
          
                # look for neighbor pixel in all existing shapes
-               for neighbor_shape_id, value_list in reversed(shapes.items()):
-                  for values in value_list:
-                     if values == neighbor:
+               for neighbor_shape_id, shapes_lists in reversed(shapes.items()):
+                  for shapes_pixel in shapes_lists:
+                     if shapes_pixel == neighbor:
                         # neighbor pixel is found
                      
                         neighbor_pixel_RGB = original_pixel[neighbor]
@@ -205,13 +205,13 @@ for y in range(image_size[1]):
                         # this neighbor's shape.
                         if total_appearance_difference_threshold - appearance_difference >= 0:      
                         
-                           print(" current running pixel " + str(current_pixel_index) + " was not found in all existing shapes but its neighor " + str(neighbor_shape_id) + " was already in shape and has similar appearance " + 
-                           "to current pixel. so append current pixel to this neighbor's shape. This shape will be current shape.")
+                           print(" current running pixel " + str(current_pixel_index) + " was not found in all existing shapes but its neighor " + str(neighbor) + " was already in shape " + 
+                           str(neighbor_shape_id) + " and has similar appearance to current pixel. so append current pixel to this neighbor's shape. This shape will be current shape.")
                            current_pixel_shape = neighbor_shape_id
                            
-                           
-                           
-                           shapes[neighbor_shape_id].append(current_pixel_index)
+                           # before merging, make sure it is not already in the current shape
+                           if not current_pixel_index in shapes[neighbor_shape_id]:
+                              shapes[neighbor_shape_id].append(current_pixel_index)
                         
       else:
 
@@ -243,7 +243,9 @@ for y in range(image_size[1]):
                               print("merging neighbor pixels to current shape  " + str(current_pixel_shape) )
                            
                               for merge_neighbor_pixel in merge_neighbor_pixels:
-                                 shapes[current_pixel_shape].append(merge_neighbor_pixel)
+                                 # before merging, make sure it is not already in the current shape
+                                 if not merge_neighbor_pixel in shapes[current_pixel_shape]:
+                                    shapes[current_pixel_shape].append(merge_neighbor_pixel)
    
       if merge_neighbors_list:
          # deleting duplicate shape ids
@@ -288,7 +290,10 @@ for y in range(image_size[1]):
             appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, neighbor_pixel_RGB)
                   
             if total_appearance_difference_threshold - appearance_difference >= 0:
-               shapes[current_pixel_shape].append(neighbor_pixel_index)
+            
+               # before putting this pixel to current shape, make sure it is not already in current shape
+               if not neighbor_pixel_index in shapes[current_pixel_shape]:
+                  shapes[current_pixel_shape].append(neighbor_pixel_index)
 
 '''
 # finished all processing for creating all shapes from entire image pixels
