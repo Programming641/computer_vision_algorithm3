@@ -8,6 +8,7 @@ import math
 
 from collections import OrderedDict
 
+
 image_filename = 'easy image to analyze for practice3'
 
 directory = ""
@@ -107,37 +108,37 @@ def get_neighbor_pixels(pixel_index):
    #  ----------------------------------------------------      determining current pixel's position     END     -------------------------------------------------
 
    if ignore_neighbor_position_dict['top'] == False:   
-      top_neighbor = current_pixel_index - image_size[0]
+      top_neighbor = pixel_index - image_size[0]
       neighbors.append(top_neighbor)
 
 
    if ignore_neighbor_position_dict['top_right'] == False:     
-      top_right_neighbor = current_pixel_index - image_size[0] + 1
+      top_right_neighbor = pixel_index - image_size[0] + 1
       neighbors.append(top_right_neighbor)
 
 
    if ignore_neighbor_position_dict['right'] == False:  
-      right_neighbor = current_pixel_index + 1
+      right_neighbor = pixel_index + 1
       neighbors.append(right_neighbor)
 
    if ignore_neighbor_position_dict['bottom_right'] == False:
-      bottom_right_neighbor = current_pixel_index + image_size[0] + 1
+      bottom_right_neighbor = pixel_index + image_size[0] + 1
       neighbors.append(bottom_right_neighbor)      
 
    if ignore_neighbor_position_dict['bottom'] == False:
-      bottom_neighbor = current_pixel_index + image_size[0]
+      bottom_neighbor = pixel_index + image_size[0]
       neighbors.append(bottom_neighbor)   
 
    if ignore_neighbor_position_dict['bottom_left'] == False:    
-      bottom_left_neighbor = current_pixel_index + image_size[0] - 1 
+      bottom_left_neighbor = pixel_index + image_size[0] - 1 
       neighbors.append(bottom_left_neighbor) 
 
    if ignore_neighbor_position_dict['left'] == False:   
-      left_neighbor =    current_pixel_index - 1
+      left_neighbor =    pixel_index - 1
       neighbors.append(left_neighbor) 
 
    if ignore_neighbor_position_dict['top_left'] == False:  
-      top_left_neighbor =  current_pixel_index - image_size[0] - 1
+      top_left_neighbor =  pixel_index - image_size[0] - 1
       neighbors.append(top_left_neighbor) 
 
    return neighbors
@@ -168,8 +169,6 @@ for y in range(image_size[1]):
       cur_pixel_neighbors = get_neighbor_pixels(current_pixel_index)
 
 
-      merge_neighbors_list = []
-
 
       #getting current pixel RGB values
       current_pixel_RGB = original_pixel[current_pixel_index]
@@ -185,76 +184,7 @@ for y in range(image_size[1]):
                   current_pixel_shape = shape_id
 
 
-
-      # current pixel was not in any of the shapes. Now determine if any of the current pixel's neighbors are already in shape
-      if current_pixel_shape == None:
-      
-         # iterating each one of current pixel's neighbors
-         for neighbor in cur_pixel_neighbors:
-         
-               # look for neighbor pixel in all existing shapes
-               for neighbor_shape_id, shapes_lists in reversed(shapes.items()):
-                  for shapes_pixel in shapes_lists:
-                     if shapes_pixel == neighbor:
-                        # neighbor pixel is found
-                     
-                        neighbor_pixel_RGB = original_pixel[neighbor]
-                        appearance_difference = compute_appearance_difference(current_pixel_RGB, neighbor_pixel_RGB)
-              
-                        # check to see if total appearance difference value is within the threshold. if so, current pixel's shape will be this neighbor's shape and it will be put in 
-                        # this neighbor's shape.
-                        if total_appearance_difference_threshold - appearance_difference >= 0:      
-                        
-                           print(" current running pixel " + str(current_pixel_index) + " was not found in all existing shapes but its neighor " + str(neighbor) + " was already in shape " + 
-                           str(neighbor_shape_id) + " and has similar appearance to current pixel. so append current pixel to this neighbor's shape. This shape will be current shape.")
-                           current_pixel_shape = neighbor_shape_id
-                           
-                           # before merging, make sure it is not already in the current shape
-                           if not current_pixel_index in shapes[neighbor_shape_id]:
-                              shapes[neighbor_shape_id].append(current_pixel_index)
-                        
-      else:
-
-         # current pixel is already in existing shape. Now check if its neighbors are alreay in shape as well.
-         # if neighbors are already in shape and have similar appearance, then merge both shapes.
-         
-         # iterating each one of current pixel's neighbors
-         for neighbor in cur_pixel_neighbors:
-         
-               # look for neighbor pixel in all existing shapes
-               for neighbor_shape_id, shape_list in reversed(shapes.items()):
-               
-                  if neighbor_shape_id != current_pixel_shape:
-                     for shape_pixels in shape_list:
-                        if shape_pixels == neighbor:
-                           # neighbor pixel is found
-                     
-                           neighbor_pixel_RGB = original_pixel[neighbor]
-                           current_shape_RGB = original_pixel[current_pixel_shape]
-                           appearance_difference = compute_appearance_difference(current_shape_RGB, neighbor_pixel_RGB)
-              
-                           # check if neighbor shape and current pixel shapes are similar in appearnce. if they are, merge both shapes into one shape.
-                           if total_appearance_difference_threshold - appearance_difference >= 0:
-                           
-                              print(" adding neighbor_shape_id " + str(neighbor_shape_id) + " to be deleted" )
-                              merge_neighbors_list.append(neighbor_shape_id)
-                              merge_neighbor_pixels = shapes[ neighbor_shape_id ]
-                           
-                              print("merging neighbor pixels to current shape  " + str(current_pixel_shape) )
-                           
-                              for merge_neighbor_pixel in merge_neighbor_pixels:
-                                 # before merging, make sure it is not already in the current shape
-                                 if not merge_neighbor_pixel in shapes[current_pixel_shape]:
-                                    shapes[current_pixel_shape].append(merge_neighbor_pixel)
-   
-      if merge_neighbors_list:
-         # deleting duplicate shape ids
-         merge_neighbors_list = list( dict.fromkeys(merge_neighbors_list) )
-         for merged_neighbor in merge_neighbors_list:
-            shapes.pop(merged_neighbor)
-
-
-      # all current pixel's neighbors did not have similar appearance to it, so create its own shape
+      # current pixel was not found in al shapes so create its own shape
       if current_pixel_shape == None:     
          # create shape with current pixel's number as shape's id
          current_pixel_shape = current_pixel_index
@@ -267,7 +197,7 @@ for y in range(image_size[1]):
 
 
 
-      # iterating each one of current pixel's neighbors
+      # iterating each one of current pixel's unfound neighbors
       for neighbor in cur_pixel_neighbors:
       
          # current pixel's top neighbor can be found by subtrating image width from current pixel index number
@@ -295,74 +225,73 @@ for y in range(image_size[1]):
                if not neighbor_pixel_index in shapes[current_pixel_shape]:
                   shapes[current_pixel_shape].append(neighbor_pixel_index)
 
-'''
-# finished all processing for creating all shapes from entire image pixels
-# Now it's time for dealing with problem1 which is described in the document.
 
-# this process is to put together all shapes with similar appearance sitting right next to each other.
-# If two shapes are both neighbors to each other and if they are in similar appearance, they will be merged into one shape
 
-# comparing pixels will be done with both shapes ids' pixels
+merged_neighbors_list = {}
+remove_shapes = []
 
-cur_shape_pixels = []
-next_shape_pixels = []
-shape_remove = []
-for cur_shape_id, cur_shape_pixels_list in shapes.items():
-   print("current shape id " + str(cur_shape_id) )
+# now we need look for neighbor shapes and if they are similar in appearance, then merge both shapes into one shape
+for shape1_id, shapes1_pixels in shapes.items():
 
-   # for each one of current shapes
-   for cur_shape_pixels_ in cur_shape_pixels_list:
-      cur_shape_pixels.append(cur_shape_pixels_)
+   merged_neighbors_list[shape1_id] = []
+
+   print("current shape1 is " + str(shape1_id) )
+   for shapes1_pixel in shapes1_pixels:
+
+      pixel1_neighbors = get_neighbor_pixels(shapes1_pixel)
+
+      for shape2_id, shape2_pixels in shapes.items():
+
+         complete = False
+         if shape1_id != shape2_id:
       
-   # for each one of current shapes, process all next shapes
-   for next_shape_id, next_shape_pixels_list in shapes.items():
-      
-      for next_shape_pixels_ in next_shape_pixels_list:
-         next_shape_pixels.append(next_shape_pixels_)     
-      
-      
-      
-      # we now have two shapes to compare
-      
-      cur_shape_RGB = original_pixel[cur_shape_id]
-      next_shape_RGB = original_pixel[next_shape_id]
-      
-      appearance_difference = compute_appearance_difference(cur_shape_RGB, next_shape_RGB)
-               
-      if total_appearance_difference_threshold - appearance_difference >= 0:
-      
-         # both shapes have similar appearance, now we need to determine if they are neighbors
-         # processing for each one of current shape pixels
-         for cur_pixel in cur_shape_pixels:
-            complete = False
+            for shapes2_pixel in shape2_pixels:
+
+               if shapes2_pixel in pixel1_neighbors:
+         
+                     
+                  pixel1_RGB = original_pixel[shapes1_pixel]
+                  pixel1_neighbor_RGB = original_pixel[shapes2_pixel]
             
-            for next_shape_pixel in next_shape_pixels:
-            
-               if next_shape_pixel in get_neighbor_pixels(cur_pixel):
-      
-                  # one or more pixels are neighbors
-                  # merging current shape pixels into next shape
-                  for cur_pixel1 in cur_shape_pixels:
-                     shapes[next_shape_id].append(cur_pixel1)
-      
-                  # for deleting merged shape
-                  shape_remove.append(cur_shape_id)
+                  appearance_difference = compute_appearance_difference(pixel1_RGB, pixel1_neighbor_RGB)
                   
-                  complete = True
-                  
-                  break
+                  if total_appearance_difference_threshold - appearance_difference >= 0:       
 
-            if complete == True:
-               break
+                     #print(" shape1_id " + str(shape1_id) + " and shape2_id " + str(shape2_id) + " have to be merged ")
 
-      if complete == True:
-         continue
+                     if not shape2_id in merged_neighbors_list[shape1_id] and not shape2_id in  merged_neighbors_list.keys():                           
+
+                        merged_neighbors_list[shape1_id].append(shape2_id)
+                        
+                        if not shape2_id in remove_shapes:
+                           remove_shapes.append(shape2_id)
+                     
+                        print(" merging pixels " + str(merged_neighbors_list[shape1_id]) + " from " + str(shape2_id) + " into " + str(shape1_id) )
+
+                     complete = True
+
+                     break
+                     
+         if complete == True:
+            continue
+
+if merged_neighbors_list:
+
+   for shape_id , shape_ids in merged_neighbors_list.items():
+      for shape in shape_ids:
+         for merging_pixels in shapes[shape]:
+      
+            shapes[shape_id].append(merging_pixels)
+
+print(" removing following shapes " + str(remove_shapes) )
 
 
-for shape in shape_remove:
-   shapes.pop(shape)
+for remove_shape in remove_shapes:
+      shapes.pop(remove_shape)
+         
+         
+         
 
-'''
 
 
 
