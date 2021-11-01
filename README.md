@@ -93,6 +93,9 @@ below are some examples of "get_boundary_pixels test.py"
 
 original image
 
+![hanger001](https://user-images.githubusercontent.com/56218301/139683609-18d83a72-58f8-4523-9a86-84675c091327.png)
+
+
 ![hanger001_color_group](https://user-images.githubusercontent.com/56218301/139676481-55cbdf86-1da0-4f2a-a9c1-2ae5e604414a.png)
 
 shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixels test.py"
