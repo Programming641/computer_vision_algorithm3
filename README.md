@@ -11,8 +11,9 @@ image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
 Directory structure
 
-For this to work, you need to have below directory structure
-execution directory where you execute python script files. Let's call this "top directory"
+For this to work, you need to have below directory structure.
+
+execution directory is where you execute python script files. Let's call this "top directory"
 
 top directory
 
