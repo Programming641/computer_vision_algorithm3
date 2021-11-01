@@ -22,7 +22,7 @@ top directory
 
    |
    
-   ->optional directory for organizing your image files
+   ->optional directory under images folder for organizing your image files
 
 ->shapes 
 
