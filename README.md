@@ -15,11 +15,17 @@ For this to work, you need to have below directory structure
 execution directory where you execute python script files. Let's call this "top directory"
 
 top directory
+
 |
+
 ->images
+
    |
+   
    ->optional directory for organizing your image files
+
 ->shapes 
+
 ->libraries
 
 you need to place "pixel_shapes_functions.py" under libraries directory
