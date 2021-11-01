@@ -119,4 +119,4 @@ this works
 
 
 
-This is still in progress. I'm going to fix some minor bugs when I get time
+This is still in progress. I'm going to improve when I get time.
