@@ -91,7 +91,7 @@ image_original is the shape id number image that is created by "recreate_shapes.
 
 below are some examples of "get_boundary_pixels test.py"
 
-original image
+original image and image transformed by "putting_pixels_into_color_groups revision 2.py"
 
 ![hanger001](https://user-images.githubusercontent.com/56218301/139683609-18d83a72-58f8-4523-9a86-84675c091327.png)
 ![hanger001_color_group](https://user-images.githubusercontent.com/56218301/139676481-55cbdf86-1da0-4f2a-a9c1-2ae5e604414a.png)
