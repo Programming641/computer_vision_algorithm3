@@ -41,32 +41,47 @@ On windows:
 py -3 "finding_shapes.py"
 
 you need to change the following
+
 image_filename
+
 directory
 
 directory is optional whether you have directory under image directory
+
 provide image for image_filename
 
 after executing the finding_shapes.py
+
 "filename"_shapes.txt will be created under shapes folder
 
 Then, you can execute "recreate_shapes.py" to see each one of shapes
+
 To execute "recreate_shapes.py", you need to pass filename in the first parameter and optional image sub-directory in second parameter
+
 python recreate_shapes.py filename (image sub-directory)
 
 "get_boundary_pixels test.py"
+
 First, you need to have already executed finding_shapes.py for the intented image.
+
 you need to change filename and directory as before.
+
 Also you will need shape id number in the below variable
+
 pixel_ids_list = [shape id number ]
 
 this shape id number is the one created by finding_shapes.py
 
 Also below lines
+
 b_filename = "20085"
+
 b_directory = "boundary_test"
+
 b_filename is the shape id number mentioned above
+
 b_directory is optional but you will need to put shape id number's image for the below line
+
 image_original = 'images/' + b_directory + b_filename + '.png'
 
 image_original is the shape id number image that is created by "recreate_shapes.py"
