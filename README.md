@@ -33,8 +33,8 @@ you need to place "pixel_shapes_functions.py" under libraries directory
 
 Instructions
 
-First you need to execute "finding_shapes.py"
-
+First you need to execute "putting_pixels_into_color_groups revision 2.py"
+make sure to provide filename and optional directory.
 
 
 On windows:
