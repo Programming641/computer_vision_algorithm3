@@ -62,7 +62,7 @@ for shape_id in shapeIDs_with_all_indexes:
        pixel_counter += 1
 
 # returned_val has the following form
-# {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, {'x': 177, 'y': 319}, 16679: {'x': 178, 'y': 229}}
+# {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, 16679: {'x': 178, 'y': 229}}
 # containing coordinates of boundary pixels
 returned_val = pixel_shapes_functions.get_boundary_pixels(pixels)
 
