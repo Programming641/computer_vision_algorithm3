@@ -6,8 +6,7 @@ Please note that I am not using any conventional computer vision algorithm! algo
 
 execute the following and see how it works for yourself!!!
 
-*Caution:*
-image format must NOT be JPG!!! JPG does not work! Use PNG instead.
+**Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
 # Directory structure
 
