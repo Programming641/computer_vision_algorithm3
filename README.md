@@ -158,7 +158,7 @@ you need to provide images/frames in this file.
 After executing this file, you will know which shape in one image is the which in another image.
 
 ## Note
-I only implemented the very simple algorithm for start. It looks for consecutive matches but it works really good for this algorithm. Details of algorithm are in the comments in the code. I am planning to add more algorithms to find shapes in the video.
+I only implemented the very simple algorithm for start. It looks for consecutive matches but it works really good for this algorithm. Details of algorithm are in the comments in the code. I am planning to add more algorithms.
 
 ## Sample
 
