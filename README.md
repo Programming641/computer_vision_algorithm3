@@ -163,8 +163,8 @@ I only implemented the very simple algorithm for start. It looks for consecutive
 ## Sample
 
 two frames
-![hanger001_color_group](https://user-images.githubusercontent.com/56218301/140649774-7cef131e-44b2-448c-9045-7a3deb07918d.png)
 
+![hanger001_color_group](https://user-images.githubusercontent.com/56218301/140649774-7cef131e-44b2-448c-9045-7a3deb07918d.png)
 ![hanger002_color_group](https://user-images.githubusercontent.com/56218301/140649783-0c68763d-ca29-489e-8374-ee01affe39f9.png)
 
 found shapes
