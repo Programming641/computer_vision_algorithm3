@@ -127,13 +127,14 @@ this works
 ## Requirement
 
 - You need frames from video
+
 At least two consecutive frames are needed.
 
 you can use ffmpeg to get frames from the video
 
 - things in the video needs to be non-moving, only one is moving is the camera.
-example video
 
+example video
 https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-877d-94d96134cf73.mp4
 
 in this example, camera is the only moving and things in the video are non-moving.
@@ -153,7 +154,7 @@ this is option but I recommend to do it because you would not know if you get th
 4. execute find_shapes_in_diff_frames test.py
 you need to provide images/frames in this file.
 
-After executin this file, you will know which shape in one image is the which in another image.
+After executing this file, you will know which shape in one image is the which in another image.
 
 ## Note
 I only implemented the very simple algorithm for start. It looks for consecutive matches but it works really good for this algorithm. Details of algorithm are in the commands in the code. I am planning to add more algorithms to find shapes in the video.
