@@ -155,6 +155,9 @@ this is option but I recommend to do it because you would not know if you get th
 
 After executing this file, you will know which shape in one image is the which in another image.
 
+**cautions** turning movement is not supported.
+
+
 ## Note
 I only implemented the very simple algorithm for start. It looks for consecutive matches but it works really good for this algorithm. Details of algorithm are in the comments in the code. I am planning to add more algorithms.
 
