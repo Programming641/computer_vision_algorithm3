@@ -1248,13 +1248,6 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict):
 
                      if other_one_consecutive_pixels['matched_y'] - cur_compare_y == cur_consecutive_row:
 
-                        print("other_row ")
-                        print(other_row )
-                        print("cur_original_y " + str ( cur_original_y ) )
-                        print(" cur_consecutive_row " + str ( cur_consecutive_row ) )                        
-                        print("cur_compare_y " + str ( cur_compare_y ) )
-                        print(" other_one_consecutive_pixels['matched_y'] " + str ( other_one_consecutive_pixels['matched_y'] ) )
-
                  
                         compare_check_identical = other_one_consecutive_pixels['matched_y'] - cur_compare_y
                         compare_determine_identical_check[compare_check_identical] = True
