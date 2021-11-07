@@ -152,9 +152,7 @@ Once you obtain the frames from video, you need to execute finding_shapes.py and
 2. execute finding_shapes.py on both images/frames.
 3. (optionally) execute recreate_shapes.py
 this is option but I recommend to do it because you would not know if you get the right shape from both images/frames.
-4. execute find_shapes_in_diff_frames test.py
-
-you need to provide images/frames in this file.
+4. execute find_shapes_in_diff_frames test.py. you need to provide images/frames in this file.
 
 After executing this file, you will know which shape in one image is the which in another image.
 
