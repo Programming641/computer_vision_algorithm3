@@ -9,7 +9,7 @@ execute the following and see how it works for yourself!!!
 *Caution:*
 image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
-#Directory structure
+# Directory structure
 
 For this to work, you need to have below directory structure.
 
