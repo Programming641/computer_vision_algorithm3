@@ -155,7 +155,7 @@ this is option but I recommend to do it because you would not know if you get th
 
 After executing this file, you will know which shape in one image is the which in another image.
 
-**cautions** turning movement is not supported.
+**cautions:** turning movement is not supported.
 
 
 ## Note
