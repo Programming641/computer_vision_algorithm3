@@ -132,9 +132,10 @@ At least two consecutive frames are needed.
 
 you can use ffmpeg to get frames from the video
 
-- things in the video needs to be non-moving, only one is moving is the camera.
+- things in the video needs to be non-moving, only one moving is the camera.
 
 example video
+
 https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-877d-94d96134cf73.mp4
 
 in this example, camera is the only moving and things in the video are non-moving.
