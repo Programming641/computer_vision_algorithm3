@@ -129,7 +129,7 @@ this works
 
 At least two consecutive frames are needed.
 
-you can use ffmpeg to get frames from the video
+you can use **ffmpeg** to get frames from the video
 
 - things in the video needs to be non-moving, only one moving is the camera.
 
