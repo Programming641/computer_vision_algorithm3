@@ -28,7 +28,7 @@ top directory
 you need to place "pixel_shapes_functions.py" under libraries directory
 
 
-##Instructions
+## Instructions
 
 First you need to execute "putting_pixels_into_color_groups revision 2.py"
 
@@ -103,7 +103,7 @@ shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixel
 
 
 
-##Error handling
+## Error handling
 
 if you see error with alpha something something, then you need to add or delete alpha
 
@@ -122,9 +122,9 @@ or
 this works
 
 
-#Video Analysis
+# Video Analysis
 
-##Requirement
+## Requirement
 
 - You need frames from video
 At least two consecutive frames are needed.
@@ -138,9 +138,9 @@ https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-
 
 in this example, camera is the only moving and things in the video are non-moving.
 
-#Instruction
+# Instruction
 
-###Instruction requirement
+### Instruction requirement
 
 - you need to place read_files_functions.py under libraries directory
 
@@ -155,10 +155,10 @@ you need to provide images/frames in this file.
 
 After executin this file, you will know which shape in one image is the which in another image.
 
-##Note
+## Note
 I only implemented the very simple algorithm for start. It looks for consecutive matches but it works really good for this algorithm. Details of algorithm are in the commands in the code. I am planning to add more algorithms to find shapes in the video.
 
-##Sample
+## Sample
 
 two frames
 ![hanger001_color_group](https://user-images.githubusercontent.com/56218301/140649774-7cef131e-44b2-448c-9045-7a3deb07918d.png)
