@@ -142,7 +142,7 @@ in this example, camera is the only moving and things in the video are non-movin
 
 # Instruction
 
-### Instruction requirement
+### Instructional requirement
 
 - you need to place read_files_functions.py under libraries directory
 
