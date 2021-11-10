@@ -79,24 +79,22 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
 
       shape_ids = [ int(original_shape_id ), int (compare_shape_id ) ]
 
-      if shape_ids[0] == 9633:
+      compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id])
 
-         compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id])
 
+      boundary_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
+      
+      if boundary_result:
+         print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " boundary_result " + str(boundary_result) )
 
          boundary_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
-      
-         if boundary_result:
-            print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " boundary_result " + str(boundary_result) )
 
-            boundary_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
-
-            consecutive_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], compare_shapeIDs_with_all_indexes[compare_shape_id], \
+         consecutive_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], compare_shapeIDs_with_all_indexes[compare_shape_id], \
                                  "consecutive_count", shape_ids)
 
-            if consecutive_result:
-               print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " consecutive_result " + \
-                     str(consecutive_result ) )
+         if consecutive_result:
+            print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " consecutive_result " + \
+                  str(consecutive_result ) )
 
 
 
