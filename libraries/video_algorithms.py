@@ -408,7 +408,6 @@ def find_consecutive_matches( comparison_result, empty_comparison_result, origin
       larger_shape_height = compare_shape_height
 
    if rows_needed < 3:
-      print("can not determine with pixel consecutive row match algorithm")
       return None, None
       
    
