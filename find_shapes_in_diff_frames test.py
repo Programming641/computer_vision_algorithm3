@@ -1,6 +1,7 @@
 
 from PIL import Image
 from libraries import pixel_shapes_functions
+from libraries import video_algorithms
 from libraries import read_files_functions
 import math
 
@@ -33,7 +34,12 @@ original_shapeIDs_with_all_indexes = read_files_functions.read_shapes_file(filen
 
 compare_shapeIDs_with_all_indexes = read_files_functions.read_shapes_file(filename2, directory)
 
+all_shape_match_results = []
+
 for original_shape_id in original_shapeIDs_with_all_indexes:
+
+   match_results = {}
+   match_results[ int(original_shape_id )] = []
 
    # boundary_pixels has the following form
    # {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, {'x': 177, 'y': 319}, 16679: {'x': 178, 'y': 229}}
@@ -41,8 +47,6 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
    original_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(original_shapeIDs_with_all_indexes[original_shape_id])
 
    for compare_shape_id in compare_shapeIDs_with_all_indexes:
-
-      print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) )
 
 
       '''
@@ -72,81 +76,59 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
          continue
 
       '''
-
-
-
-
-
+      
       shape_ids = [ int(original_shape_id ), int (compare_shape_id ) ]
+
+
+
 
       compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id])
 
 
-      boundary_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
-      
+      boundary_result = video_algorithms.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
+
       if boundary_result:
          print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " boundary_result " + str(boundary_result) )
 
-         consecutive_result = pixel_shapes_functions.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], compare_shapeIDs_with_all_indexes[compare_shape_id], \
-                                 "consecutive_count", shape_ids)
+         matched_rows, unmatched_rows, pixel_count_diff = video_algorithms.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], \
+                                                             compare_shapeIDs_with_all_indexes[compare_shape_id],  "consecutive_count", shape_ids)
 
-         if consecutive_result:
-            print("original_shape_id " + str(original_shape_id) + " compare_shape_id " + str( compare_shape_id ) + " consecutive_result " + \
-                  str(consecutive_result ) )
-
-
-
-
-
-
-
-
-
+         print("matched_rows " + str(matched_rows) + " unmatched_rows " + str(unmatched_rows) + " pixel_count_diff " + str(pixel_count_diff) )
+         if matched_rows:
+               
+            temp = {}
+               
+            match_result = round( ( boundary_result * 1.5 ) + matched_rows  - ( unmatched_rows * 1.2 ) - ( pixel_count_diff * 0.2 ) )
+               
+            temp[compare_shape_id] = match_result
+            match_results[shape_ids[0]].append(temp)
+            all_shape_match_results.append(match_results)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      '''
-
-      if consecutive_count_result == "original_failed":
-         break
+   print("match_results " + str(match_results) )
+   closest_match = {}
+   prev_compare_shapeid = None
+   for matches in match_results[shape_ids[0]]:
          
-      if consecutive_count_result == "compare_failed":
-         continue
-      '''   
-      
+      for compare_shapeid in matches:
+         
+         # closest_match initialization
+         if not closest_match:
+            closest_match[compare_shapeid] = matches[compare_shapeid]
+            prev_compare_shapeid = compare_shapeid
+
+         elif closest_match[prev_compare_shapeid] < matches[compare_shapeid]:
+            closest_match.pop(prev_compare_shapeid)
+            prev_compare_shapeid = compare_shapeid
+            closest_match[prev_compare_shapeid] = matches[compare_shapeid]
+               
+   print(" original shape " + str(shape_ids[0]) + " closest match shape is " + str( prev_compare_shapeid ) )
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+print("all_shape_match_results")
+print(all_shape_match_results)
 
 
 
