@@ -41,6 +41,8 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
    match_results = {}
    match_results[ int(original_shape_id )] = []
 
+   print(" original_shape_id " + str(original_shape_id ) )
+
    # boundary_pixels has the following form
    # {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, {'x': 177, 'y': 319}, 16679: {'x': 178, 'y': 229}}
    # containing coordinates of boundary pixels
