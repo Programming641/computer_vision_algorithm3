@@ -549,7 +549,6 @@ def find_boundary_matches(comparison_result, empty_comparison_result, original_s
       rows_needed = math.floor( original_shape_height / 3)
 
    if rows_needed < 3:
-      print("can not determine with boundary consecutive row match algorithm")
       return
       
 
