@@ -15,7 +15,7 @@ import math
 # search_ended, single_pixel_count_match, matched_x, matched_y, matched_pixel_count, empty_matched_x, empty_matched_y
 # search_ended is boolean. single_pixel_count_match's value is boolean. matched_x, y, count are values where original pixels matched.
 
-def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, original_pixels_in_current_y, original_empty_pixels_in_current_y):
+def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, original_pixels_in_current_y, original_empty_pixels_in_current_y, shape_ids):
 
 
    compare_smallest_y = min(int(d['y']) for d in compare_pixels_dict.values())
@@ -128,8 +128,35 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
          # checking to see if x value is the last one in current running y
          if x_counter_in_current_running_y == x_numbers_in_current_running_y:
 
-            temp['count'] =  consecutive_x_counter + 1
-            pixels_in_current_y.append( temp )
+
+            # if current x value is next to the previous x value, x_value - 1 should equal prev_x_value. if there is any
+            # empty pixels, x_value - 1 will be greater than prev_x_value
+            if x_value - 1 > prev_x_value:
+               
+               # this is for previous pixels
+               temp['count'] =  consecutive_x_counter
+               pixels_in_current_y.append( temp )
+
+               # now this is for the current pixel
+               temp = {}
+               temp['start_x'] = x_value
+               temp['start_y'] = y
+               temp['count'] = 1
+               pixels_in_current_y.append( temp )
+               
+
+               empty_temp = {}
+               empty_temp['start_x'] = prev_x_value + 1
+               empty_temp['start_y'] = y
+               empty_temp['count'] = x_value  - ( prev_x_value + 1) 
+               empty_pixels_in_current_y.append( empty_temp )
+
+            else:
+               # current pixel is consecutive pixel with previous pixels
+               # + 1 from "consecutive_x_counter + 1" is for the current pixel
+               temp['count'] = consecutive_x_counter + 1
+               pixels_in_current_y.append( temp )
+
 
             # check if there is empty pixels in either one of shapes
             if len(original_empty_pixels_in_current_y) > 0:
@@ -186,9 +213,11 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
                               temp['matched_pixel_count'] = compare_dict.get('count')
 
                               comparison_result.append(temp)
-                              
-                        
+                 
+                 
+                     matched_original_num = 1
                      for original_emtpy_dict in original_empty_pixels_in_current_y:
+                        
                         pixel_empty_count_threshold = empty_pixels_in_current_y[0]['count'] + 2 + round( empty_pixels_in_current_y[0]['count'] * 0.1 )
                         minus_pixel_count_threshold = empty_pixels_in_current_y[0]['count'] - 2 - round( empty_pixels_in_current_y[0]['count'] * 0.1 )
  
@@ -199,16 +228,15 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
                               temp = {}
                               temp['empty_matched_x'] = empty_pixels_in_current_y[0]['start_x']
                               temp['empty_matched_y'] = empty_pixels_in_current_y[0]['start_y']                           
-                              temp['empty_matched_pixel_count'] = empty_pixels_in_current_y[0]['count']
-                              temp['empty_original_totals'] = len(empty_pixels_in_current_y)                              
-                              temp['empty_pixels_missed'] = len(original_empty_pixels_in_current_y) - 1
+                              temp['empty_pixel_count'] = empty_pixels_in_current_y[0]['count']
+                              temp['empty_original_totals'] = len(original_empty_pixels_in_current_y)                              
+                              temp['matched_original_num'] = matched_original_num
 
                               comparison_empty_result.append(temp)
+                              
+                              
+                           matched_original_num += 1
 
-                        else:
-                           temp = {}
-                           temp['empty_original_totals'] = len(empty_pixels_in_current_y)
-                           comparison_empty_result.append(temp)
 
 
 
@@ -233,6 +261,7 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
 
                               comparison_result.append(temp)                              
                         
+                     matched_original_num = 1
                      for original_emtpy_dict in original_empty_pixels_in_current_y:
                      
                         for compare_empty_dict in empty_pixels_in_current_y:
@@ -244,17 +273,14 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
                               temp = {}
                               temp['empty_matched_x'] = compare_empty_dict.get('start_x')
                               temp['empty_matched_y'] = compare_empty_dict.get('start_y')                           
-                              temp['empty_matched_pixel_count'] = compare_empty_dict.get('count')
-                              temp['empty_original_totals'] = len(empty_pixels_in_current_y)                          
-                              temp['empty_pixels_missed'] = len(original_empty_pixels_in_current_y) - 1
+                              temp['empty_pixel_count'] = compare_empty_dict.get('count')
+                              temp['empty_original_totals'] = len(original_empty_pixels_in_current_y)                          
+                              temp['matched_original_num'] = matched_original_num
 
                               comparison_empty_result.append(temp)
 
-                           else:
-                              temp = {}
-                              temp['empty_original_totals'] = len(empty_pixels_in_current_y)
-
-                              comparison_empty_result.append(temp)
+                              
+                              matched_original_num += 1
                   
                   
                else:
@@ -482,9 +508,280 @@ def find_consecutive_matches( comparison_result, empty_comparison_result, origin
 
 
 
+def process_empty_pixels(empty_comparison_result):
 
 
 
+   '''
+                                                          empty pixel match finding algorithm
+   
+   ・empty_comparison_result is a list containing lists.
+   
+   ・Each list contains dictionaries of original consecutive empty pixels and compare consecutive empty pixels.
+   
+   ・Each original row in each list will pair up with one compare row.
+   
+   ・If there are two or more original consecutive pixels, check the matched_original_num value in the paired up compare row. But be careful
+   there may be multiple compare consecutive pixels, so check all of them and get the largest matched_original_num value.
+   
+   ・Put paired up compare row in already_matched list so another original row will not pair up with them.
+   
+   ・Because original row's matches are in the same list as itself, look inside it only and not look in other lists for pairing up.
+   
+   ・Start with the smallest original y value.
+   
+   ・Sort all lists by original y value and then sort each list by empty_matched_y value, so that in the list, smallest original y value comes first
+   then smallest empty_matched_y value comes second. So when looking for pairs, smallest original y will match with the smallest empty_matched_y. If 
+   smallest original y can not pair up with smallest empty_matched_y, it will loook for next smallest empty_matched_y within its list. If still not paired up
+   then it will loook for next smallest empty_matched_y and so on.
+
+                                                          implementation
+                                                          
+   1. loop each one of rows
+
+   2. in the current row, remove original pixel dictionaries so that only compare row matches are left in the list. Sort them by empty_matched_y so that 
+   smallest empty_matched_y comes first.
+
+   3. still in the current row, take empty_matched_y and check if it's in the already_matched lists. if not in the list, take empty_original_totals value. If 
+   empty_original_totals is 1, take this row's empty_matched_y value and original_y value in the matches list of dictionaries. and already_matched list.
+   
+   If empty_original_totals was 2 or more, then take matched_original_num. If matched_original_num is 1 then look for another same matched_y value. If another
+   same matched_y is found, look at its matched_original_num value and see if it has the same value as empty_original_totals. If they are not same value, look
+   for another same matched_y and check its matched_original_num value and see if has the same value as empty_original_totals. do this for all current matched_y
+   dictionaries until you find matched_original_num value same as the empty_original_totals. after looking all current matched_y and matched_original_num was 
+   less than empty_original_totals, then take the largest matched_original_num value and put its number in the matches list of dictionaries.
+   
+   
+   
+
+   '''
+   
+   # this will put all matches. Each match in this list is dictionary. dictionary contains original_y value, its matched empty_matched_y value, 
+   # empty_original_totals value, and matched_original_num
+   empty_matches = []
+   
+   # this contains already matched empty_matched_y dictionaries
+   already_matched = []
+   
+
+   for original_row_matches in empty_comparison_result:
+  
+      temp_row = original_row_matches
+      
+      for each_dict in temp_row:
+         if 'original_y' in each_dict:
+            cur_original_y = each_dict['original_y']
+
+
+      # delete all current original rows from current row_matches so that sorting by empty_matched_y can be performed.
+      index = 0
+      index_list = []
+      for each_dict in temp_row:
+         if 'original_y' in each_dict:
+            index_list.append(index)
+      
+         index += 1
+   
+
+      deleted = 0
+      for index in index_list:
+         temp_row.pop(index - deleted)
+         deleted += 1
+ 
+      # maybe they are already in the order, but just in case perform sorting by empty_matched_y
+      temp_row = sorted( temp_row, key=lambda item: item['empty_matched_y'] )
+
+      # this is to look for other matched_original_num of the same matched_y
+      check_same_y = False
+      # now that compare matched rows are sorted, start finding original row's matches with compare rows.
+      for row in temp_row:
+      
+         if check_same_y == True:
+            
+            if row['empty_matched_y'] == cur_matched_row:
+               # another compare row of the current matched compare row is found
+               
+               if row['matched_original_num'] > cur_matched_orig_num:
+                  cur_matched_orig_num = row['matched_original_num']
+                  
+                  
+            # check all matched compare rows
+            continue
+         
+         
+         # variable cur_matched_row is first executed here. so here serves as this variable's initialization 
+         cur_matched_row = row['empty_matched_y']
+         
+         if cur_matched_row in already_matched:
+            continue
+            
+         # current empty_matched_y is not already_matched list so take it as the current original row's match
+         cur_original_num = row['empty_original_totals']
+         cur_matched_orig_num = row['matched_original_num']
+
+         if cur_original_num > cur_matched_orig_num:
+            check_same_y = True
+
+         else:
+            # empty_original_totals and matched_original_num are the same number. meaning that all of current original rows have matches with compare rows
+            break
+            
+      
+      already_matched.append(cur_matched_row)
+      
+      temp = {}
+      temp['original_y'] = cur_original_y
+      temp['empty_matched_y'] = cur_matched_row
+      temp['empty_original_totals'] = cur_original_num
+      temp['matched_original_num'] = cur_matched_orig_num
+
+      empty_matches.append(temp)
+      
+   print("empty_matches")
+   print(empty_matches)
+      
+   '''
+
+
+   --------------------------------------              How to evaluate empty_matches?                ------------------------------------------
+
+   parameters are:
+
+   - total matches
+    len(empty_matches)
+
+   - consecutive matches
+    start with first original_y value and its empty_matched_y
+    add 1 to the original_y and see if next original_y is consecutive from previous original_y
+    if not, take another original_y and start over.
+    if so, also add 1 to the previous empty_matched_y and see if next matched_y value is equal to "previous empty_matched_y + 1". The next matched_y here should be the 
+    same pair with above next original_y. keep adding 1 to both original_y and its pair empty_matched_y until either one becomes false. The final consecutive number is the
+    consecutive matches
+
+   - matching all original consecutive pixels
+    take empty_original_totals and see if it's more than 1.
+    if it's more than 1, take matched_original_num and see if it's equal to or greater than  empty_original_totals. if it is so, then take empty_original_totals as the result.
+    it means that 100% match with the value of empty_original_totals.
+    if not, calculate its percentage and take empty_original_totals value.
+    
+    empty_original_totals => eot. matched_original_num => mon
+    1(eot) * 1(mon). 2(eot) * 2(mon) = 4.
+    2(eot) * ( 1(mon) / 2(eot) ) = 1. matching 1 out of 2 is the same as matching 1 out of 1?
+    1(eot) * 0(mon) = 0 not matching empty is same as there is no empty at all?
+    3(eot) * ( 1(mon) / 3(eot) ) = 1. matching 1 out of 3 is the same as matching 1 out of 1?
+    3(eot) * ( 2(mon) / 3(eot) ) = 2. matching 2 out of 3 is the same as 2 times 1(eot) perfect match? No, should be a little higher.
+    3(eot) * 3(mon) = 9.
+    4(eot) * ( 3(mon) / 4(eot) ) = 3. matching 3 out of 4 is the same as 3 times 1/3 match? No, should be greater.
+    
+    eot * (percentage of match + 1 )
+    4(eot) * ( ( 3(mon) / 4(eot) ) + 1 ) = 7
+    4(eot) * ( ( 2(mon) / 4(eot) ) + 1 ) = 6
+    matching 3 out of 4 should be a little more greater than matching 2 out of 4. so....
+    
+    a = 11
+    b = 4
+    c= 4
+    ( mon * a ) / ( (eot * c) - (mon * b) )
+    
+    with all else held the same, eot increases the result decreases
+    mon increases, the result increases
+    
+   '''   
+   
+   # ----   taking value of consecutive matches from empty_matches   ----
+ 
+   first_empty = True
+   
+   # finding last row
+   row_counter = 0
+   # for storing all consecutive matches
+   empty_consecutive_counts = []
+   for match in empty_matches:
+      row_counter += 1
+      if first_empty:
+
+         empty_cur_counter = 1
+         empty_cur_counter_total = 0
+         empty_cur_original_y = match['original_y']
+         empty_cur_compare_y = match['empty_matched_y']
+         first_empty = False
+         
+         continue
+      
+      # see next value is consecutive from previous
+      if match['original_y'] == empty_cur_original_y + empty_cur_counter and match['empty_matched_y'] == empty_cur_compare_y + empty_cur_counter:
+         empty_cur_counter += 1
+         
+         if empty_cur_counter_total < empty_cur_counter:
+            empty_cur_counter_total = empty_cur_counter
+            
+         #last row
+         if row_counter == len(empty_matches):
+
+            empty_consecutive_counts.append(empty_cur_counter_total)
+         
+      else:
+         
+         # see if there is at least one consecutive match
+         if 1 < empty_cur_counter:
+            empty_consecutive_counts.append(empty_cur_counter_total)
+            
+         # current original_y is the first row of next consecutive search
+         empty_cur_counter = 1
+         empty_cur_counter_total = 0
+         empty_cur_original_y = match['original_y']
+         empty_cur_compare_y = match['empty_matched_y']         
+         
+   empty_consec_counts_result = 0
+   empty_temp_num = 0
+   for empty_consec_count in empty_consecutive_counts:
+      empty_temp_num += ( empty_consec_count * empty_consec_count ) - empty_consec_count
+      
+   empty_consec_counts_result = empty_temp_num
+   
+   print("empty_consec_counts_result " + str(empty_consec_counts_result) )
+         
+   # ----   taking parameter for original consecutive pixels match counts   ---- 
+   
+   empty_consecutive_pixels = []
+   for match in empty_matches:
+      temp = {}
+      temp['original_y'] = match['original_y']
+      temp['matched_y'] = match['empty_matched_y']
+      temp['total'] = match['empty_original_totals']
+      
+      if match['matched_original_num'] >= match['empty_original_totals']:
+         # if the matched_original_num is greater than empty_original_totals, then just take empty_original_totals value as the matched_original_num
+         # no matter how much matched_original_num is because there is not much meaning how many times SAME original_y matches with the compare rows
+         matched_count = match['empty_original_totals'] * match['empty_original_totals']
+         
+      elif match['matched_original_num'] > 1 and match['empty_original_totals'] > 1:
+         # both greater than 1. not either one of them. 
+         factor_a = 11
+         factor_b = 4
+         factor_c= 4
+              
+         matched_count = round (( match['matched_original_num'] * factor_a ) / ( (match['empty_original_totals'] * factor_c) - (match['matched_original_num'] * factor_b) ) )
+      
+      else:
+         matched_count = 1
+      
+      temp['matched_total'] = matched_count
+      empty_consecutive_pixels.append(temp)
+      
+   empty_consec_result = 0
+   for empty_consecutive_p in empty_consecutive_pixels:
+
+      empty_consec_result += empty_consecutive_p['matched_total']
+      
+   
+   print("empty_consec_result " + str(empty_consec_result))
+   
+   print("total empty count " + str(len(empty_matches) ) )
+
+   all_empty_match_result = empty_consec_counts_result + empty_consec_result + len(empty_matches)
+
+   return all_empty_match_result
 
 
 
@@ -493,56 +790,24 @@ def find_consecutive_matches( comparison_result, empty_comparison_result, origin
 
 def find_boundary_matches(comparison_result, empty_comparison_result, original_shape_height, compare_shape_height, shape_ids ):
 
-
    # sorting by original_y. starting with smallest going up to the largest
    comparison_result = sorted( comparison_result , key=lambda item: item[0]['original_y'] )
-
-   '''
-
-   rows_needed = math.floor(original_shape_height / 3)
+   empty_comparison_result = sorted( empty_comparison_result , key=lambda item: item[0]['original_y'] )
 
 
-   for row in comparison_result:
+   empty_result = 0
+   if empty_comparison_result:
+      empty_result = process_empty_pixels(empty_comparison_result)
+      print("empty_result " + str(empty_result) )
 
-      for one_consecutive_pixels in row:
-         
-         
-         if 'original_y' in one_consecutive_pixels:
-        
-            cur_original_y = one_consecutive_pixels['original_y']
-            
 
-         if 'matched_y' in one_consecutive_pixels:
-            cur_compare_y = one_consecutive_pixels['matched_y'] 
 
-         else:
-            # Both of original_y and matched_y from current row are needed. so loop current row until both are found.
-            continue
-            
-         for empty_row in empty_comparison_result:
-         
-            for empty_one_consecutive_pixels in empty_row:
-            
-               if 'original_y' in empty_one_consecutive_pixels:
-                  # original pixels and empty original pixels should be on the same row
-                  if cur_original_y == empty_one_consecutive_pixels['original_y']:
-                  
-                     empty_original_row =  cur_original_y              
-                  
-               if 'empty_matched_y' in empty_one_consecutive_pixels:
-                  # matched pixels in compare shape and matched empty pixels in the compare shape should be on the same row
-                  if cur_compare_y == empty_one_consecutive_pixels['empty_matched_y']:
-                     empty_compare_row = cur_compare_y
-                     
-               if 'empty_pixels_missed' in empty_one_consecutive_pixels:
-               
-                  if empty_one_consecutive_pixels['empty_pixels_missed'] == 0:
-                     rows_needed -= 1
 
-   # if unsuccessful, return nothing
-   if rows_needed > 0:
-      return
-   '''
+
+
+
+   # start of finding matches in comparison_result
+   
    if original_shape_height >= compare_shape_height:
       rows_needed = math.floor( compare_shape_height / 3)
    else:
@@ -642,7 +907,9 @@ def find_boundary_matches(comparison_result, empty_comparison_result, original_s
                break
 
    if consective_row_match_result > rows_needed:
-      return consective_row_match_result
+      return consective_row_match_result + empty_result
+   elif empty_result:
+      return empty_result
 
 
 
@@ -731,6 +998,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
       x_numbers_in_current_running_y = len(x_values_list_in_current_y)
 
       first = True
+      
          
       for x_value in x_values_list_in_current_y:
       
@@ -760,7 +1028,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
                
                # compare with another shape in different frame of image
                # row with one pixel so returned value of empty is empty
-               matched_y_in_compare_shape, empty_matched_y_in_compare_shape = compare_w_shape(compare_pixels_dict, search_until, y - original_smallest_y, pixels_in_current_y, empty_pixels_in_current_y )
+               matched_y_in_compare_shape, empty_matched_y_in_compare_shape = compare_w_shape(compare_pixels_dict, search_until, y - original_smallest_y, pixels_in_current_y, empty_pixels_in_current_y, shape_ids )
                
                # return result of one pixel row, so this will not contain empty pixels
           
@@ -782,8 +1050,35 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
          # checking to see if x value is the last one in current running y
          if x_counter_in_current_running_y == x_numbers_in_current_running_y:
 
-            temp['original_count'] =  consecutive_x_counter + 1
-            pixels_in_current_y.append( temp )
+
+            
+            # if last x value is next to the previous x value, x_value - 1 should equal prev_x_value. if there is any empty pixels
+            # x_value - 1 will be greater than prev_x_value
+            if x_value - 1 > prev_x_value:
+               
+               # this is for the previous pixels
+               temp['original_count'] =  consecutive_x_counter
+               pixels_in_current_y.append( temp )
+               
+               # now this is for the current pixel
+               temp = {}
+               temp['original_x'] = x_value
+               temp['original_y'] = y
+               temp['original_count'] = 1
+               pixels_in_current_y.append(temp)
+
+               empty_temp = {}
+               empty_temp['original_x'] = prev_x_value + 1
+               empty_temp['original_y'] = y
+               empty_temp['original_count'] = x_value  - ( prev_x_value + 1) 
+               empty_pixels_in_current_y.append( empty_temp )
+
+            else:
+               # current pixel is consecutive pixel with previous pixels
+               # + 1 from "consecutive_x_counter + 1" is for the current pixel
+               temp['original_count'] =  consecutive_x_counter + 1
+               pixels_in_current_y.append( temp )
+
             
             # this temporary dictionary is for storing matched rows of original shape and compare shape
             #temp = {}
@@ -791,7 +1086,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
             #temp['original_y'] = pixels_in_current_y[0]['original_y']
                     
             # compare with another shape in different frame of image
-            matched_y_in_compare_shape, empty_matched_y_in_compare_shape = compare_w_shape(compare_pixels_dict, search_until, y - original_smallest_y, pixels_in_current_y, empty_pixels_in_current_y )
+            matched_y_in_compare_shape, empty_matched_y_in_compare_shape = compare_w_shape(compare_pixels_dict, search_until, y - original_smallest_y, pixels_in_current_y, empty_pixels_in_current_y, shape_ids)
 
             # add current rows of original shape and compare shape only when match is found
             if matched_y_in_compare_shape:
@@ -842,6 +1137,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
                    
                   # consecutive shape pixels ended at previous_x_value.
 
+                  # this count is for previous pixels
                   temp['original_count'] =  consecutive_x_counter
                   pixels_in_current_y.append( temp )  
                   

@@ -359,6 +359,8 @@ def get_boundary_pixels(pixels_dict):
       
    pixel_boundaries = temp
 
+   pixel_boundaries = {k: v for k, v in sorted(pixel_boundaries.items(), key=lambda item: item[1]['y'])}
+
    return pixel_boundaries
 
 
