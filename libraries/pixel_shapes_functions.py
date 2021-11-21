@@ -124,7 +124,7 @@ def get_all_pixels_of_shapes(shape_ids, image_filename, directory_under_images="
 #    pixels[pixel_counter] ['x'] = x
 #    pixels[pixel_counter] ['y'] = y
     
-def get_boundary_pixels(pixels_dict):
+def get_boundary_pixels(pixels_dict, shape_id):
 
 
    pixel_boundaries = {}
@@ -350,7 +350,7 @@ def get_boundary_pixels(pixels_dict):
          y_counter_in_current_running_x += 1
 
 
-   # duplicate xy coordinates created if pixels are found both virtically and horizontally
+   # duplicate xy coordinates created if pixels are found both virtically and horizontally. so remove them
    temp = {}
 
    for key, value in pixel_boundaries.items():
@@ -358,8 +358,7 @@ def get_boundary_pixels(pixels_dict):
          temp[key] = value
       
    pixel_boundaries = temp
-
-   pixel_boundaries = {k: v for k, v in sorted(pixel_boundaries.items(), key=lambda item: item[1]['y'])}
+   pixel_boundaries = {k: v for k, v in sorted(pixel_boundaries.items(), key=lambda item: (item[1]['y'], item[1]['x']))}
 
    return pixel_boundaries
 
