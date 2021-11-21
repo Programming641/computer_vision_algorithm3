@@ -54,51 +54,48 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
       
       shape_ids = [ int(original_shape_id ), int (compare_shape_id ) ]
       
-      
-      
-      if  shape_ids[0] == 39160 :
-      
-         print("compare shape " + str(shape_ids[1]) )
-         compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id], int(compare_shape_id) )
-         boundary_result = None
-         #boundary_result = video_algorithms.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
 
-         result = video_algorithms.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], \
+      print("compare shape " + str(shape_ids[1]) )
+      compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id], int(compare_shape_id) )
+      boundary_result = None
+      #boundary_result = video_algorithms.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
+
+      result = video_algorithms.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], \
                                                              compare_shapeIDs_with_all_indexes[compare_shape_id],  "consecutive_count", shape_ids)
 
-         print(" result " + str(result) )
-         if result:
+      print(" result " + str(result) )
+      if result:
                
-            temp = {}
+         temp = {}
             
-            if boundary_result:
-               match_result = round( result + boundary_result )
-            else:
-               match_result = round( result )
+         if boundary_result:
+            match_result = round( result + boundary_result )
+         else:
+            match_result = round( result )
                
-            temp[compare_shape_id] = match_result
-            match_results[shape_ids[0]].append(temp)
+         temp[compare_shape_id] = match_result
+         match_results[shape_ids[0]].append(temp)
             
-   if shape_ids[0] == 39160 :        
-      if match_results[shape_ids[0]]:
-         all_shape_match_results.append(match_results)
       
-      closest_match = {}
-      prev_compare_shapeid = None
-      for matches in match_results[shape_ids[0]]:
-         for compare_shapeid in matches:
+   if match_results[shape_ids[0]]:
+      all_shape_match_results.append(match_results)
+      
+   closest_match = {}
+   prev_compare_shapeid = None
+   for matches in match_results[shape_ids[0]]:
+      for compare_shapeid in matches:
          
-            # closest_match initialization
-            if not closest_match:
-               closest_match[compare_shapeid] = matches[compare_shapeid]
-               prev_compare_shapeid = compare_shapeid
+         # closest_match initialization
+         if not closest_match:
+            closest_match[compare_shapeid] = matches[compare_shapeid]
+            prev_compare_shapeid = compare_shapeid
 
-            elif closest_match[prev_compare_shapeid] < matches[compare_shapeid]:
-               closest_match.pop(prev_compare_shapeid)
-               prev_compare_shapeid = compare_shapeid
-               closest_match[prev_compare_shapeid] = matches[compare_shapeid]
+         elif closest_match[prev_compare_shapeid] < matches[compare_shapeid]:
+            closest_match.pop(prev_compare_shapeid)
+            prev_compare_shapeid = compare_shapeid
+            closest_match[prev_compare_shapeid] = matches[compare_shapeid]
                
-      print(" original shape " + str(shape_ids[0]) + " closest match shape is " + str( prev_compare_shapeid ) )
+   print(" original shape " + str(shape_ids[0]) + " closest match shape is " + str( prev_compare_shapeid ) )
 
 
 
