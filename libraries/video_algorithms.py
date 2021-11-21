@@ -486,12 +486,12 @@ def process_tentative_row_matches(matched_rows, empty_flag):
       counts += 1
       found = False
       cur_original_y = matched_row['original_y']
-      cur_compare_y = matched_row['matched_y']
+      cur_compare_y = matched_row[y_label]
 
       for another_mached_row in compare_row_nums:
    
          if cur_original_y + 1 == another_mached_row['original_y']:
-            if cur_compare_y + 1 == another_mached_row['matched_y']:
+            if cur_compare_y + 1 == another_mached_row[y_label]:
                consecutive_row_counter += 1
                found = True
       
