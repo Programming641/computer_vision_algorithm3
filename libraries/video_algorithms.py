@@ -257,9 +257,7 @@ def process_tentative_row_matches(matched_rows, empty_flag):
       # at this point, either current row contains big enough pixel count or there are multiple pairs of small pixel count consecutive pixels
       # now comes the "2. matching by x distance direction."
       
-      # x direction is only needed if current row has multiple matching pairs of the same row. this means that there are two or more same original_y pairs
-      # example. [{'original_y': 104, 'original_x': 61, 'original_count': 12}], [{'original_y': 104, 'original_x': 74, 'original_count': 5}.....
-      # in this case there are two same original_y value pairs but first one does not have any matching compare consecutive pixels.
+      # x direction is only needed if current row has multiple matching pairs of the same row. this means that there are two or more same matched_y pairs
       
       check_pair = 0
       # check if current row matches contain more than 1 original consecutive pixels and their pairs.
@@ -384,7 +382,6 @@ def process_tentative_row_matches(matched_rows, empty_flag):
 
          #print("multiple_comp_consec_pix")
          #print(multiple_comp_consec_pix)
-
          
          temp = 0
          temp_compare_consec_pix = {}
@@ -516,7 +513,303 @@ def process_tentative_row_matches(matched_rows, empty_flag):
    final_results += (matched_row_counts * 1.5) - (unmatched_row_counts * 1.5)
    final_results += x_distance    
    return final_results
+
+
+
+def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_ids):
+
+   def get_compare_row(compare_boundary_pixels, compare_row_counter):
+   
+
+      # pixel_ids_with_current_y_values contains all xy coordinate pairs that have the current running y value.
+      pixel_ids_with_current_y_values = [k for k in compare_boundary_pixels  if (int(compare_boundary_pixels[k]['y'])) == compare_row_counter]
+
+      # we first obtain all x values for the current running y value
+      x_values_list_in_current_y = []
       
+      
+      # key is the coordinate pair id.  
+      for key in pixel_ids_with_current_y_values:
+         # putting all x values for all xy coordinates that have current running y vaule
+         x_values_list_in_current_y.append(compare_boundary_pixels[key]['x'])
+
+      
+      # we need to sort x values so that we can work with neighbor x values
+      x_values_list_in_current_y.sort()      
+      
+      return x_values_list_in_current_y
+
+
+
+   def get_row_consecutives(x_values_list_in_current_y):
+   
+      row_consecutives = {}
+      prev_x_value = None
+      consecutive_nums = None
+      counter = 0
+      for x_value in x_values_list_in_current_y:
+         counter += 1
+         if  prev_x_value == None:
+            consecutive_nums = 1
+            prev_x_value = x_value
+            leftmost = x_value
+         else:
+            if not x_value == prev_x_value + 1:
+
+               rightmost = prev_x_value
+               temp = {'leftmost': leftmost, 'rightmost': rightmost}
+               row_consecutives[consecutive_nums] = temp      
+         
+         
+               leftmost = x_value
+   
+               consecutive_nums += 1
+      
+         prev_x_value = x_value
+
+         if counter >= len(x_values_list_in_current_y):
+            rightmost = prev_x_value
+            temp = {'leftmost': leftmost, 'rightmost': rightmost}
+            row_consecutives[consecutive_nums] = temp     
+   
+      return row_consecutives
+   
+
+
+
+
+
+   original_smallest_y = min(int(d['y']) for d in original_boundary_pixels.values())
+   original_largest_y = max(int(d['y']) for d in original_boundary_pixels.values())
+   
+   original_shape_height = original_largest_y - original_smallest_y
+
+   compare_smallest_y = min(int(d['y']) for d in compare_boundary_pixels.values())
+   compare_largest_y = max(int(d['y']) for d in compare_boundary_pixels.values())
+  
+   
+   compare_shape_height = compare_largest_y - compare_smallest_y
+   
+   # when original shape is smaller in height, every original y has to compare with at least
+   # height_diff amount of compare shape from top. To be more safe, height_diff + ( original height / 5 ) would be more effective at finding matches.
+   # when original shape is bigger in height, every original y has to compare with at least height_diff amount of compare shape from top.   
+   height_diff = original_shape_height - compare_shape_height
+   
+   original_row_counter = 0
+   
+   prev_rightMost_x = None
+   comp_prev_rightMost_x = None
+   prev_leftMost_x = None
+   comp_prev_leftMost_x = None
+
+   consecutive_rows = []
+   row_results = []
+   # for loop for going from smallest y value to the largest y value
+   # this means going from very top pixel to very bottom pixel
+   #  for y in range(start, stop) stop value is excluded
+   for y in range(original_smallest_y, original_largest_y + 1):
+      
+      original_row_counter += 1
+
+      # pixel_ids_with_current_y_values contains all xy coordinate pairs that have the current running y value.
+      pixel_ids_with_current_y_values = [k for k in original_boundary_pixels  if (int(original_boundary_pixels[k]['y'])) == y]
+      
+      
+      # we first obtain all x values for the current running y value
+      x_values_list_in_current_y = []
+      
+      
+      # key is the coordinate pair id.  
+      for key in pixel_ids_with_current_y_values:
+         # putting all x values for all xy coordinates that have current running y vaule
+         x_values_list_in_current_y.append(original_boundary_pixels[key]['x'])
+
+      
+      # we need to sort x values so that we can work with neighbor x values
+      x_values_list_in_current_y.sort()
+         
+      #print("x_values_list_in_current_y " + str(x_values_list_in_current_y) )
+      
+      rightMost_x = max( x_values_list_in_current_y )
+      leftMost_x = min( x_values_list_in_current_y )
+ 
+      rightMost_x_diff =  leftMost_x_diff = None
+      if prev_rightMost_x != None:
+         rightMost_x_diff = rightMost_x - prev_rightMost_x
+         
+      if prev_leftMost_x != None:
+         leftMost_x_diff = leftMost_x - prev_leftMost_x
+
+
+      '''
+      leftmost and rightmost pixel of every consecutive pixels.
+      number of every consecutive pixels to know the locations of them.
+      
+      75, 76, 80, 89, 90
+      leftmost pixel 75, rightmost pixel 76. leftmost pixel 80. 1 pixel so no right pixel. leftmost pixel 89, rightmost pixel 90
+      1:leftmost pixel 75, rigthmost pixel 76.
+      
+      dictionary key is number of every consecutive pixels. value are leftmost pixel and rightmost pixel.
+
+      once we know the all pixels locations, we can get their relative locations from previous row. then we can use this relative locations
+      to compare with compare shape's relative locations. Both relative locations match, the match is found.
+      '''
+      orig_consecutives = get_row_consecutives(x_values_list_in_current_y)
+
+
+      #print("orig_consecutives " + str(orig_consecutives ) )
+
+      # either original shape is taller or shorter than compare shape, every original y has to compare with at least the height difference amount 
+      # from top of original or compare shape.
+      for every_y in range( compare_smallest_y , original_row_counter + compare_smallest_y + abs(height_diff) ):
+         if every_y == compare_largest_y + 1: 
+            break         
+            
+         compare_cur_row = get_compare_row(compare_boundary_pixels, every_y)
+
+         #print("compare_cur_row " + str(compare_cur_row ) )
+      
+         comp_rightMost_x = max( compare_cur_row )
+         comp_leftMost_x = min( compare_cur_row )
+      
+         comp_rightMost_x_diff = comp_leftMost_x_diff = None
+         if comp_prev_rightMost_x != None:
+            comp_rightMost_x_diff = comp_rightMost_x - comp_prev_rightMost_x
+      
+         if comp_prev_leftMost_x != None:
+            comp_leftMost_x_diff = comp_leftMost_x - comp_prev_leftMost_x
+         
+         
+         if rightMost_x_diff != None and leftMost_x_diff != None and comp_rightMost_x_diff != None and comp_leftMost_x_diff != None:
+            if abs( rightMost_x_diff - comp_rightMost_x_diff ) < 2 and abs( leftMost_x_diff - comp_leftMost_x_diff ) < 2:
+               consecutive_rows.append(y - 1)
+               consecutive_rows.append(y)
+      
+      
+      
+         comp_consecutives = get_row_consecutives(compare_cur_row)
+
+
+         #print("comp_consecutives " + str(comp_consecutives ) )
+      
+         row_match = 0
+         total_pixels = 0
+
+         # comparing orig_consecutives and comp_consecutives
+         # example. {1: {'leftmost': 0, 'rightmost': 5}}
+         # first, number of consecutives must match. if matched, pixel counts for each consecutives must be within the threshold
+         orig_consecutives= dict(sorted(orig_consecutives.items(), key=lambda item: item[0]))       
+         comp_consecutives= dict(sorted(comp_consecutives.items(), key=lambda item: item[0]))         
+      
+         orig_prev_rightmost = None
+         comp_prev_rightmost = None
+
+
+         if len( orig_consecutives.keys()) == len( comp_consecutives.keys() ):
+            for orig_location in orig_consecutives:
+               for comp_location in comp_consecutives:
+
+                  if orig_location == comp_location:
+                     if orig_prev_rightmost == None and comp_prev_rightmost == None:
+
+                        orig_prev_rightmost = orig_consecutives[orig_location]['rightmost']
+                        comp_prev_rightmost = comp_consecutives[comp_location]['rightmost']
+                              
+                        orig_pixels = orig_consecutives[orig_location]['rightmost'] - orig_consecutives[orig_location]['leftmost']
+                        comp_pixels = comp_consecutives[comp_location]['rightmost'] - comp_consecutives[comp_location]['leftmost']
+
+                        if abs( orig_pixels - comp_pixels ) < 3:
+                           row_match += 1
+                           
+                     else:
+                        orig_gap = orig_consecutives[orig_location]['leftmost'] - orig_prev_rightmost
+                        comp_gap = comp_consecutives[comp_location]['leftmost'] - comp_prev_rightmost
+                        
+                        if abs( orig_gap - comp_gap ) < 3:
+                           row_match += 1
+                              
+                        orig_pixels = orig_consecutives[orig_location]['rightmost'] - orig_consecutives[orig_location]['leftmost']
+                        comp_pixels = comp_consecutives[comp_location]['rightmost'] - comp_consecutives[comp_location]['leftmost']
+
+                        if abs( orig_pixels - comp_pixels ) < 3:
+                           row_match += 1                           
+
+                        orig_prev_rightmost = orig_consecutives[orig_location]['rightmost']
+                        comp_prev_rightmost = comp_consecutives[comp_location]['rightmost']
+                        
+                        
+                  
+         if row_match >= ( len( orig_consecutives.keys()) * 2 ) - 1:
+            match = True
+            for row_result in row_results:
+               if row_result['compare_y'] == every_y or row_result['original_y'] == y:
+                  match = False
+            if match:
+               temp = {}
+               temp['original_y'] = y
+               temp['result'] = len( orig_consecutives.keys())
+               temp['compare_y'] = every_y
+               
+               #print("row matched")
+               #print(temp)
+
+               row_results.append( temp )
+      
+         prev_rightMost_x = rightMost_x
+         comp_prev_rightMost_x = comp_rightMost_x
+         prev_leftMost_x = leftMost_x
+         comp_prev_leftMost_x = comp_leftMost_x
+
+
+   row_results = sorted( row_results , key=lambda item: item['original_y']  )
+   #print("row_results")
+   #print(row_results)
+   
+   consecutives_results = []
+   prev_original_y = None
+   prev_compare_y = None
+   consecutive_rows.sort()
+   consecutive_rows = list(dict.fromkeys(consecutive_rows))
+   #print("consecutive_rows")
+   #print(consecutive_rows)
+
+   for row_result in row_results:
+      if not prev_original_y:
+         prev_original_y = row_result['original_y']
+         prev_compare_y = row_result['compare_y']
+      
+      
+      
+      if row_result['original_y'] == prev_original_y + 1 and row_result['compare_y'] == prev_compare_y + 1:
+         if not row_result['original_y'] - 1 in consecutives_results:
+            consecutives_results.append(row_result['original_y'] - 1)
+         
+         consecutives_results.append(row_result['original_y'])
+         
+      
+      prev_original_y = row_result['original_y']
+      prev_compare_y =  row_result['compare_y']
+         
+         
+   #print("consecutives_results")
+   #print(consecutives_results)
+   
+   consecutive_multiplier = 0
+   for consecutives_result in consecutives_results:
+      for consecutive_row in consecutive_rows:
+      
+         if consecutive_row == consecutives_result:
+            for row_result in row_results:
+               if row_result['original_y'] == consecutive_row:
+                  consecutive_multiplier += row_result['result']
+   
+   
+   final_results = (  consecutive_multiplier * len( consecutives_results ) ) + len(consecutive_rows) * 3
+                  
+      
+   
+   print("final_results " + str(final_results) )
+   return final_results 
 
 
 def process_real_p_rows( comparison_result, original_shape_height, compare_shape_height, shape_ids ):
@@ -539,45 +832,6 @@ def process_real_p_rows( comparison_result, original_shape_height, compare_shape
 
    return p_t_r_m_result
    
-
-
-
-
-
-
-
-
-def find_boundary_matches(comparison_result, empty_comparison_result, original_shape_height, compare_shape_height, shape_ids ):
-
-   # sorting by original_y. starting with smallest going up to the largest
-   comparison_result = sorted( comparison_result , key=lambda item: ( item[0]['original_y'],item[0]['original_x'] ) )
-   empty_comparison_result = sorted( empty_comparison_result , key=lambda item: ( item[0]['original_y'],item[0]['original_x'] ) )
-
-
-   empty_result = 0
-   if empty_comparison_result:
-      empty_result = process_tentative_row_matches(empty_comparison_result, True)
-
-   real_pix_result = process_tentative_row_matches(comparison_result, False)
-   
-   result = real_pix_result + empty_result
-
-   # start of finding matches in comparison_result
-   
-   if original_shape_height >= compare_shape_height:
-      rows_needed = math.floor( compare_shape_height / 5)
-   else:
-      rows_needed = math.floor( original_shape_height / 5)
-
-   if rows_needed < 3:
-      return
-      
-   return result
-
-
-
-
-
 
 def compare_orig_comp_row(cur_original_row, cur_compare_row, matched_rows, empty_flag):
 
@@ -675,10 +929,7 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
 
       
       # we need to sort x values so that we can work with neighbor x values
-      x_values_list_in_current_y.sort()
-         
-         
-      rightMost_x = max( x_values_list_in_current_y )       
+      x_values_list_in_current_y.sort()   
       
       
       pixels_in_current_y = []
@@ -938,9 +1189,6 @@ def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, 
          
       # after looping through all comparing shape's x values in current row (y)
       search_until -= 1
-         
-      prev_rightMost_x = rightMost_x
-
 
       if y == compare_largest_y:
 
@@ -1213,9 +1461,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
 
    pixel_count_diff = abs(len(original_pixels_dict) - len(compare_pixels_dict) )
 
-   if algorithm == "boundary":
-      return find_boundary_matches(comparison_result, empty_comparison_result, original_shape_height, compare_shape_height, shape_ids)
-   elif algorithm == "consecutive_count":
+   if algorithm == "consecutive_count":
       result = process_real_p_rows(comparison_result, original_shape_height, compare_shape_height, shape_ids)
       if result:
          return result - ( pixel_count_diff * 0.5 )

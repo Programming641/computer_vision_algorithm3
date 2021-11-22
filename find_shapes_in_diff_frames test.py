@@ -54,29 +54,29 @@ for original_shape_id in original_shapeIDs_with_all_indexes:
       
       shape_ids = [ int(original_shape_id ), int (compare_shape_id ) ]
 
-         
+      
       print("compare shape " + str(shape_ids[1]) )
       compare_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(compare_shapeIDs_with_all_indexes[compare_shape_id], int(compare_shape_id) )
-      boundary_result = None
-      boundary_result = video_algorithms.find_shapes_in_diff_frames(original_boundary_pixels, compare_boundary_pixels, "boundary", shape_ids)
+      boundary_result = 0
+      boundary_result = video_algorithms.process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_ids)
+      result = 0
+      result = video_algorithms.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], compare_shapeIDs_with_all_indexes[compare_shape_id],  "consecutive_count", shape_ids)
 
-      result = video_algorithms.find_shapes_in_diff_frames(original_shapeIDs_with_all_indexes[original_shape_id], \
-                                                             compare_shapeIDs_with_all_indexes[compare_shape_id],  "consecutive_count", shape_ids)
-
-      print(" result " + str(result) )
-      if result:
+      print(" boundary_result " + str(boundary_result) )
+      if result or boundary_result:
                
          temp = {}
-            
-         if boundary_result:
-            match_result = round( result + boundary_result )
-         else:
+       
+         if boundary_result and result:
+            match_result = round( result + ( boundary_result ) )
+         elif result and not boundary_result:
             match_result = round( result )
+         elif boundary_result and not result:
+            match_result = round( boundary_result )
                
          temp[compare_shape_id] = match_result
          match_results[shape_ids[0]].append(temp)
             
-
    if match_results[shape_ids[0]]:
       all_shape_match_results.append(match_results)
       
