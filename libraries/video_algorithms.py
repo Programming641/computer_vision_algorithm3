@@ -808,7 +808,7 @@ def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_
                   
       
    
-   print("final_results " + str(final_results) )
+   #print("final_results " + str(final_results) )
    return final_results 
 
 
@@ -877,14 +877,6 @@ def compare_orig_comp_row(cur_original_row, cur_compare_row, matched_rows, empty
 
 # called from find_shapes_in_diff_frames
 # this method is for comparing and finding same shape in different frames of video.
-
-# I copied code from find_shapes_in_diff_frames for getting pixels in current row (y) so it is horrible
-# but I stick with it for now. fix it later when I get time or feel the need.
-
-# return is the result of comparison. return is dictionary with following form
-# search_ended, single_pixel_count_match, matched_x, matched_y, matched_pixel_count, empty_matched_x, empty_matched_y
-# search_ended is boolean. single_pixel_count_match's value is boolean. matched_x, y, count are values where original pixels matched.
-
 def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, original_pixels_in_current_y, original_empty_pixels_in_current_y, shape_ids):
 
    compare_smallest_y = min(int(d['y']) for d in compare_pixels_dict.values())
