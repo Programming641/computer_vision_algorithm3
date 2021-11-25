@@ -161,26 +161,27 @@ After executing this file, you will know which shape in one image is the which i
 ## Note
 I only implemented the very simple algorithm for start. It looks for consecutive matches but **it works really good for this algorithm!** Details of algorithm are in the comments in the code. I am planning to add more algorithms.
 
-## Sample
+## Execution results
 
 two frames
 
-![hanger001_color_group](https://user-images.githubusercontent.com/56218301/140649774-7cef131e-44b2-448c-9045-7a3deb07918d.png)
 ![hanger002_color_group](https://user-images.githubusercontent.com/56218301/140649783-0c68763d-ca29-489e-8374-ee01affe39f9.png)
+![hanger003_color_group](https://user-images.githubusercontent.com/56218301/143502379-cae8e4d2-4327-4582-93f9-b1b1312207f3.png)
 
-found shapes
 
-![9633](https://user-images.githubusercontent.com/56218301/140649862-0ddfba16-7ff2-461b-96c0-569cd6ef45d7.png)
-![9097](https://user-images.githubusercontent.com/56218301/140649873-9f9eb855-8514-41c9-bbbd-ff588e13c4fe.png)
+if you wait until the end of the processing, matched pairs will be displayed like below.
 
-![12657](https://user-images.githubusercontent.com/56218301/140649910-d04888c0-613b-4098-ab4b-587b6dc525ed.png)
-![13916](https://user-images.githubusercontent.com/56218301/140649923-1d03cf5e-4cec-4710-a64c-7ab2e6d23029.png)
+![matched pairs](https://user-images.githubusercontent.com/56218301/143502569-ab9dde14-685d-4c99-8899-6e62890995bd.png)
 
-![19536](https://user-images.githubusercontent.com/56218301/140650139-1bc8fc49-65fd-4e7c-8846-cf202bd784f0.png)
-![19536](https://user-images.githubusercontent.com/56218301/140650143-5bdcf775-fd53-4b82-ac6f-50198585ecea.png)
+Like you can see above, there are some troublesome pairs but they are actually quite solvable if you look at their data.
 
-![20085](https://user-images.githubusercontent.com/56218301/140650212-9f3f22d3-f576-403f-8f1e-37abb1705c05.png)
-![19725](https://user-images.githubusercontent.com/56218301/140650224-fcceea17-69ff-430a-b1d3-0ff48797a9b1.png)
+**Troublesome matches are solvable**
+
+In above example, the pair "39693 and 26155",the pair "40283 and 17533" are troublesome. The data below shows that only match count is 6 and there is only one match in it. I checked all troublesome matches and they are all solvable.
+
+![39693](https://user-images.githubusercontent.com/56218301/143502955-204676b8-32ba-4b45-9f6c-de08e8f8fa32.png)
+
+![40283](https://user-images.githubusercontent.com/56218301/143502958-f4123c7f-d4b5-439a-80bf-d5605f91aa7b.png)
 
 
 
