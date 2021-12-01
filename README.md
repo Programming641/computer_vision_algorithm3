@@ -161,6 +161,19 @@ After executing this file, you will know which shape in one image is the which i
 ## Note
 Still needs improvements but it works acceptably for now.
 
+## Warning
+It takes quite a long time! on intel i7? computer, it took about 30-40mins. You can limit the search by doing below.
+
+Search for a shape in interest.
+
+![無題](https://user-images.githubusercontent.com/56218301/144179394-297b1930-7c0d-4367-9847-14e5bcdf8b99.png)
+
+
+put if statement like below to limit search for a shape chosen above.
+
+![無題](https://user-images.githubusercontent.com/56218301/144179233-fd3c1869-ad0c-4575-8550-88a5000eb1f8.png)
+
+
 ## Execution results
 
 two frames
