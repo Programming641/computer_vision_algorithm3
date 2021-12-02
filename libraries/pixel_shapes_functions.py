@@ -1117,10 +1117,44 @@ def get_shapes_colors(filename, directory):
 
 
 
+# xy_coordinates should be list of dictionaries containing coordinates
+def highlight_matches( shape_ids, filenames, xy_coordinates ):
 
+   x_present = False
+   y_present = False   
+   compare_label = None
 
+   print("xy_coordinates")
+   print(xy_coordinates)
 
+   # check labels of original and compare pixels. they don't necessarily in every dictionary. so we have to see and check
+   for i in range( 0 , len(xy_coordinates) ):
 
+      if 'compare_x' in xy_coordinates[i]:
+         compare_label = 'compare_'
+         break
+      if 'matched_x' in xy_coordinates[i]:
+         compare_label = 'matched_'
+         break
+
+   original_image = Image.open("shapes/" + str(filenames[0]) + "_shapes/" + str(shape_ids[0]) + ".png")
+   image_width, image_height = original_image.size
+
+   compare_image = Image.open("shapes/" + str(filenames[1]) + "_shapes/" + str(shape_ids[1]) + ".png")
+   compare_image_width, compare_image_height = compare_image.size
+
+   for xy_coordinate in xy_coordinates:
+      
+      if 'original_x' in xy_coordinate:
+         original_image.putpixel( (xy_coordinate['original_x'] , xy_coordinate['original_y']) , (255, 255, 255) )
+          
+      if compare_label + 'x' in xy_coordinate:
+         compare_image.putpixel( (xy_coordinate[compare_label + 'x'] , xy_coordinate[compare_label + 'y']) , (255, 255, 255) )
+
+         
+
+   original_image.save( "original " + str(shape_ids[0]) + " comp " + str(shape_ids[1]) + ".png")
+   compare_image.save("orig " + str(shape_ids[0]) + " compare " + str(shape_ids[1]) + ".png")
 
 
 

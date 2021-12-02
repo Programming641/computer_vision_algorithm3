@@ -3,7 +3,10 @@ from PIL import Image
 import os
 import math
 
+from libraries import pixel_shapes_functions
 
+
+# boundary relative position matches. 
 def boundary_rel_pos(original_boundary_pixels, compare_boundary_pixels, shape_ids):
 
    original_smallest_y = min(int(d['y']) for d in original_boundary_pixels.values())
@@ -73,6 +76,7 @@ def boundary_rel_pos(original_boundary_pixels, compare_boundary_pixels, shape_id
    
    orig_ended = False
    comp_starting_pixel = {}
+   pixel_counter = 0
    for i in range( 0, height_diff):
       temp_matches =[]
       consecutive_counter = 0
@@ -187,8 +191,14 @@ def boundary_rel_pos(original_boundary_pixels, compare_boundary_pixels, shape_id
    for consecutive in consecutive_list:
       if consecutive['consecutive'] != 0:
          consecutive_counter += consecutive['consecutive'] * ( consecutive['num_pix_hit'] * 0.3 )
-   
-   print("boundary_rel_pos matches " + str(len(matches)) )
+
+   if len(original_boundary_pixels) > len(compare_boundary_pixels):
+      possible_match_count = len(compare_boundary_pixels)
+   else:
+      possible_match_count = len(original_boundary_pixels)
+
+  
+   print("boundary_rel_pos matched " + str(len(matches)) + " out of " + str(possible_match_count) )
    return len(matches)
    
 
@@ -451,7 +461,7 @@ def find_direct_n_far_consecutives(row_column_results, row_or_column ):
 
 
 
-def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pixels, shape_ids):
+def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pixels, shape_ids, filenames):
 
 
    def get_compare_column(compare_boundary_pixels, compare_column_counter):
@@ -540,6 +550,7 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
 
    consecutive_columns = []
    column_results = []
+   debug_column_results = []
    # for loop for going from smallest x value to the largest x value
    # this means going from left to right
    #  for x in range(start, stop) stop value is excluded
@@ -683,13 +694,34 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
             if match:
                temp = {}
                temp['original_x'] = x
-               temp['result'] = len( orig_consecutives.keys())
+               temp['result'] = len( orig_consecutives.keys())    # how many matched
                temp['compare_x'] = every_x
                
                #print("column matched")
                #print(temp)
-
                column_results.append( temp )
+               
+
+               # for debug displaying matched places in the image
+               # getting all matched original xy values
+               for orig_consec_num in orig_consecutives.values():
+
+                  for debug_orig_y in range( orig_consec_num['top'] , orig_consec_num['bottom'] + 1 ):
+                     temp = {}
+                     temp['original_x'] = x
+                     temp['original_y'] = debug_orig_y
+                     
+                     debug_column_results.append(temp)
+               
+               for comp_consec_num in comp_consecutives.values():
+                  for debug_comp_y in range( comp_consec_num['top'] , comp_consec_num['bottom'] + 1 ):
+                     temp = {}
+                     temp['compare_x'] = every_x
+                     temp['compare_y'] = debug_comp_y
+                     
+                     debug_column_results.append(temp)
+
+               
       
          prev_bottom_y = bottom_y
          comp_prev_bottom_y = comp_bottom_y
@@ -698,8 +730,9 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
 
 
    column_results = sorted( column_results , key=lambda item: item['original_x']  )
-   #print("column_results")
-   #print(column_results)
+   
+   pixel_shapes_functions.highlight_matches( shape_ids, filenames, debug_column_results )
+   
    
    final_results = 0
    
@@ -726,7 +759,7 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
    
 
 
-def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_ids):
+def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_ids, filenames):
 
    def get_compare_row(compare_boundary_pixels, compare_row_counter):
    
@@ -995,7 +1028,7 @@ def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_
    
    print("horizontal boundary final_results " + str(final_results) )
    
-   virtical_resuls = process_boundaries_vertically(original_boundary_pixels, compare_boundary_pixels, shape_ids)
+   virtical_resuls = process_boundaries_vertically(original_boundary_pixels, compare_boundary_pixels, shape_ids, filenames)
 
    return final_results + virtical_resuls
 
@@ -3258,10 +3291,6 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
          
       #updating for each row (y) of original shape
 
-      
-   # check if both shapes are same shapes in different frames of video
-
-   pixel_count_diff = abs(len(original_pixels_dict) - len(compare_pixels_dict) )
 
    if algorithm == "consecutive_count":
       result = process_real_p_rows(comparison_result, empty_comparison_result, original_shape_height, compare_shape_height, shape_ids)
@@ -3269,17 +3298,13 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
       # row processing has done, now process virtically
       virtical_resuls = process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids )
       
+      final_results = 0
       if result:
-         if virtical_resuls:
-         
-            return result + virtical_resuls - ( pixel_count_diff * 0.5 )
-         else:
-            return result - ( pixel_count_diff * 0.5 )
-      elif virtical_resuls:
-         return virtical_resuls - ( pixel_count_diff * 0.7 )
-         
-      else:
-         return
+         final_results += result
+      if virtical_resuls:
+         final_results += virtical_resuls
+
+      return final_results
          
          
       
