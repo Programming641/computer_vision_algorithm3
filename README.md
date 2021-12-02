@@ -182,7 +182,7 @@ You can see where the matches are made in the shape image like below. Below imag
 ![original 26720 comp 38838](https://user-images.githubusercontent.com/56218301/144517171-4afb900d-bf72-4fce-aaa7-5f7637a9c3db.png)
 
 
-The code below is the debugging function inside virtical boundary processing. you can enable or disable by commenting out calling ***pixel_shapes_functions.highlight_matches***
+The code below is the debugging function inside virtical boundary processing. you can enable or disable by commenting out ***pixel_shapes_functions.highlight_matches***. 
 **right now it is supported for virtical boundary processing only**
 
 ![無題](https://user-images.githubusercontent.com/56218301/144517134-8e7a139a-8041-4028-958d-de799f7dc5ec.png)
