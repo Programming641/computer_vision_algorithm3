@@ -149,7 +149,7 @@ Once you obtain the frames from video, you need to execute finding_shapes.py and
 
 1. execute putting_pixels_into_color_groups revision 2.py on *two consequtive* images/frames.
 2. execute finding_shapes.py on both images/frames.
-3. (optionally) execute recreate_shapes.py
+3. execute recreate_shapes.py
 this is option but I recommend to do it because you would not know if you get the right shape from both images/frames.
 4. execute find_shapes_in_diff_frames test.py. you need to provide images/frames in this file.
 
@@ -206,7 +206,7 @@ Like you can see above, there are some troublesome pairs but they are actually q
 
 **Troublesome matches are solvable**
 
-In above example, the pair "39693 and 26155",the pair "40283 and 17533" are troublesome. The data below shows that only match count is 6 and there is only one match in it. I checked all troublesome matches and they are all solvable.
+In one example, the pair "39693 and 26155",the pair "40283 and 17533" were troublesome. The data below showed that only match count is 6 and there is only one match in it. I checked all troublesome matches and they are all solvable.
 
 ![39693](https://user-images.githubusercontent.com/56218301/143502955-204676b8-32ba-4b45-9f6c-de08e8f8fa32.png)
 
