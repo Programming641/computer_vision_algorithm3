@@ -199,18 +199,31 @@ two frames
 
 
 if you wait until the end of the processing, matched pairs will be displayed like below.
+![1](https://user-images.githubusercontent.com/56218301/145308237-46d4979f-55a3-4683-8b9e-ef5414c46ce1.png)
+![2](https://user-images.githubusercontent.com/56218301/145308240-05e53c6b-2c2b-4d0a-8840-d108b1a25de8.png)
+![3](https://user-images.githubusercontent.com/56218301/145308246-f450a961-c98c-4dbd-a04d-1a099f3410af.png)
+![4](https://user-images.githubusercontent.com/56218301/145308252-f3b50532-364e-4381-8ffe-dfce65327fb3.png)
+![5](https://user-images.githubusercontent.com/56218301/145308254-d644115a-8799-4f66-bfe2-faaf2767da37.png)
+![6](https://user-images.g![7](https://user-images.githubusercontent.com/56218301/145308262-7353629f-a800-49f9-908e-0058414f3bfe.png)
+ithubusercontent.com/56218301/145308258-363e3186-b357-4094-93cb-1afe3792a170.png)
+![8](https://user-images.githubusercontent.com/56218301/145308267-6a2e010a-0da8-45d8-8440-5b59e88fed84.png)
+![9](https://user-images.githubusercontent.com/56218301/145308280-62bfdd08-b007-460e-a529-bd9f90da1913.png)
+![10](https://user-images.githubusercontent.com/56218301/145308287-4ee70d3a-a39e-4884-9629-57fc3e2040d8.png)
+![11](https://user-images.githubusercontent.com/56218301/145308291-836fffa4-9d6b-477d-a1cd-d0db0b6f9406.png)
+![12](https://user-images.githubusercontent.com/56218301/145308295-ab01943b-09d0-455d-9500-eaf8ea54993a.png)
+![13](https://user-images.githubusercontent.com/56218301/145308309-57ec36ed-ba69-4f15-9003-ee53c0af6eec.png)
+![14](https://user-images.githubusercontent.com/56218301/145308313-63ef420d-2438-4521-baa9-af0106489066.png)
+![15](https://user-images.githubusercontent.com/56218301/145308318-6b7a7f19-4f55-4945-9696-9c7a3eb9095b.png)
+![16](https://user-images.githubuser![17](https://user-images.githubusercontent.com/56218301/145308328-c99deacb-f184-4f98-a302-2ddabdf3a40c.png)
+content.com/56218301/145308321-8a9b0b87-8e04-421a-bebb-200346ce53f4.png)
+![18](https://user-images.githubusercontent.com/56218301/145308335-36843365-7ae6-4c19-bd45-939d19822e79.png)
+![19](https://user-images.githubusercontent.com/56218301/145308342-b321fed4-db0b-4a39-be7a-28f9c22c72e2.png)
+![20](https://user-images.githubusercontent.com/56218301/145308350-78dc8550-3a2e-4cff-81ce-c046fdc5cb5b.png)
+![21](https://user-images.githubusercontent.com/56218301/145308354-66161399-e633-49de-bfa4-8741d2a042ae.png)
+![22](https://user-images.githubusercontent.com/56218301/145308358-67dbfa60-b45b-46da-a262-bb4b16522fd5.png)
+![23](https://user-images.githubusercontent.com/56218301/145308360-9b028d22-97ae-4a81-be01-6843b8c7f20a.png)
 
-![matched pairs](https://user-images.githubusercontent.com/56218301/143502569-ab9dde14-685d-4c99-8899-6e62890995bd.png)
-
-Like you can see above, there are some troublesome pairs but they are actually quite solvable if you look at their data.
-
-**Troublesome matches are solvable**
-
-In one example, the pair "39693 and 26155",the pair "40283 and 17533" were troublesome. The data below showed that only match count is 6 and there is only one match in it. I checked all troublesome matches and they are all solvable.
-
-![39693](https://user-images.githubusercontent.com/56218301/143502955-204676b8-32ba-4b45-9f6c-de08e8f8fa32.png)
-
-![40283](https://user-images.githubusercontent.com/56218301/143502958-f4123c7f-d4b5-439a-80bf-d5605f91aa7b.png)
+the pair 4 38533. the pair 725 49680 are displayed by bug which I think I fixed now.
 
 
 
