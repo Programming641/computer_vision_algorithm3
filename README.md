@@ -179,15 +179,17 @@ find_shapes_in_diff_frames.py
 
 You can see where the matches are made in the shape image like below. Below image is for the matching by virtical boundary processing.
 
-![orig 26720 compare 38838](https://user-images.githubusercontent.com/56218301/144517167-f6b7be85-f5c4-47f9-bc87-a3a62e761607.png)
+To enable debugging, change the debug flag to true
 
-![original 26720 comp 38838](https://user-images.githubusercontent.com/56218301/144517171-4afb900d-bf72-4fce-aaa7-5f7637a9c3db.png)
+![無題](https://user-images.githubusercontent.com/56218301/145309175-fa9ec43f-2639-4027-aafd-2704f593a3fd.png)
 
+![無題](https://user-images.githubusercontent.com/56218301/145309302-64928a71-5753-44d3-9502-9b64f273fc93.png)
 
-The code below is the debugging function inside virtical boundary processing. you can enable or disable by commenting out ***pixel_shapes_functions.highlight_matches***. 
-**right now it is supported for virtical boundary processing only**
+You can see where the matches are made are highlighted
 
-![無題](https://user-images.githubusercontent.com/56218301/144517134-8e7a139a-8041-4028-958d-de799f7dc5ec.png)
+It shows the function and original shape id and compare shape id numbers
+
+![無題](https://user-images.githubusercontent.com/56218301/145309587-e4b30d10-1436-429f-a3de-66fcf1186cd3.png)
 
 
 ## Execution results
