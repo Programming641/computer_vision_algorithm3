@@ -196,8 +196,8 @@ It shows the function and original shape id and compare shape id numbers
 
 two frames
 
-![hanger002_color_group](https://user-images.githubusercontent.com/56218301/140649783-0c68763d-ca29-489e-8374-ee01affe39f9.png)
-![hanger003_color_group](https://user-images.githubusercontent.com/56218301/143502379-cae8e4d2-4327-4582-93f9-b1b1312207f3.png)
+![hanger005_color_group](https://user-images.githubusercontent.com/56218301/145309728-8df4d433-c99d-4b71-a8e6-d8546d290166.png)
+![hanger006_color_group](https://user-images.githubusercontent.com/56218301/145309737-f8a858b1-6aa7-46eb-ac3a-8764e77317cc.png)
 
 
 if you wait until the end of the processing, matched pairs will be displayed like below.
