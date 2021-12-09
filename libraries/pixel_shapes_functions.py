@@ -1270,16 +1270,6 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
 
 def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, shape_ids ):
 
-   # directory is specified but does not contain /
-   if directory != "" and directory.find('/') == -1:
-      directory +='/'
-
-   shape_locations_path = 'shapes/locations/'
-
-   if not os.path.isdir(shape_locations_path):
-      os.makedirs(shape_locations_path)
-
-   shape_locations_file = open(shape_locations_path + orig_file + "." + comp_file + "_loc" + ".txt", "w" )
 
    # needed for creating image areas
    original_image = Image.open("images/" + directory + orig_file + ".png")
@@ -1402,10 +1392,10 @@ def highlight_matches( shape_ids, filenames, xy_coordinates, func_name ):
    for xy_coordinate in xy_coordinates:
       
       if 'original_x' in xy_coordinate:
-         original_image.putpixel( (xy_coordinate['original_x'] , xy_coordinate['original_y']) , (255, 255, 255) )
+         original_image.putpixel( (xy_coordinate['original_x'] , xy_coordinate['original_y']) , (0, 0, 0) )
           
       if compare_label + 'x' in xy_coordinate:
-         compare_image.putpixel( (xy_coordinate[compare_label + 'x'] , xy_coordinate[compare_label + 'y']) , (255, 255, 255) )
+         compare_image.putpixel( (xy_coordinate[compare_label + 'x'] , xy_coordinate[compare_label + 'y']) , (0, 0, 0) )
 
          
 
