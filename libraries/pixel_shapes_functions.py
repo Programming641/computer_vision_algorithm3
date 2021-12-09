@@ -6,6 +6,8 @@ import recreate_shapes
 from statistics import mean
 import math
 
+from libraries import read_files_functions
+
 # returns all pixel shape ids and all its pixel indexes
 # pixel id dictionary[ matched pixel shape id ] = [ pixel index1, pixel index2, ..... ]
 def get_all_pixels_of_shapes(shape_ids, image_filename, directory_under_images=""):
@@ -1117,17 +1119,271 @@ def get_shapes_colors(filename, directory):
 
 
 
-# xy_coordinates should be list of dictionaries containing coordinates
-def highlight_matches( shape_ids, filenames, xy_coordinates ):
+def localize_shape( shape_coordinates , image_areas , shape_id ):
 
+
+   def get_shape_locations( shape_coordinates ):
+
+      shape_locations = []
+
+      shape_smallest_y = min(int(d['y']) for d in shape_coordinates.values())
+      shape_largest_y = max(int(d['y']) for d in shape_coordinates.values())
+
+      y_interval = round( ( shape_largest_y - shape_smallest_y ) / 5 )
+      
+      if y_interval < 1:
+         y_interval = 1
+
+      for y in range ( shape_smallest_y , shape_largest_y + 1 , y_interval ):
+
+
+         # pixel_ids_at_top contains all xy coordinate pairs that have the current running y value.
+         pixel_ids = [k for k in shape_coordinates  if (int(shape_coordinates[k]['y'])) == y]
+
+      
+      
+         # we first obtain all x values for the current running y value
+         x_es = []
+      
+         # key is the coordinate pair id.  
+         for key in pixel_ids:
+            # putting all x values for all xy coordinates that have current running y vaule
+            x_es.append(shape_coordinates[key]['x'])
+
+      
+         # we need to sort x values so that we can work with neighbor x values
+         x_es.sort()
+
+         leftmost_x = min( x_es )
+         rightmost_x = max( x_es )
+         
+         x_interval = round( ( rightmost_x - leftmost_x ) / 5 )
+         
+         if x_interval < 1:
+            x_interval = 1
+
+         for x in range( leftmost_x , rightmost_x + 1, x_interval  ):
+            temp = {}
+            temp['x'] = x
+            temp['y'] = y
+            
+            shape_locations.append( temp )
+        
+        
+      return shape_locations
+
+
+      #   ----------------------------------     End of get_shape_locations      ------------------------------------------
+
+
+   shape_locations = get_shape_locations( shape_coordinates )
+
+   shape_in_image_areas = []
+   
+   location_threshold = 8  
+   
+   location_labels = [ { 'top_middle': {'y_threshold': ( - location_threshold ), 'x_threshold': ( location_threshold, - location_threshold ) }, \
+                      'right': { 'y_threshold': ( location_threshold, - location_threshold ), 'x_threshold': ( location_threshold ) }, \
+                      'bottom_middle': { 'y_threshold': ( location_threshold ), 'x_threshold': ( location_threshold, - location_threshold ) }, \
+                      'left': { 'y_threshold': ( location_threshold, - location_threshold ), 'x_threshold': ( - location_threshold ) } } ]
+
+   
+   for shape_location in shape_locations:
+      
+      for image_area in image_areas:
+         for area_num, image_loc in image_area.items():
+            
+            cur_area_present = False
+            if shape_in_image_areas:
+               for shape_in_image_area in shape_in_image_areas:
+                  if shape_in_image_area['image_area'] == area_num:
+                     cur_area_present = True
+                     
+                     break
+            
+            if cur_area_present:
+               continue
+               
+            image_shape_loc_match = False
+            
+            for location_label in location_labels:
+               if image_shape_loc_match:
+                  break
+               for loc_label, thresholds in location_label.items():
+                  if image_shape_loc_match:
+                     break               
+
+                  if shape_location['x'] >= image_loc['left'] and shape_location['x'] <= image_loc['right']:
+                     if shape_location['y'] >= image_loc['top'] and shape_location['y'] <= image_loc['bottom']:
+                        image_shape_loc_match = True
+                     
+                        temp = {}
+                        temp['shape_id'] = shape_id
+                        temp['image_area'] = area_num
+                     
+                        shape_in_image_areas.append( temp )
+                    
+                        break
+               
+                  # if there is only one threshold, it becomes int value only. if there is two, it would be tuple
+                  if type(thresholds['x_threshold']) != int:
+                     for x_threshold in thresholds['x_threshold']:                
+               
+                        if not image_shape_loc_match:
+                           # check with the threshold
+                           if shape_location['x'] + x_threshold >= image_loc['left'] and shape_location['x'] + x_threshold <= image_loc['right']:
+                              if shape_location['y'] >= image_loc['top'] and shape_location['y'] <= image_loc['bottom']:
+                                 image_shape_loc_match = True
+                     
+                                 temp = {}
+                                 temp['shape_id'] = shape_id
+                                 temp['image_area'] = area_num
+                     
+                                 shape_in_image_areas.append( temp )
+                        
+                                 break
+
+                  if type( thresholds['y_threshold'] ) != int :
+                     for y_threshold in thresholds['y_threshold']:
+   
+                        if not image_shape_loc_match:
+                           # check with the threshold
+                           if shape_location['x']  >= image_loc['left'] and shape_location['x'] <= image_loc['right']:
+                              if shape_location['y'] + y_threshold >= image_loc['top'] and shape_location['y'] + y_threshold <= image_loc['bottom']:
+                                 image_shape_loc_match = True
+                    
+                                 temp = {}
+                                 temp['shape_id'] = shape_id
+                                 temp['image_area'] = area_num
+                     
+                                 shape_in_image_areas.append( temp )
+                        
+                                 break   
+   
+   
+   return shape_in_image_areas
+
+
+
+
+   
+
+def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, shape_ids ):
+
+   # directory is specified but does not contain /
+   if directory != "" and directory.find('/') == -1:
+      directory +='/'
+
+   shape_locations_path = 'shapes/locations/'
+
+   if not os.path.isdir(shape_locations_path):
+      os.makedirs(shape_locations_path)
+
+   shape_locations_file = open(shape_locations_path + orig_file + "." + comp_file + "_loc" + ".txt", "w" )
+
+   # needed for creating image areas
+   original_image = Image.open("images/" + directory + orig_file + ".png")
+   image_width, image_height = original_image.size
+
+   compare_image = Image.open("images/" + directory + comp_file + ".png")
+   compare_image_width, compare_image_height = compare_image.size
+
+   # make sure original image size(width, height) is exactly the same as compare image size(width, height)
+   if not (image_width == compare_image_width and image_height == compare_image_height):
+      return False
+
+   # divide image into 5 columns, 5 rows
+   image_divider = 5
+   image_area_width = round(image_width / image_divider)
+   image_area_height = round(image_height / image_divider)
+   
+   image_areas = []
+   
+   column_num = 0
+   for column_num in range(0, image_divider):
+      for row_num in range(0, image_divider):
+         if row_num == 0:
+            left = 0
+            right = image_area_width
+         else:
+            left = (image_area_width * row_num) + 1
+            right = (image_area_width * row_num) + image_area_width
+         
+         if column_num == 0:
+            top = 0
+            bottom = image_area_height
+         else:
+            top = ( column_num * image_area_height ) + 1
+            bottom = ( column_num * image_area_height ) + image_area_height
+      
+         temp = {}
+         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
+      
+         image_areas.append(temp)
+
+
+
+   orig_comp_locations = []
+
+      
+   orig_locations = localize_shape( orig_coords , image_areas , shape_ids[0] )
+
+   orig_image_areas = []
+      
+   for orig_location in orig_locations:
+      orig_image_areas.append( orig_location['image_area'] )
+
+   comp_locations = localize_shape( comp_coords , image_areas , shape_ids[1] )
+   
+   matched_areas = []
+   for comp_location in comp_locations:
+      for orig_image_area in orig_image_areas:
+            
+         if comp_location['image_area'] == orig_image_area:
+            matched_areas.append( orig_image_area )
+                
+         
+   if matched_areas:
+      temp = {}
+      temp['orig_shape_id'] = shape_ids[0]
+      temp['comp_shape_id'] = shape_ids[1]
+            
+      area_counter = 1
+      for matched_area in matched_areas:
+         temp['matched_area' + str(area_counter) ] = matched_area
+         area_counter += 1
+               
+      orig_comp_locations.append( temp )
+
+   return orig_comp_locations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# xy_coordinates should be a list of dictionaries containing coordinates
+def highlight_matches( shape_ids, filenames, xy_coordinates, func_name ):
+   
+   if not xy_coordinates:
+      return
+   
    x_present = False
    y_present = False   
    compare_label = None
 
-   print("xy_coordinates")
-   print(xy_coordinates)
+   if os.path.exists("debug") == False:
+      os.mkdir("debug")
 
-   # check labels of original and compare pixels. they don't necessarily in every dictionary. so we have to see and check
+   # check labels of compare pixels. they aren't necessarily in every dictionary. so we have to see and check
    for i in range( 0 , len(xy_coordinates) ):
 
       if 'compare_x' in xy_coordinates[i]:
@@ -1153,8 +1409,8 @@ def highlight_matches( shape_ids, filenames, xy_coordinates ):
 
          
 
-   original_image.save( "original " + str(shape_ids[0]) + " comp " + str(shape_ids[1]) + ".png")
-   compare_image.save("orig " + str(shape_ids[0]) + " compare " + str(shape_ids[1]) + ".png")
+   original_image.save( "debug/" +  func_name + " original " + str(shape_ids[0]) + " comp " + str(shape_ids[1]) + ".png")
+   compare_image.save("debug/" + func_name + " orig " + str(shape_ids[0]) + " compare " + str(shape_ids[1]) + ".png")
 
 
 
