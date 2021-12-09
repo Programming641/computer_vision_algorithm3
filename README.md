@@ -24,22 +24,22 @@ top directory
 
 ->libraries
 ~~~
-you need to place "pixel_shapes_functions.py" under libraries directory
 
 
 ## Instructions
 
-First you need to execute "putting_pixels_into_color_groups revision 2.py"
+- First you need to execute "putting_pixels_into_color_groups revision 2.py"
+
+~~~
+py "putting_pixels_into_color_groups revision 2.py" image_filename
+~~~
+
+![無題](https://user-images.githubusercontent.com/56218301/145310497-1c0e5fc3-4160-4cf7-a4c5-7f0fa93e2f52.png)
+
+filename is without the image file extension.
 
 you need to change the following
 
-image_filename
-
-directory
-
-directory is optional whether you have directory under image directory
-
-provide image for image_filename
 
 Then you need to execute
 
