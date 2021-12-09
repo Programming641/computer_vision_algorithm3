@@ -38,8 +38,6 @@ py "putting_pixels_into_color_groups revision 2.py" image_filename
 
 filename is without the image file extension.
 
-you need to change the following
-
 
 Then you need to execute
 
