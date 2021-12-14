@@ -15,7 +15,7 @@ execute the following and see how it works for yourself!!!
 
 ## Warning
 
-Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_nbrs.py took about 30-40 min.
+Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_neighbors.py took about 30-40 min.
 
 
 ## Directory structure
