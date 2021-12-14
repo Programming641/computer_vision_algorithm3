@@ -8,7 +8,7 @@ execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
-# Directory structure
+## Directory structure
 
 For this to work, you need to have below directory structure.
 
@@ -26,7 +26,7 @@ top directory
 ~~~
 
 
-## Instructions
+### Instructions
 
 - First you need to execute "putting_pixels_into_color_groups revision 2.py"
 
@@ -98,6 +98,37 @@ shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixel
 ![54720](https://user-images.githubusercontent.com/56218301/139615366-5b67a080-d7f5-4802-a1cb-04b10b4bf4b5.png)
 ![54720_boundary](https://user-images.githubusercontent.com/56218301/139615370-cbc099c6-9804-4a85-af05-5b38937c6917.png)
 
+## Repeating pattern shapes
+
+### Instructions
+
+- execute put_pixels_into_clr_grps.py
+- excute finding_shapes.py
+- execute create_shape_neighbors.py
+- find_rpt_ptn_shapes.py
+
+You need to provide image filename as needed. Please see above.
+
+### Execution Results examples
+
+![1](https://user-images.githubusercontent.com/56218301/145936603-d87c5d0d-517e-448d-89ff-b3b22f1c3849.png)
+![2](https://user-images.githubusercontent.com/56218301/145936605-ebc618c8-858b-4a77-8a47-765162ea6f86.png)
+![3](https://user-images.githubusercontent.com/56218301/145936609-7292502c-1656-4974-a029-7c446167ae8b.png)
+![4](https://user-images.githubusercontent.com/56218301/145936612-81862262-276a-43a5-9de8-6c64b5cd6dd7.png)
+![5](https://user-images.githubusercontent.com/56218301/145936617-8fb52f4b-98f5-4361-92ec-c0dd52b0688c.png)
+![6](https://user-images.githubusercontent.com/56218301/145936625-238e16eb-798d-47a7-9799-b6fe58eba6c5.png)
+![7](https://user-images.githubusercontent.com/56218301/145936630-481b242c-0a2a-4a48-8cd6-81bcb83dcd83.png)
+![8](https://user-images.githubusercontent.com/56218301/145936633-eea1d90e-a9e8-443f-87fb-6935f9a5ce83.png)
+![9](https://user-images.githubusercontent.com/56218301/145936636-b31578c8-ec82-4cb5-bbd4-9022a6da2c8c.png)
+![10](https://user-images.githubusercontent.com/56218301/145936643-cb55d3a0-92ac-46bb-bebc-bd0ff2c42cf3.png)
+![11](https://user-images.githubusercontent.com/56218301/145936650-83ede96b-87dd-415f-8f2a-290dcbc0f420.png)
+![12](https://user-images.githubusercontent.com/56218301/145936659-8a1419be-8dcb-4cb1-b7f0-b0cdf6976c85.png)
+![13](https://user-images.githubusercontent.com/56218301/145936661-8cb4e370-0ea1-41ce-b942-e285c1b1879f.png)
+![14](https://user-images.githubusercontent.com/56218301/145936731-287bc03a-9fc7-4298-8955-9d2b6e8de8e0.png)
+![15](https://user-images.githubusercontent.com/56218301/145936674-cf2497a9-0ccc-4c1f-a4bc-24ddd9becc66.png)
+![16](https://user-images.githubusercontent.com/56218301/145936677-31d9f8b6-8a37-4be0-8af8-71f7ecbbb7b0.png)
+![17](https://user-images.githubusercontent.com/56218301/145936680-7ab11f28-f9db-4b18-ab0a-700e27130d89.png)
+![18](https://user-images.githubusercontent.com/56218301/145936689-e10500bd-75ac-4c76-a29d-8405beeaa4aa.png)
 
 # Video Analysis
 
