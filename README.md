@@ -1,6 +1,9 @@
 # computer_vision_algorithm3
 finding shapes based on the appearance change. my first attempt to analyze pictures at low level
 
+## Operating environment
+Windows 10
+Python 3
 
 Please note that I am not using any conventional computer vision algorithm! algorithm are entirely created by me! The advantages of my algorithm are straightforward and intuitive, because for one, I am not using heavy mathmatics.
 
@@ -28,20 +31,17 @@ top directory
 
 ### Instructions
 
-- First you need to execute "putting_pixels_into_color_groups revision 2.py"
+- First you need to execute put_pixels_into_clr_grps.py
 
 ~~~
-py "putting_pixels_into_color_groups revision 2.py" image_filename
+py put_pixels_into_clr_grps.py
 ~~~
 
-![無題](https://user-images.githubusercontent.com/56218301/145310497-1c0e5fc3-4160-4cf7-a4c5-7f0fa93e2f52.png)
-
-filename is without the image file extension.
-
+You need to provide image filename as needed.
 
 Then you need to execute
 
-py -3 "finding_shapes.py"
+- py -3 "finding_shapes.py"
 
 make sure to provide filename and optional directory.
 
@@ -50,11 +50,9 @@ after executing the finding_shapes.py
 
 "filename"_shapes.txt will be created under shapes folder
 
-Then, you can execute "recreate_shapes.py" to see each one of shapes
+- Then, you can execute "recreate_shapes.py" to see each one of shapes
 
-To execute "recreate_shapes.py", you need to pass filename in the first parameter and optional image sub-directory in second parameter
-
-python recreate_shapes.py filename (image sub-directory)
+To get boundaries of shape, 
 
 "get_boundary_pixels test.py"
 
@@ -84,7 +82,7 @@ image_original is the shape id number image that is created by "recreate_shapes.
 
 below are some examples of "get_boundary_pixels test.py"
 
-original image and image transformed by "putting_pixels_into_color_groups revision 2.py"
+original image and image transformed by put_pixels_into_clr_grps
 
 ![hanger001](https://user-images.githubusercontent.com/56218301/139683609-18d83a72-58f8-4523-9a86-84675c091327.png)
 ![hanger001_color_group](https://user-images.githubusercontent.com/56218301/139676481-55cbdf86-1da0-4f2a-a9c1-2ae5e604414a.png)
