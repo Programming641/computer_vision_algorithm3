@@ -1,8 +1,14 @@
 import re
 import math
 import os
+import sys
 
 from PIL import Image
+
+
+filename = "rpt_ptn_test2"
+
+
 
 '''
 this module serves 2 purposes. One is to recreate the each shape of the image. Another purpose is to return xy coordinate values of the each 
@@ -124,7 +130,10 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
              shape_pixel_counter += 1
              pixel_index = int(pixel_index)
          
-             original_image_red, original_image_green, original_image_blue, a = original_image_data[pixel_index ]
+             if len(original_image_data[pixel_index ]) == 3:
+                original_image_red, original_image_green, original_image_blue = original_image_data[pixel_index ]
+             else:
+                original_image_red, original_image_green, original_image_blue, alpha = original_image_data[pixel_index ]
              y = math.floor(pixel_index / image_width)
              x  = pixel_index % image_width          
              
@@ -154,4 +163,4 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
 
 
 if __name__ == '__main__':
-   get_whole_image_shape(False)
+   get_whole_image_shape(False, filename )

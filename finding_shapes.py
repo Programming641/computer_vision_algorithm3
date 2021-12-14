@@ -9,9 +9,9 @@ import math
 from collections import OrderedDict
 
 
-image_filename = 'green4 color group'
+image_filename = 'bird01_clr_grp'
 
-directory = "monochromatic light sources"
+directory = "bird"
 
 # directory is specified but does not contain /
 if directory != "" and directory.find('/') == -1:
@@ -30,9 +30,14 @@ shapes = OrderedDict()
 
 def compute_appearance_difference(current_pix, compare_pixel):
 
-   original_red, original_green, original_blue, a = current_pix
+   if len(current_pix) == 3:
+      original_red, original_green, original_blue = current_pix
 
-   compare_red, compare_green, compare_blue, a = compare_pixel
+      compare_red, compare_green, compare_blue = compare_pixel
+   else:
+      original_red, original_green, original_blue, alpha = current_pix
+
+      compare_red, compare_green, compare_blue, alpha = compare_pixel      
     
    red_difference = abs(original_red - compare_red)
    green_difference = abs(original_green - compare_green)

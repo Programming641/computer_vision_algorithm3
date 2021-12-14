@@ -114,19 +114,12 @@ def get_all_pixels_of_shapes(shape_ids, image_filename, directory_under_images="
 
 
 
-
-
-
-
-
-
-
 #  parameter in and out is a dictionary with following form.
 #    pixels[pixel_counter] = {}
 #    pixels[pixel_counter] ['x'] = x
 #    pixels[pixel_counter] ['y'] = y
     
-def get_boundary_pixels(pixels_dict, shape_id):
+def get_boundary_pixels(pixels_dict):
 
 
    pixel_boundaries = {}
@@ -838,12 +831,8 @@ def get_boundary_shapes(boundary_pixels):
 
 
 
-# IN parameters
-# pixel: pixel to find its direct neighbors
-# pixel form is
-# { 'x': 100, 'y': 200 }
-# pixels: pixels to look for pixel's direct neighbors
-# pixels parameter form is....
+
+# orig_pixels, comp_pixels parameter form is....
 #    pixels[pixel_counter] = {}
 #    pixels[pixel_counter] ['x'] = x
 #    pixels[pixel_counter] ['y'] = y
@@ -853,269 +842,190 @@ def get_boundary_shapes(boundary_pixels):
 # returns
 # all found direct neighbors in the same form as IN pixels parameter
 
-def find_direct_neighbors(pixel, pixels):
+def find_direct_neighbors(orig_pixels, comp_pixels):
+
+
+   original_smallest_y = min(int(d['y']) for d in orig_pixels.values())
+   original_largest_y = max(int(d['y']) for d in orig_pixels.values())
+   original_smallest_x = min(int(d['x']) for d in orig_pixels.values())
+   original_largest_x = max(int(d['x']) for d in orig_pixels.values())   
+   
+   
+   
+   # original shape's neighbor will be somewhere between original_smallest_y - 1 and original_largest_y + 1
+   orig_neighbor_top = original_smallest_y - 1
+   orig_neighbor_bottom = original_largest_y + 1
+   orig_neighbor_left = original_smallest_x - 1
+   orig_neighbor_right = original_largest_x + 1
+   
+   comp_smallest_y = min(int(d['y']) for d in comp_pixels.values())
+   comp_largest_y = max(int(d['y']) for d in comp_pixels.values())
+   comp_smallest_x = min(int(d['x']) for d in comp_pixels.values())
+   comp_largest_x = max(int(d['x']) for d in comp_pixels.values()) 
+   
+   maybe_neighbors_y = False
+   maybe_neighbors_x = False
+
+   # when compare shape is above original shape, compare shape's bottom has to be at the same place or below original top.
+   if comp_smallest_y <= orig_neighbor_top and comp_largest_y >= orig_neighbor_top:
+      maybe_neighbors_y = True
+   
+   # when compare shape is below original shape then compare shape's top has to be at the same place or above original shape's 
+   # bottom
+   elif comp_smallest_y > orig_neighbor_top and comp_smallest_y <= orig_neighbor_bottom:
+      maybe_neighbors_y = True
+      
+   # when comapre shape is at the same place or further left than original shape, compare shape's right has to be at the same 
+   # place or further right than original shape's left 
+   if comp_smallest_x <= orig_neighbor_left and comp_largest_x >= orig_neighbor_left:
+      maybe_neighbors_x = True
+      
+   # when compare shape is at the same place or further right than original shape, compare shape's left has to be at the same 
+   # place or further left than the original shape's right
+   elif comp_smallest_x > orig_neighbor_left and comp_smallest_x <= orig_neighbor_right:
+      maybe_neighbors_x = True
+   
+   if (not maybe_neighbors_y) or (not maybe_neighbors_x):
+      return False
 
    # all found direct neighbors
    found_neighbors = {}
+   nbr_counter = 1
+   found_neighbor_flag = False
    
-   for neighbor_search_pixel_id in pixels:
+   for orig_pixel in orig_pixels.values():
+      for comp_pixel in comp_pixels.values():
   
-      # looking for top direct neighbor
-      # direct top neighbor is: ( current x, y )  then direct top neighbor is ( top x, y - 1)
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for top direct neighbor
+         # if current pixel is ( current x, y )  then direct top neighbor is ( top x, y - 1)
+         if comp_pixel['x'] == orig_pixel['x'] and comp_pixel['y'] == orig_pixel['y'] - 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for top right direct neighbor
-      # direct top right neighbor is: ( current x, y ) then direct top right neighbor is ( top right x + 1, y - 1 )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for top right direct neighbor
+         # if current pixel is  ( current x, y ) then direct top right neighbor is ( top right x + 1, y - 1 )
+         if comp_pixel['x'] == orig_pixel['x'] + 1 and comp_pixel['y'] == orig_pixel['y'] - 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct right neighbor
-      # direct right neighbor is: ( current x, y )  then direct right neighbor is ( right x + 1, y )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y']:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct right neighbor
+         # if current pixel is ( current x, y )  then direct right neighbor is ( right x + 1, y )
+         if comp_pixel['x'] == orig_pixel['x'] + 1 and comp_pixel['y'] == orig_pixel['y']:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct bottom right neighbor
-      # direct bottom right neighbor is: ( current x, y )  then direct bottom right neighbor is ( bottom right x + 1, y + 1 )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] + 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct bottom right neighbor
+         # if current pixel is  ( current x, y )  then direct bottom right neighbor is ( bottom right x + 1, y + 1 )
+         if comp_pixel['x'] == orig_pixel['x'] + 1 and comp_pixel['y'] == orig_pixel['y'] + 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct bottom neighbor
-      # direct bottom neighbor is: ( current x, y )  then direct bottom neighbor is ( bottom x, y + 1 )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct bottom neighbor
+         # if current pixel is ( current x, y )  then direct bottom neighbor is ( bottom x, y + 1 )
+         if comp_pixel['x'] == orig_pixel['x'] and comp_pixel['y'] == orig_pixel['y'] + 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct bottom left neighbor
-      # direct bottom left neighbor is: ( current x, y )  then direct bottom left neighbor is ( bottom x - 1, y + 1 )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] + 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct bottom left neighbor
+         # if current pixel is ( current x, y )  then direct bottom left neighbor is ( bottom x - 1, y + 1 )
+         if comp_pixel['x'] == orig_pixel['x'] - 1 and comp_pixel['y'] == orig_pixel['y'] + 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct left neighbor
-      # direct left neighbor is: ( current x, y )  then direct left neighbor is ( bottom x - 1, y )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y']:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct left neighbor
+         # if current pixel is ( current x, y )  then direct left neighbor is ( bottom x - 1, y )
+         if comp_pixel['x'] == orig_pixel['x'] - 1 and comp_pixel['y'] == orig_pixel['y']:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-      # looking for direct top left neighbor
-      # direct top left neighbor is: ( current x, y )  then direct top left neighbor is ( bottom x - 1, y - 1 )
-      if pixel['x'] == pixels[neighbor_search_pixel_id]['x'] - 1 and pixel['y'] == pixels[neighbor_search_pixel_id]['y'] - 1:
-         found_neighbors[neighbor_search_pixel_id] = pixels[neighbor_search_pixel_id]
+         # looking for direct top left neighbor
+         # if current pixel is ( current x, y )  then direct top left neighbor is ( bottom x - 1, y - 1 )
+         if comp_pixel['x'] == orig_pixel['x'] - 1 and comp_pixel['y'] == orig_pixel['y'] - 1:
+            found_neighbors['orig' + str(nbr_counter)] = orig_pixel
+            found_neighbors['comp' + str(nbr_counter)] = comp_pixel
+            found_neighbor_flag = True
+            nbr_counter += 1
          
-
-   return found_neighbors
-
-
-
-
-
-
-# IN parameters
-# pixels: pixels to look for pixel's direct neighbors
-# pixels parameter form is....
-#    pixels[pixel_counter] = {}
-#    pixels[pixel_counter] ['x'] = x
-#    pixels[pixel_counter] ['y'] = y
-#
-# {1: {'x': 97, 'y': 52}, 2: {'x': 106, 'y': 52}......}
-#
-# returns
-# all found direct neighbors in the same form as IN pixels parameter
-
-def get_direct_neighbors(pixels):
-
-   # all found direct neighbors
-   found_neighbors = {}
-   
-
-   
-   for pixel_id in pixels:
-   
-      pixel_counter = 1
-  
-      # getting top direct neighbor
-      # direct top neighbor is: ( current x, y )  then direct top neighbor is ( top x, y - 1)
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'], 'y': pixels[pixel_id]['y'] - 1 }
-      pixel_counter += 1
-         
-      # getting top right direct neighbor
-      # direct top right neighbor is: ( current x, y ) then direct top right neighbor is ( top right x + 1, y - 1 )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y'] - 1 }
-      pixel_counter += 1
-       
-      # getting direct right neighbor
-      # direct right neighbor is: ( current x, y )  then direct right neighbor is ( right x + 1, y )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y']}
-      pixel_counter += 1
-         
-      # getting direct bottom right neighbor
-      # direct bottom right neighbor is: ( current x, y )  then direct bottom right neighbor is ( bottom right x + 1, y + 1 )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] + 1, 'y': pixels[pixel_id]['y'] + 1 }
-      pixel_counter += 1
-         
-      # getting direct bottom neighbor
-      # direct bottom neighbor is: ( current x, y )  then direct bottom neighbor is ( bottom x, y + 1 )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'], 'y': pixels[pixel_id]['y'] + 1 }
-      pixel_counter += 1
-       
-      # getting direct bottom left neighbor
-      # direct bottom left neighbor is: ( current x, y )  then direct bottom left neighbor is ( bottom x - 1, y + 1 )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] + 1 }
-      pixel_counter += 1
-
-      # getting direct left neighbor
-      # direct left neighbor is: ( current x, y )  then direct left neighbor is ( bottom x - 1, y )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] }
-      pixel_counter += 1         
-         
-      # getting direct top left neighbor
-      # direct top left neighbor is: ( current x, y )  then direct top left neighbor is ( bottom x - 1, y - 1 )
-      found_neighbors[str(pixel_id) + '_neighbor' + str(pixel_counter)] = { 'x': pixels[pixel_id]['x'] - 1, 'y': pixels[pixel_id]['y'] - 1 }       
-
-   return found_neighbors
+   if found_neighbor_flag: 
+      return found_neighbors
+   else:
+      return
 
 
 
-
-
-def find_direct_shape_neighbors(image_filename, directory_under_images):
-
-    # directory is passed in parameter but does not contain /
-    if directory_under_images != "" and directory_under_images.find('/') == -1:
-       directory_under_images +='/'
-
-    if os.path.exists("shapes") == False:
-       os.mkdir("shapes")
-
-
-    shapes_neighbors_filename = "shapes/" + image_filename + " shapes_neighbors.txt"
-
-    image_original = 'images/' + directory_under_images + image_filename + '.png'
-
-    read_original_image = Image.open(image_original)
-
-    original_width, original_height = read_original_image.size
-
-    # for storing shape's neighbor shapes
-    # { shape id: [ neighboor shape id1 , neighbor shape id2, ..... ] }
-    shape_neighbors = {}
-
-    already_processed_shapes = []
-
-
-    whole_image_shapes = recreate_shapes.get_whole_image_shape(True, image_filename, directory_under_images)  
-
-    for pixel_shape_id , pixel_xy_values in whole_image_shapes.items():  
-       # outer loop is for current running shape which looks for direct shape neighbors
-       
-       print(pixel_shape_id)
-       # every shape has its neighbors
-       shape_neighbors[pixel_shape_id] = []
-       
-       boundary_pixels = get_boundary_pixels(pixel_xy_values)
-       
-       boundary_direct_neigbors = get_direct_neighbors(boundary_pixels)
-       
-       # for storing boundary pixels' neighbor pixel indexes. if candidate neighbor shape contains any of the 
-       # index numbers in it, then this candidate is neighbor shape
-       pixel_indexes = []
-       
-       for shape_id, xy_values in boundary_direct_neigbors.items():
-       
-          pixel_index = xy_values['y'] * original_width + xy_values['x']
-          pixel_indexes.append(pixel_index)
-          
-       for neighbor_shape_id , neighbor_pixel_xy_values in whole_image_shapes.items():         
-          # inner loop is for finding neighbors for current running shape
-          
-          neighbor_pixel_indexes = []
-          
-          for key in neighbor_pixel_xy_values:
-       
-             neighbor_pixel_index = neighbor_pixel_xy_values[key]['y'] * original_width + neighbor_pixel_xy_values[key]['x']
-             neighbor_pixel_indexes.append(neighbor_pixel_index)
-          
-             
-          if not pixel_shape_id == neighbor_shape_id:  
-             for pixel_index in pixel_indexes:
-                if pixel_index in neighbor_pixel_indexes:
-
-                   shape_neighbors[pixel_shape_id].append(neighbor_shape_id)
-                   break
-                
-          elif pixel_shape_id == neighbor_shape_id or neighbor_shape_id in already_processed_shapes:
-             break        
-             
-        
-       if len(shape_neighbors[pixel_shape_id]) == 0:
-          shape_neighbors.pop(pixel_shape_id)
-             
-       already_processed_shapes.append(pixel_shape_id)
-
-
-    f = open(shapes_neighbors_filename, 'w')
-    f.write(str(shape_neighbors))
-    f.close()
-
-
-
-
-
-    return shape_neighbors
-
-
-
-
-def get_shapes_colors(filename, directory):
+def get_all_shapes_colors(filename, directory):
 
     # directory is specified but does not contain /
     if directory != "" and directory.find('/') == -1:
        directory +='/'
 
-    shapes_color_filename = "shapes/" + filename + " shapes_colors.txt"
+    image_file = 'images/' + directory + filename + '.png'
 
-    image_original = 'images/' + directory + filename + '.png'
+    read_image = Image.open(image_file)
 
-    read_original_image = Image.open(image_original)
+    image_width, image_height = read_image.size
 
-    image_width, image_height = read_original_image.size
-
-    image_pixels = read_original_image.getdata()
+    image_pixels = read_image.getdata()
 
     shapes_colors = {}
 
-    whole_image_shapes = recreate_shapes.get_whole_image_shape(True, filename, directory)
+    whole_image_shapes = read_files_functions.read_shapes_file(filename, directory)
 
     for shape_id , pixel_xy_values in whole_image_shapes.items():
-       print(shape_id)
     
        shapes_colors[shape_id] = {}
     
        # for storing RGB values for each shape. Initializing for each shape
-       Red = []
-       Green = []
-       Blue = []
+       Reds = []
+       Greens = []
+       Blues = []
     
+       pixels_color_counter = 0
        for pixel_id in pixel_xy_values:
 
           image_index = pixel_xy_values[pixel_id]['y'] * image_width + pixel_xy_values[pixel_id]['x']
 
-          r, g, b, a = image_pixels[ image_index ]
-          Red.append(r)
-          Green.append(g)
-          Blue.append(b)
+          if len(image_pixels[ image_index ]) == 3:
+             r, g, b = image_pixels[ image_index ]
+          else:
+             r, g, b, a = image_pixels[ image_index ]
 
+          Reds.append(r)
+          Greens.append(g)
+          Blues.append(b)
 
-          r = round(mean(Red))
-          g = round(mean(Green))
-          b = round(mean(Blue))
+          # maximum sample counts of each shape is 100
+          if pixels_color_counter > 100:
+             break
+
+          pixels_color_counter += 1
+          
+       r = round(mean(Reds))
+       g = round(mean(Greens))
+       b = round(mean(Blues))
        
-          shapes_colors[shape_id] = { 'r': r, 'g': g, 'b': b }
 
-
-    f = open(shapes_color_filename, 'w')
-    f.write(str(shapes_colors))
-    f.close()
+       
+       shapes_colors[shape_id] = { 'r': r, 'g': g, 'b': b }
 
     return shapes_colors
+
+
+
 
 
 

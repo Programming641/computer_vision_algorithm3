@@ -90,7 +90,11 @@ def read_shapes_file(image_filename, directory_under_images):
           for pixel_index in one_string_list:
              pixel_index = int(pixel_index)
          
-             original_image_red, original_image_green, original_image_blue = original_image_data[pixel_index ]
+             if len( original_image_data[pixel_index ] ) == 3:
+                original_image_red, original_image_green, original_image_blue = original_image_data[pixel_index ]
+             else:
+                original_image_red, original_image_green, original_image_blue, alpha = original_image_data[pixel_index ]
+                
              y = math.floor(pixel_index / image_width)
              x  = pixel_index % image_width          
              
@@ -106,7 +110,7 @@ def read_shapes_file(image_filename, directory_under_images):
 
 # data inside the file has the form below
 # {'6389': ['6735', '6389'], '12308': ['12654']....}
-def read_dict_key_value_list(image_filename, directory_under_images, filepath):
+def rd_dict_key_value_list(image_filename, directory_under_images, filepath):
 
     # directory is passed in parameter but does not contain /
     if directory_under_images != "" and directory_under_images.find('/') == -1:
