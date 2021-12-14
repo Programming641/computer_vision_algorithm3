@@ -14,11 +14,6 @@ execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
-## Warning
-
-Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_neighbors.py took about 30-40 min.
-
-
 ## Directory structure
 
 For this to work, you need to have below directory structure.
@@ -176,13 +171,11 @@ this is option but I recommend to do it because you would not know if you get th
 
 After executing this file, you will know which shape in one image is the which in another image.
 
-**cautions:** turning movement is not supported.
-
 
 ## Note
 Still needs improvements but it works acceptably for now.
 
-## Warning
+## Limitting search to reduce wait time dramatically
 It takes quite a long time! on intel i7? computer, it took about 30-40mins. You can limit the search by doing below.
 
 **Search for a shape in interest.**
@@ -253,5 +246,16 @@ if you wait until the end of the processing, matched pairs will be displayed lik
 the pair 4 38533. the pair 725 49680 are displayed by bug which I think I fixed now.
 
 
+# Warnings
 
-This is still in progress. I'm going to improve when I get time.
+Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_neighbors.py took about 30-40 min.
+
+
+This is still in progress. So what you read here may be outdated and not relevant anymore. I try to update when I find deprecated stuff.
+
+# Future plans
+
+If you have executed some of the scripts here, you notice that it takes awful lot of time to process. So my future plan is to change my code to numpy. and then possibly to gpu.
+
+- convert existing code to numpy.
+- possibly incorporate GPU.
