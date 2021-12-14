@@ -99,26 +99,6 @@ shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixel
 ![54720_boundary](https://user-images.githubusercontent.com/56218301/139615370-cbc099c6-9804-4a85-af05-5b38937c6917.png)
 
 
-
-## Error handling
-
-if you see error with alpha something something, then you need to add or delete alpha
-
-either
-
-   original_red, original_green, original_blue = current_pix
-
-   compare_red, compare_green, compare_blue = compare_pixel
-   
-or
-
-   original_red, original_green, original_blue, alpha = current_pix
-
-   compare_red, compare_green, compare_blue, alpha = compare_pixel
-   
-this works
-
-
 # Video Analysis
 
 ## Requirement
