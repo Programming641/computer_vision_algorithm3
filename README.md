@@ -5,11 +5,18 @@ finding shapes based on the appearance change. my first attempt to analyze pictu
 Windows 10
 Python 3
 
+## Note
+
 Please note that I am not using any conventional computer vision algorithm! algorithm are entirely created by me! The advantages of my algorithm are straightforward and intuitive, because for one, I am not using heavy mathmatics.
 
 execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
+
+## Warning
+
+Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_nbrs.py took about 30-40 min.
+
 
 ## Directory structure
 
