@@ -253,17 +253,17 @@ def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
     
 
    # { then comes ' then comes shape_id then comes : then comes space then comes [ then comes ' then shape_id then comes ' then comes ] then comes } 
-   single_nbr_ptn = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+   single_pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
           "}\'\]\}"
 
-   single_matches = re.findall(single_nbr_ptn, image_file_contents)
+   single_matches = re.findall(single_pattern, image_file_contents)
 
    # { then comes ' then comes shape_id then comes ' then comes : then comes space then comes [ then begins repeating group ' shape_id ', repeating group ends then comes
    # ' then comes shape_id then comes ' then comes ] then comes }
-   pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+   multi_pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + \
           "}\'\, )+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]\}"
                            
-   multi_matches = re.findall(pattern, image_file_contents)
+   multi_matches = re.findall(multi_pattern, image_file_contents)
       
    all_matches = single_matches + multi_matches
    
