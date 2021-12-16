@@ -5,15 +5,15 @@ from libraries import pixel_functions
 from collections import OrderedDict
 
 
-filename = "bird01_clr_grp"
+filename = "blue1_clr_grp"
 
-directory = "bird"
+directory = ""
 
 rpt_ptn_file = open("shapes/" + filename + "_rpt_ptn_shapes.txt" , "w" )
 
 nbr_filepath = "shapes/shape_nbrs/" + filename + "_shape_nbrs.txt"
 
-rpt_ptn_nbrs = read_files_functions.rd_dict_key_value_list(filename, directory, nbr_filepath)
+rpt_ptn_nbrs = read_files_functions.rd_dict_k_v_list2(filename, directory, nbr_filepath)
 
 
 # list of dictionaries. each dictionary contains list of neighbor_shape_id

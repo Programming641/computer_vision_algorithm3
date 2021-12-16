@@ -110,11 +110,11 @@ def read_shapes_file(image_filename, directory_under_images):
 
 # data inside the file has the form below
 # {'6389': ['6735', '6389'], '12308': ['12654']....}
-def rd_dict_key_value_list(image_filename, directory_under_images, filepath):
+def rd_dict_k_v_list(image_filename, directory_under_images, filepath):
 
     # directory is passed in parameter but does not contain /
     if directory_under_images != "" and directory_under_images.find('/') == -1:
-           directory_under_images +='/'
+       directory_under_images +='/'
 
 
     original_image = Image.open("images/" + directory_under_images + image_filename + ".png")
@@ -235,9 +235,39 @@ def rd_dict_key_value_list(image_filename, directory_under_images, filepath):
 
 
 
+# data inside the file has the form below
+# [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7274': ['7062', '7271', '8749', '37219']}, {'7285': ['7071', '7286', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]
+def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
+
+   # directory is passed in parameter but does not contain /
+   if directory_under_images != "" and directory_under_images.find('/') == -1:
+      directory_under_images +='/'
 
 
+   target_image = Image.open("images/" + directory_under_images + image_filename + ".png")
 
+   image_width, image_height = target_image.size
+
+   image_file = open(filepath)
+   image_file_contents = image_file.read()
+    
+
+   # { then comes ' then comes shape_id then comes : then comes space then comes [ then comes ' then shape_id then comes ' then comes ] then comes } 
+   single_nbr_ptn = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+          "}\'\]\}"
+
+   single_matches = re.findall(single_nbr_ptn, image_file_contents)
+
+   # { then comes ' then comes shape_id then comes ' then comes : then comes space then comes [ then begins repeating group ' shape_id ', repeating group ends then comes
+   # ' then comes shape_id then comes ' then comes ] then comes }
+   pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + \
+          "}\'\, )+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]\}"
+                           
+   multi_matches = re.findall(pattern, image_file_contents)
+      
+   all_matches = single_matches + multi_matches
+   
+   return all_matches
 
 
 
