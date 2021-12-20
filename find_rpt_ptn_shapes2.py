@@ -35,7 +35,6 @@ for o_counter in range ( 0, prev_rpt_ptn_shapes_len ):
          if i_counter - deleted >= len( prev_rpt_ptn_shapes ):
             break
             
-         print("current inner_dup_list " + str(prev_rpt_ptn_shapes[i_counter - deleted]) )
          if prev_rpt_ptn_shapes[i_counter - deleted] == prev_rpt_ptn_shapes[o_counter]:
             # itself
             continue
