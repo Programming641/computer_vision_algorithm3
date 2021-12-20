@@ -4,7 +4,7 @@ from libraries import pixel_functions
 
 import os
 
-filename = "rpt_ptn_test2"
+filename = "blue1_clr_grp"
 
 directory = ""
 

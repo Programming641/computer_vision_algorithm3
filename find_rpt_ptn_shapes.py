@@ -5,7 +5,7 @@ from libraries import pixel_functions
 from collections import OrderedDict
 
 
-filename = "blue1_clr_grp"
+filename = "office_outside_clr_grp"
 
 directory = ""
 
@@ -14,7 +14,6 @@ rpt_ptn_file = open("shapes/" + filename + "_rpt_ptn_shapes.txt" , "w" )
 nbr_filepath = "shapes/shape_nbrs/" + filename + "_shape_nbrs.txt"
 
 rpt_ptn_nbrs = read_files_functions.rd_dict_k_v_list2(filename, directory, nbr_filepath)
-
 
 # list of dictionaries. each dictionary contains list of neighbor_shape_id
 # [ { src_shape_id: [ neighbor_shape_id, neighbor_shape_id, neighbor_shape_id ] }, { src_shape_id: [ neighbor_shape_id, neighbor_shape_id ] }, ... ]
@@ -201,12 +200,16 @@ def process_neighbor ( cur_already_processed, shape_id,  neighbor_shape_id , cal
    if called_from_src or neighbor_same_color:
       # find neighbor_shape_id's neighbors
       for candidate_shape_id in shapeIDs_with_all_indexes:
+      
          for rpt_ptn_nbr in rpt_ptn_nbrs:
-            if rpt_ptn_nbr == neighbor_shape_id:
-               if candidate_shape_id in rpt_ptn_nbrs[neighbor_shape_id]:
-                  nested_nbr_shape_id = candidate_shape_id
+            for rpt_ptn_nbr_k, rpt_ptn_nbr_v in rpt_ptn_nbr.items():
+            
+               if rpt_ptn_nbr_k == neighbor_shape_id:
+                  if candidate_shape_id in rpt_ptn_nbr_v:
+
+                     nested_nbr_shape_id = candidate_shape_id
                      
-                  process_neighbor(cur_already_processed, neighbor_shape_id, nested_nbr_shape_id, False, cur_rpt_ptn )
+                     process_neighbor(cur_already_processed, neighbor_shape_id, nested_nbr_shape_id, False, cur_rpt_ptn )
                
                
 
@@ -217,14 +220,8 @@ def process_neighbor ( cur_already_processed, shape_id,  neighbor_shape_id , cal
 
 for src_shape_id in shapeIDs_with_all_indexes:
 
-   print("src_shape_id " + src_shape_id )
+   print("src_shape_id " + src_shape_id )  
    
-   # check if src_shape_id is already in the rpt_ptn_shapes
-   if rpt_ptn_shapes:
-      for rpt_ptn_shape in rpt_ptn_shapes:
-         for src_id , rpt_ptn_neighbors in rpt_ptn_shape.items():
-            if src_shape_id == src_id or src_shape_id in rpt_ptn_neighbors:
-               continue   
    
    # initialization of cur_rpt_ptn_counter
    cur_rpt_ptn_counter = 0
@@ -248,20 +245,29 @@ for src_shape_id in shapeIDs_with_all_indexes:
          continue
 
       # check if candidate_shape_id is already in the rpt_ptn_shapes
+      skip = False
       if rpt_ptn_shapes:
          for rpt_ptn_shape in rpt_ptn_shapes:
             for src_id , rpt_ptn_neighbors in rpt_ptn_shape.items():
                if candidate_shape_id == src_id or candidate_shape_id in rpt_ptn_neighbors:
-                  continue
+                  skip = True
+                  break
+            if skip:
+               break
+         if skip:
+            continue
+              
    
       for rpt_ptn_nbr in rpt_ptn_nbrs:
-         if rpt_ptn_nbr == src_shape_id:
-            if candidate_shape_id in rpt_ptn_nbrs[src_shape_id]:
+         for rpt_ptn_nbr_k, rpt_ptn_nbr_v in rpt_ptn_nbr.items():
+            if rpt_ptn_nbr_k == src_shape_id:
+            
+               if candidate_shape_id in rpt_ptn_nbr_v:
                   
-               # candidate_shape_id now becomes src_neighbor_id
-               src_neighbor_id = candidate_shape_id
+                  # candidate_shape_id now becomes src_neighbor_id
+                  src_neighbor_id = candidate_shape_id
 
-               process_neighbor(cur_already_processed, src_shape_id, src_neighbor_id,  True , cur_rpt_ptn )
+                  process_neighbor(cur_already_processed, src_shape_id, src_neighbor_id,  True , cur_rpt_ptn )
          
 
    # at the end of candidate_shape for src_neighbors. check if there was repeating pattern shape
@@ -298,15 +304,6 @@ for src_shape_id in shapeIDs_with_all_indexes:
             
 rpt_ptn_file.write(str( rpt_ptn_shapes ) )
 rpt_ptn_file.close()
-
-
-
-
-
-
-
-
-
 
 
 

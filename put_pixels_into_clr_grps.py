@@ -60,8 +60,11 @@ def get_closest_color(image_pixel):
           red_color_group = int(red_color_group)
           green_color_group = int(green_color_group)
           blue_color_group = int(blue_color_group)
-            
-          image_red, image_green, image_blue = image_pixel
+           
+          if len(image_pixel) == 3:
+             image_red, image_green, image_blue = image_pixel
+          else:
+             image_red, image_green, image_blue, alpha = image_pixel
             
           red_difference = abs(image_red - red_color_group)
           green_difference = abs(image_green - green_color_group)

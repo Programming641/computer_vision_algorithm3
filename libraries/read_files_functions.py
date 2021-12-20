@@ -236,7 +236,7 @@ def rd_dict_k_v_list(image_filename, directory_under_images, filepath):
 
 
 # data inside the file has the form below
-# [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7274': ['7062', '7271', '8749', '37219']}, {'7285': ['7071', '7286', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]
+# [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]
 def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
 
    # directory is passed in parameter but does not contain /
@@ -250,23 +250,34 @@ def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
 
    image_file = open(filepath)
    image_file_contents = image_file.read()
-    
+   
+   all_matches = []
 
    # { then comes ' then comes shape_id then comes : then comes space then comes [ then comes ' then shape_id then comes ' then comes ] then comes } 
    single_pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[\'[0-9]{1," + str(len(str(image_width * image_height))) + \
           "}\'\]\}"
 
    single_matches = re.findall(single_pattern, image_file_contents)
+   
+   
+   for m in single_matches:
+      # turning string represetation of dictionary to dictionary data type
+      m = ast.literal_eval(m)
 
+      all_matches.append(m)
+   
    # { then comes ' then comes shape_id then comes ' then comes : then comes space then comes [ then begins repeating group ' shape_id ', repeating group ends then comes
    # ' then comes shape_id then comes ' then comes ] then comes }
    multi_pattern = "\{\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\': \[(?:\'[0-9]{1," + str(len(str(image_width * image_height))) + \
           "}\'\, )+\'[0-9]{1," + str(len(str(image_width * image_height))) + "}\'\]\}"
                            
    multi_matches = re.findall(multi_pattern, image_file_contents)
-      
-   all_matches = single_matches + multi_matches
    
+   for m in multi_matches:
+      m = ast.literal_eval(m)
+      
+      all_matches.append(m)
+
    return all_matches
 
 
