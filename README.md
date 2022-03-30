@@ -215,6 +215,9 @@ taking difference between frames above
 2. execute finding_shapes.py on both images/frames.
 3. make sure to provide image and shape directory
 
+execute findimage_pixelchange.py
+
+
 execute process_pixch_btnframes.py
 
 ## matching algorithm between object( or named as "shape" in this program ) in image1 and object in image2
