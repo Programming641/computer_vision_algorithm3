@@ -159,6 +159,11 @@ Original Image
 
 # Video Analysis
 
+
+
+
+
+
 ## Requirement
 
 - You need frames from video
@@ -167,19 +172,23 @@ At least two consecutive frames are needed.
 
 you can use **ffmpeg** to get frames from the video
 
-- things in the video needs to be non-moving, only one moving is the camera.
-
 example video
 
 https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-877d-94d96134cf73.mp4
 
-in this example, camera is the only moving and things in the video are non-moving.
+## pixel change analysis between video frames ( usually between two consecutive frames from the same video )
 
-# Instruction
+### instruction
 
-### Instructional requirement
+1. execute putting_pixels_into_color_groups revision 2.py on *two consequtive* images/frames.
+2. execute finding_shapes.py on both images/frames.
+3. make sure to provide image and shape directory
 
-- you need to place read_files_functions.py under libraries directory
+
+
+## matching algorithm between object( or named as "shape" in this program ) in image1 and object in image2
+
+### instruction
 
 Once you obtain the frames from video, you need to execute finding_shapes.py and so on the same as image analysis written above.
 
@@ -188,9 +197,6 @@ Once you obtain the frames from video, you need to execute finding_shapes.py and
 3. execute recreate_shapes.py
 this is option but I recommend to do it because you would not know if you get the right shape from both images/frames.
 4. execute find_shapes_in_diff_frames test.py. you need to provide images/frames in this file.
-
-After executing this file, you will know which shape in one image is the which in another image.
-
 
 ## Note
 Still needs improvements but it works acceptably for now.
