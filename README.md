@@ -178,13 +178,45 @@ https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-
 
 ## pixel change analysis between video frames ( usually between two consecutive frames from the same video )
 
+### running examples
+
+original image1 original image2
+
+![1_clrgrp](https://user-images.githubusercontent.com/56218301/160788385-38ca6232-4da6-4390-a812-61c8dbc96f2a.png)
+
+![2_clrgrp](https://user-images.githubusercontent.com/56218301/160788396-436991c0-1027-4b96-b5ff-8caa668d86ce.png)
+
+
+taking difference between frames above
+
+![diff12result1](https://user-images.githubusercontent.com/56218301/160788480-e0ec30f6-fac7-48cf-8ade-0b31c67d3ceb.png)
+![diff12result2](https://user-images.githubusercontent.com/56218301/160788496-14a8bf87-ec82-43b5-a10a-f59624693d61.png)
+
+
+**another example**
+
+![birdflying1](https://user-images.githubusercontent.com/56218301/160788687-bc9e5be6-d146-4b41-932e-8f806ca02b21.png)
+![birdflying2](https://user-images.githubusercontent.com/56218301/160788722-189dac54-6aad-4a13-b6eb-4de6e64c210c.png)
+
+
+![birdflying1_clr_grp](https://user-images.githubusercontent.com/56218301/160788748-39ab3395-6e28-4699-a339-334d8a3b713e.png)
+![birdflying2_clr_grp](https://user-images.githubusercontent.com/56218301/160788759-69168a2e-35c2-4f19-bf27-61efc7558879.png)
+
+![diff12result1](https://user-images.githubusercontent.com/56218301/160788785-b54ff963-6a0c-4b57-8a36-b090b3aa3dc8.png)
+![diff12result2](https://user-images.githubusercontent.com/56218301/160788795-a4598c9d-78bb-4b55-930a-01fa6345f94d.png)
+
+
+
+
+
+
 ### instruction
 
 1. execute putting_pixels_into_color_groups revision 2.py on *two consequtive* images/frames.
 2. execute finding_shapes.py on both images/frames.
 3. make sure to provide image and shape directory
 
-
+execute process_pixch_btnframes.py
 
 ## matching algorithm between object( or named as "shape" in this program ) in image1 and object in image2
 
