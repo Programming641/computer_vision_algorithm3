@@ -2,22 +2,33 @@ import re
 import math
 from PIL import Image
 import time
+import sys
 import ast
 
-def read_shapes_file(image_filename, directory_under_images):
+
+
+# if clr_include is True then it will return the following
+# {0: [{0: (102, 153, 153)}, {1: (102, 153, 153)}, {181: (102, 153, 153)} .... ], ..... }
+# if not, then it returns the following
+# returned value has below form
+# {{{ }}} one dictionary containing two nested dictionaries
+# shapes[shapes_id][pixel_index] = {}
+# shapes[shapes_id][pixel_index]['x'] = x
+# shapes[shapes_id][pixel_index]['y'] = y
+def read_shapes_file(image_filename, directory, clr_include=None):
 
     # directory is passed in parameter but does not contain /
-    if directory_under_images != "" and directory_under_images.find('/') == -1:
-           directory_under_images +='/'
+    if directory != "" and directory[-1] != ('/'):
+           directory +='/'
 
 
-    original_image = Image.open("images/" + directory_under_images + image_filename + ".png")
+    original_image = Image.open("images/" + directory + image_filename + ".png")
 
     image_width, image_height = original_image.size
 
     original_image_data = original_image.getdata()
 
-    image_file = open('shapes/' + image_filename + '_shapes.txt')
+    image_file = open('shapes/' + directory + image_filename + '_shapes.txt')
     image_file_contents = image_file.read()
     
     '''
@@ -31,6 +42,8 @@ def read_shapes_file(image_filename, directory_under_images):
     match = re.findall(single_pixel_pattern, image_file_contents)
     
     shapes = {}
+    
+    shapes_clrs = {}
 
 
     # match contains all shapes
@@ -42,6 +55,8 @@ def read_shapes_file(image_filename, directory_under_images):
        shapes_id = match_temp.group().strip('(,')
  
        shapes[shapes_id] = {}
+       
+       shapes_clrs[shapes_id] = []
 
        # for single pixel shapes, shape_id is the same as pixel index number
        pixel_index = int(shapes_id)
@@ -49,9 +64,14 @@ def read_shapes_file(image_filename, directory_under_images):
        y = math.floor(pixel_index / image_width)
        x  = pixel_index % image_width          
                       
-       shapes[shapes_id][shapes_id] = {}
-       shapes[shapes_id][shapes_id]['x'] = x
-       shapes[shapes_id][shapes_id]['y'] = y
+
+       
+       if clr_include:
+          shapes_clrs[shapes_id].append( { shapes_id: original_image_data[ int(shapes_id) ] } )
+       else:
+          shapes[shapes_id][shapes_id] = {}
+          shapes[shapes_id][shapes_id]['x'] = x
+          shapes[shapes_id][shapes_id]['y'] = y         
 
 
     '''
@@ -76,6 +96,8 @@ def read_shapes_file(image_filename, directory_under_images):
        pixels_index_string = re.findall(pixels_list_pattern, shape)
 
        shapes[shapes_id] = {}
+       
+       shapes_clrs[shapes_id] = []
 
        #pixel_index_string contains one shape
        # pixels_index_string is a list but contains only one string
@@ -88,23 +110,34 @@ def read_shapes_file(image_filename, directory_under_images):
 
           # now iterate over all pixel index numbers
           for pixel_index in one_string_list:
-             pixel_index = int(pixel_index)
+             # pixels except shapeid pixel contains space before its digits so remove space
+             pixel_index = pixel_index.strip()
          
-             if len( original_image_data[pixel_index ] ) == 3:
-                original_image_red, original_image_green, original_image_blue = original_image_data[pixel_index ]
+             if len( original_image_data[ int(pixel_index) ] ) == 3:
+                original_image_red, original_image_green, original_image_blue = original_image_data[ int(pixel_index) ]
              else:
-                original_image_red, original_image_green, original_image_blue, alpha = original_image_data[pixel_index ]
+                original_image_red, original_image_green, original_image_blue, alpha = original_image_data[ int(pixel_index) ]
                 
-             y = math.floor(pixel_index / image_width)
-             x  = pixel_index % image_width          
+             y = math.floor( int(pixel_index) / image_width)
+             x  = int(pixel_index) % image_width          
              
-             shapes[shapes_id][pixel_index] = {}
-             shapes[shapes_id][pixel_index]['x'] = x
-             shapes[shapes_id][pixel_index]['y'] = y
+
+             
+             
+             if clr_include:
+                shapes_clrs[shapes_id].append( { pixel_index: original_image_data[ int(pixel_index) ] } )
+             else:
+                shapes[shapes_id][pixel_index] = {}
+                shapes[shapes_id][pixel_index]['x'] = x
+                shapes[shapes_id][pixel_index]['y'] = y                
              
              
     image_file.close()
-    return shapes
+    
+    if clr_include:
+       return shapes_clrs
+    else:
+       return shapes
 
 
 
