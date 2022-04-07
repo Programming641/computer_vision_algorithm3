@@ -268,6 +268,8 @@ shape match results are reasonably good!
 may not be stable at this time! I only did a quick test only but it worked great with test data.
 
 
+## Note
+this is not the end of this algorithm! I'm tired for now... I'll work on it when I get time and motivation....
 
 
 
