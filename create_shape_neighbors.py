@@ -4,15 +4,15 @@ from libraries import pixel_functions
 
 import os
 
-filename = "blue1_clr_grp"
+filename = "nbr_shape2"
 
 directory = ""
 
 # directory is specified but does not contain /
-if directory != "" and directory.find('/') == -1:
+if directory != "" and directory[-1] != ('/'):
    directory +='/'
 
-shape_neighbors_path = 'shapes/shape_nbrs/'
+shape_neighbors_path = 'shapes/' + directory + 'shape_nbrs/'
 
 if not os.path.isdir(shape_neighbors_path):
    os.makedirs(shape_neighbors_path)
@@ -24,7 +24,7 @@ shape_neighbor_file = open(shape_neighbors_path + filename + "_shape_nbrs.txt" ,
 # shapes[shapes_id][pixel_index] = {}
 # shapes[shapes_id][pixel_index]['x'] = x
 # shapes[shapes_id][pixel_index]['y'] = y
-shapeIDs_with_all_indexes = read_files_functions.read_shapes_file(filename, directory)
+shapeIDs_with_all_indexes = read_files_functions.rd_shapes_file(filename, directory)
 
 all_shape_neighbors = []
 
