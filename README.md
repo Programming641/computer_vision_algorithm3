@@ -37,7 +37,7 @@ top directory
 - First you need to execute put_pixels_into_clr_grps.py
 
 ~~~
-py put_pixels_into_clr_grps.py
+py  putpix_into_clgrp.py 
 ~~~
 
 You need to provide image filename as needed.
