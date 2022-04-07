@@ -220,98 +220,50 @@ execute findimage_pixelchange.py
 
 execute process_pixch_btnframes.py
 
-## matching algorithm between object( or named as "shape" in this program ) in image1 and object in image2
+## match image1 shape and its neighbor with image2 shape and its neighbor
 
 ### instruction
 
 Once you obtain the frames from video, you need to execute finding_shapes.py and so on the same as image analysis written above.
 
-1. execute putting_pixels_into_color_groups revision 2.py on *two consequtive* images/frames.
+1. execute putpix_into_clgrp.py on *two consequtive* images/frames.
 2. execute finding_shapes.py on both images/frames.
 3. execute recreate_shapes.py
-this is option but I recommend to do it because you would not know if you get the right shape from both images/frames.
-4. execute find_shapes_in_diff_frames test.py. you need to provide images/frames in this file.
+4. execute create_shape_neighbors.py
+5. execute shapes_within_same_object_move_together_test3.py
 
-## Note
-Still needs improvements but it works acceptably for now.
+![code change instruction](https://user-images.githubusercontent.com/56218301/162130519-c562663e-90e0-448c-a1c6-cc08d4b37249.png)
 
-## Limitting search to reduce wait time dramatically
-It takes quite a long time! on intel i7? computer, it took about 30-40mins. You can limit the search by doing below.
+make sure you have provided two images and specify directory. also choose target image shape "t_shape" from image1 
 
-**Search for a shape in interest.**
+![closestmatch shapes result](https://user-images.githubusercontent.com/56218301/162130697-0f679f4f-dfc5-4a8a-a934-bfb8ae9c1bd2.png)
 
-![無題](https://user-images.githubusercontent.com/56218301/144179394-297b1930-7c0d-4367-9847-14e5bcdf8b99.png)
+if you run it, first you will see image1 shape matching with image2 shapes like above.
 
+![execution result](https://user-images.githubusercontent.com/56218301/162130908-20073ef8-0aa3-42af-b2c5-a80fe0baeaba.png)
 
-**put if statement like below to limit search for a shape chosen above.**
-
-find_shapes_in_diff_frames.py
-
-![無題](https://user-images.githubusercontent.com/56218301/145309985-9bc2a74b-7203-4ad3-9446-93198aeac163.png)
+then you will see image1 shape and its neighbor shape match with image2 shape and its neighbor.
 
 
+![execution result shape image](https://user-images.githubusercontent.com/56218301/162131994-a819ec89-3d42-4ecc-a9eb-b36073106fab.png)
 
-## Debugging
+this means that image1 shape and its neighbor moved to the new location in image2 and they now became image2 shape and its neighbor
 
-You can see where the matches are made in the shape image like below. Below image is for the matching by virtical boundary processing.
-
-To enable debugging, change the debug flag to true
-
-![無題](https://user-images.githubusercontent.com/56218301/145309175-fa9ec43f-2639-4027-aafd-2704f593a3fd.png)
-
-![無題](https://user-images.githubusercontent.com/56218301/145309302-64928a71-5753-44d3-9502-9b64f273fc93.png)
-
-You can see where the matches are made are highlighted
-
-It shows the function and original shape id and compare shape id numbers
-
-![無題](https://user-images.githubusercontent.com/56218301/145309587-e4b30d10-1436-429f-a3de-66fcf1186cd3.png)
+### another example
 
 
-## Execution results
-
-two frames
-
-![hanger005_color_group](https://user-images.githubusercontent.com/56218301/145309728-8df4d433-c99d-4b71-a8e6-d8546d290166.png)
-![hanger006_color_group](https://user-images.githubusercontent.com/56218301/145309737-f8a858b1-6aa7-46eb-ac3a-8764e77317cc.png)
 
 
-if you wait until the end of the processing, matched pairs will be displayed like below.
 
 
-![1](https://user-images.githubusercontent.com/56218301/145308237-46d4979f-55a3-4683-8b9e-ef5414c46ce1.png)
-![2](https://user-images.githubusercontent.com/56218301/145308240-05e53c6b-2c2b-4d0a-8840-d108b1a25de8.png)
-![3](https://user-images.githubusercontent.com/56218301/145308246-f450a961-c98c-4dbd-a04d-1a099f3410af.png)
-![4](https://user-images.githubusercontent.com/56218301/145308252-f3b50532-364e-4381-8ffe-dfce65327fb3.png)
-![5](https://user-images.githubusercontent.com/56218301/145308254-d644115a-8799-4f66-bfe2-faaf2767da37.png)
-![6](https://user-images.githubusercontent.com/56218301/145308800-8cd0032e-ae36-4cf8-8696-fc40e4ddf7a0.png)
-![7](https://user-images.githubusercontent.com/56218301/145308262-7353629f-a800-49f9-908e-0058414f3bfe.png)
-![8](https://user-images.githubusercontent.com/56218301/145308267-6a2e010a-0da8-45d8-8440-5b59e88fed84.png)
-![9](https://user-images.githubusercontent.com/56218301/145308280-62bfdd08-b007-460e-a529-bd9f90da1913.png)
-![10](https://user-images.githubusercontent.com/56218301/145308287-4ee70d3a-a39e-4884-9629-57fc3e2040d8.png)
-![11](https://user-images.githubusercontent.com/56218301/145308291-836fffa4-9d6b-477d-a1cd-d0db0b6f9406.png)
-![12](https://user-images.githubusercontent.com/56218301/145308295-ab01943b-09d0-455d-9500-eaf8ea54993a.png)
-![13](https://user-images.githubusercontent.com/56218301/145308309-57ec36ed-ba69-4f15-9003-ee53c0af6eec.png)
-![14](https://user-images.githubusercontent.com/56218301/145308313-63ef420d-2438-4521-baa9-af0106489066.png)
-![15](https://user-images.githubusercontent.com/56218301/145308318-6b7a7f19-4f55-4945-9696-9c7a3eb9095b.png)
-![16](https://user-images.githubusercontent.com/56218301/145308836-2d81a571-a339-43da-95c1-92631a8228c4.png)
-![17](https://user-images.githubusercontent.com/56218301/145308841-1c4ef438-b475-405d-92d4-dfd806ced19d.png)
-![18](https://user-images.githubusercontent.com/56218301/145308335-36843365-7ae6-4c19-bd45-939d19822e79.png)
-![19](https://user-images.githubusercontent.com/56218301/145308342-b321fed4-db0b-4a39-be7a-28f9c22c72e2.png)
-![20](https://user-images.githubusercontent.com/56218301/145308350-78dc8550-3a2e-4cff-81ce-c046fdc5cb5b.png)
-![21](https://user-images.githubusercontent.com/56218301/145308354-66161399-e633-49de-bfa4-8741d2a042ae.png)
-![22](https://user-images.githubusercontent.com/56218301/145308358-67dbfa60-b45b-46da-a262-bb4b16522fd5.png)
-![23](https://user-images.githubusercontent.com/56218301/145308360-9b028d22-97ae-4a81-be01-6843b8c7f20a.png)
 
-the pair 4 38533. the pair 725 49680 are displayed by bug which I think I fixed now.
+## Caution
+may not be stable at this time! I only did a quick test only but it worked great with test data.
 
 
-# Warnings
-
-Some of the python scripts take quite a long time to execute! On my i7 computer, create_shape_neighbors.py took about 30-40 min.
 
 
-This is still in progress. So what you read here may be outdated and not relevant anymore. I try to update when I find deprecated stuff.
+
 
 # Future plans
 
