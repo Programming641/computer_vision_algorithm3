@@ -156,7 +156,6 @@ im1s_pixels = read_files_functions.rd_shapes_file(im1file, directory)
 im2s_pixels = read_files_functions.rd_shapes_file(im2file, directory)
 
 
-'''
 all_shape_match_results = []
 
 # this is used for displaying closest matched images
@@ -297,9 +296,7 @@ for all_shape_match_result in all_shape_match_results:
 
 
 print(closest_match_shapes)
-'''
 
-closest_match_shapes = [['34440', '34443', 0.8128571428571428], ['35573', '35574', 0.6770255271920089], ['36068', '34622', 0.8484848484848485], ['36116', '36119', 0.7171717171717171], ['36595', '33385', 0.6842105263157895], ['36901', '37260', 0.7458410351201479], ['37463', '33385', 0.7058823529411765], ['37864', '38212', 0.6684491978609626], ['38342', '37260', 0.7471264367816092], ['38759', '38761', 0.6791840519239685], ['38964', '33385', 0.7058823529411765], ['38971', '33385', 0.6842105263157895], ['39119', '39488', 0.6804123711340206], ['39683', '39488', 0.7120075046904315]]
 
 # get match that has the largest match value
 best_match = max(closest_match_shapes, key=lambda x: x[2])
