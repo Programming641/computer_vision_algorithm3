@@ -15,7 +15,7 @@ import ast
 # shapes[shapes_id][pixel_index] = {}
 # shapes[shapes_id][pixel_index]['x'] = x
 # shapes[shapes_id][pixel_index]['y'] = y
-def read_shapes_file(image_filename, directory, clr_include=None):
+def rd_shapes_file(image_filename, directory, clr_include=None):
 
     # directory is passed in parameter but does not contain /
     if directory != "" and directory[-1] != ('/'):
@@ -140,10 +140,10 @@ def read_shapes_file(image_filename, directory, clr_include=None):
        return shapes
 
 
-
+# read dict key value list
 # data inside the file has the form below
 # {'6389': ['6735', '6389'], '12308': ['12654']....}
-def rd_dict_k_v_list(image_filename, directory_under_images, filepath):
+def rd_dict_k_v_l(image_filename, directory_under_images, filepath):
 
     # directory is passed in parameter but does not contain /
     if directory_under_images != "" and directory_under_images.find('/') == -1:
@@ -266,22 +266,23 @@ def rd_dict_k_v_list(image_filename, directory_under_images, filepath):
        
        
 
-
-
+# not good to use this form of data structure!! you could just use ONE dictionary with list as its value. not list of dictionaries.
+# maybe when you need to use this method is when you plan to add data to the dictionary later on. 
+# read list dict key value list
 # data inside the file has the form below
 # [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]
-def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
+def rd_ldict_k_v_l(image_filename, directory):
 
    # directory is passed in parameter but does not contain /
-   if directory_under_images != "" and directory_under_images.find('/') == -1:
-      directory_under_images +='/'
+   if directory != "" and directory[-1] != ('/'):
+      directory +='/'
 
 
-   target_image = Image.open("images/" + directory_under_images + image_filename + ".png")
+   target_image = Image.open("images/" + directory + image_filename + ".png")
 
    image_width, image_height = target_image.size
 
-   image_file = open(filepath)
+   image_file = open("shapes/" + directory + "shape_nbrs/" + image_filename + "_shape_nbrs.txt")
    image_file_contents = image_file.read()
    
    all_matches = []
@@ -312,6 +313,69 @@ def rd_dict_k_v_list2(image_filename, directory_under_images, filepath):
       all_matches.append(m)
 
    return all_matches
+
+
+
+
+
+
+
+# file to read has the following format
+# [ { im1shapeid: { "staythesame" : [ { im2shapeid : [matched pixel list], "staythesame count" }, { another staythesame im2shapeid : [ matched pixel list ], "another staythesame count" } ],
+# "change": [ { "changed im2shapeid": [ matched pixel list ], "count" }, { "another changed im2shapeid": [ another matched pixel list ], "another count" } ] } ]
+#
+# im1file -> image1 filename, im2file -> image2 filename, directory is self explanatory, imshape -> image shape
+def rd_imdiff( im1file, im2file, directory, imshape ):
+
+   # directory is passed in parameter but does not contain /
+   if directory != "" and directory[-1] != ('/'):
+      directory +='/'
+
+
+   original_image = Image.open("images/" + directory + im1file + ".png")
+
+   image_width, image_height = original_image.size
+
+   original_image_data = original_image.getdata()
+
+   image_file = open('shapes/' + directory + im1file[0:1] + "." + im2file[0:1] + im1file[1: len(im1file) ] + "_diff" + imshape + 'shapes.txt')
+   image_file_contents = image_file.read()
+
+
+   all_imdiff = []
+
+   shape_ptn = '\{\'[0-9]{1,' + str(len(str(image_width * image_height))) + '}.+?\}\]\}\}'
+                           
+   matches = re.findall(shape_ptn, image_file_contents)
+
+   for match in matches:
+      res = ast.literal_eval(match)
+
+      all_imdiff.append( res )
+
+
+
+
+   return all_imdiff
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

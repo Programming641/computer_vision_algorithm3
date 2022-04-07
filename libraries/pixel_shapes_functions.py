@@ -15,7 +15,7 @@ def get_all_pixels_of_shapes(shape_ids, image_filename, directory_under_images="
 
 
     # directory is passed in parameter but does not contain /
-    if directory_under_images != "" and directory_under_images.find('/') == -1:
+    if directory_under_images != "" and directory_under_images[-1] != "/":
        directory_under_images +='/'
 
     shapes_file = open("shapes/" + directory_under_images + image_filename + "_shapes.txt")
@@ -188,13 +188,100 @@ def get_shapeid_frompix( pixel, imfile, imdir ):
        
        shapepix[shapeid] = allpix
        
-       return shapepix
+       if pixel == shapeid or pixel in shapepix.values():
+       
+          return shapepix
 
 
 
 
 
+# get all shapeids for the given parameter pixel index numbers
+# input parameter "pixels" is list containing pixel index numbers
+def get_shapeids_frompixels( pixels, imfile, imdir ):
 
+
+    # directory is passed in parameter but does not contain /
+    if imdir != "" and imdir[-1] != ('/'):
+       imdir +='/'
+
+    shapes_file = open("shapes/" + imdir + imfile + "_shapes.txt")
+    shapes_file_contents = shapes_file.read()
+
+
+    img = Image.open("images/" + str(imdir) + imfile + ".png")
+
+    image_width, image_height = img.size
+
+
+
+    # single pixel shapes
+    # ( then comes [0-9]{1, len(str(image_width * image_height))} then comes , then comes 
+    # space then comes [ then comes [0-9]{1,len(str(image_width * image_height))} then comes ] then comes )
+    # single_pixel_pattern = '\([0-9]{1, ' + str(len(str(image_width * image_height))) + '}, \[[0-9]{1,' + str(len(str(image_width * image_height))) + '}\]\)'
+
+    single_pixel_pattern = '\([0-9]{1,' + str(len(str(image_width * image_height))) + '}, \[[0-9]{1,' + \
+                           str(len(str(image_width * image_height))) + '}\]\)'
+                           
+    match = re.findall(single_pixel_pattern, shapes_file_contents)
+
+
+    # shapes_with_indexes[matched shape id ] = [ pixel index1, pixel index2 .... ]
+    shapepix = {}
+
+    # match contains all image shapes
+    for shape in match:
+
+
+       shapes_id_pattern = '\([0-9]{1,' + str(len(str(image_width * image_height))) + '},'
+       match_temp = re.search(shapes_id_pattern, shape)
+       shapeid = match_temp.group().strip('(,')
+           
+       if shapeid in pixels:
+          shapepix[shapeid] = [ shapeid ]
+
+
+
+
+    '''
+    ( then comes [0-9]{1, len(str(image_width * image_height))} then comes , then comes space then comes [ then comes 
+    GROUPSTART [0-9]{1,len(str(image_width * image_height))} then comes , then comes space GROUPEND then comes [0-9]{1,len(str(image_width * image_height))} 
+    then comes ] then comes )
+
+    GROUPSTART (      GROUPEND )
+    '''
+    multiple_pixel_pattern = '\([0-9]{1,' + str(len(str(image_width * image_height))) + '}, \[(?:[0-9]{1,' + str(len(str(image_width * image_height))) + \
+                             '},\s{1})+[0-9]{1,' + str(len(str(image_width * image_height))) + '}\]\)'
+    match = re.findall(multiple_pixel_pattern, shapes_file_contents)
+
+
+    # match contains all image shapes
+    for shape in match:
+
+       # getting shapeid
+       shapes_id_pattern = '\([0-9]{1,' + str(len(str(image_width * image_height))) + '},'
+       match_temp = re.search(shapes_id_pattern, shape)
+       # removing "(,"
+       shapeid = match_temp.group().strip('(,')
+       
+       # get list of all pixels of a shape
+       # start_pixel_list
+       start_pix_l = shape.find("[")
+       end_pix_l = shape.find("]")
+       
+       allpix = shape[ start_pix_l : end_pix_l + 1]
+       allpix = allpix.strip('][').split(', ')
+       
+       
+       
+       # check if image pixel is containd in input pixels
+       for pix in allpix:
+          if pix in pixels:
+             shapepix[shapeid] = allpix
+
+
+
+    return shapepix
 
 
 
@@ -935,8 +1022,9 @@ def get_boundary_shapes(boundary_pixels):
 #
 # {1: {'x': 97, 'y': 52}, 2: {'x': 106, 'y': 52}......}
 #
-# returns
-# all found direct neighbors in the same form as IN pixels parameter
+# returns False or None if any pixel of orig_pixels is not neighbor with any pixel of comp_pixels
+# returns matched orig and comp index numbers
+# returns { orig1: orig index, comp1: comp index, orig2: orig index, comp2: comp index..... }
 
 def find_direct_neighbors(orig_pixels, comp_pixels):
 
@@ -1066,7 +1154,7 @@ def find_direct_neighbors(orig_pixels, comp_pixels):
 def get_all_shapes_colors(filename, directory):
 
     # directory is specified but does not contain /
-    if directory != "" and directory.find('/') == -1:
+    if directory != "" and directory[-1] != ('/'):
        directory +='/'
 
     image_file = 'images/' + directory + filename + '.png'
@@ -1079,7 +1167,7 @@ def get_all_shapes_colors(filename, directory):
 
     shapes_colors = {}
 
-    whole_image_shapes = read_files_functions.read_shapes_file(filename, directory)
+    whole_image_shapes = read_files_functions.rd_shapes_file(filename, directory)
 
     for shape_id , pixel_xy_values in whole_image_shapes.items():
     
@@ -1422,7 +1510,7 @@ def highlight_matches( shape_ids, filenames, xy_coordinates, func_name ):
 # create images from the given shapes.
 # in_shapes are the list containing shapeids
 # [ shapeid1, shapeid2, ..... ]
-def cr_im_from_shapeslist( imfname, imdir, in_shapes ):
+def cr_im_from_shapeslist( imfname, imdir, in_shapes, newim_fname ):
 
    shapes_filename = imfname + "_shapes.txt"
 
@@ -1471,8 +1559,6 @@ def cr_im_from_shapeslist( imfname, imdir, in_shapes ):
       shapeindex = re.match(shapeindex_ptn, shape)
       
       shapeindex = shapeindex.group().replace("(", "")
-
-      print("shapeindex " + shapeindex )
       
       # current image shape is not in the given shapes list
       if not shapeindex in in_shapes:
@@ -1543,7 +1629,7 @@ def cr_im_from_shapeslist( imfname, imdir, in_shapes ):
 
 
 
-   new_image.save("shapes/" + imdir + shapes_filename[:-4] + '.png')
+   new_image.save("shapes/" + imdir + newim_fname + '.png')
       
    shapes_file.close() 
 
