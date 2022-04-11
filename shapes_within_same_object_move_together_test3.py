@@ -39,13 +39,11 @@ def get_rel_pos_contact_areas( contact_areas, shape_boundary_p, imfile, director
       # count how many current pixel is in contact_areas
       pindex_count = list( contact_areas.values() ).count( cnta_pix )
 
-      pindex = cnta_pix["y"] * imwidth + cnta_pix["x"] 
+      pindex = str( cnta_pix["y"] * imwidth + cnta_pix["x"] )
 
       rel_pos.append( { pindex: [ ], "count": str(pindex_count) } )
       
-      
-   
-      pix_index = rel_pos.index( { pindex: [ ], "count": str(pindex_count) } )
+      pix_index = rel_pos.index( { pindex : [ ], "count": str(pindex_count) } )
    
    
       for non_ca_p in non_contact_areas:
@@ -65,12 +63,12 @@ def get_rel_pos_contact_areas( contact_areas, shape_boundary_p, imfile, director
 
 
 
-im1file = "2clrgrp"
-im2file = "3clrgrp"
+im1file = "nbr_shape1"
+im2file = "nbr_shape2"
 
 filenames = [ im1file, im2file ]
 
-directory = "videos/hanger"
+directory = ""
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != ('/'):
@@ -82,7 +80,7 @@ im1width, im1height = img1.size
 
 
 
-t_shape = "38759"
+t_shape = "2420"
 
 
 im1s_nbrs = read_files_functions.rd_ldict_k_v_l( im1file, directory )
@@ -144,10 +142,6 @@ for im1shapeid, im1s_clr in im1s_clrs.items():
                same_clr_shapes.append( [ im1shapeid, im2shapeid ] )
 
 
-
-print(same_clr_shapes)
-
-
 # returned value has below form
 # shapes[shapes_id][pixel_index] = {}
 # shapes[shapes_id][pixel_index]['x'] = x
@@ -157,7 +151,7 @@ im2s_pixels = read_files_functions.rd_shapes_file(im2file, directory)
 
 
 all_shape_match_results = []
-
+'''
 # this is used for displaying closest matched images
 root = tkinter.Tk()
 
@@ -192,7 +186,7 @@ for im1shapeid in im1s_pixels:
       im2bnd_pixels = pixel_shapes_functions.get_boundary_pixels(im2s_pixels[im2shapeid] )
    
       # match shapes based on relative positions of boundary pixels
-      bnd_rel_result = same_shapes_btwn_frames.boundary_rel_pos(im1bnd_pixels, im2bnd_pixels, shape_ids)
+      bnd_rel_result = same_shapes_btwn_frames.boundary_rel_pos(im1bnd_pixels, im2bnd_pixels, filenames, directory )
       
       bnd_result = 0
       bnd_result = same_shapes_btwn_frames.process_boundaries(im1bnd_pixels, im2bnd_pixels, shape_ids, filenames)
@@ -210,7 +204,7 @@ for im1shapeid in im1s_pixels:
          if result:
             match_result += round( result )
          if bnd_rel_result:
-            match_result += round( bnd_rel_result * 1.6 )
+            match_result += round( bnd_rel_result )
 
 
          temp['im2shapeid'] = im2shapeid
@@ -296,13 +290,18 @@ for all_shape_match_result in all_shape_match_results:
 
 
 print(closest_match_shapes)
+'''
 
+closest_match_shapes = [ ['1802', '4213', 203], ['2420', '2420', 12321]]
 
 # get match that has the largest match value
 best_match = max(closest_match_shapes, key=lambda x: x[2])
 
 
-
+# [{'im1shapeid': '2420', 'im1nbr_sid': '1802', 'im2shapeid': '2420', 'im2nbr_sid': '4213', 
+# 'pixels': [ {'2441': {'im2pixels': [{'pixel': '2441', 'count': 104, 'im2pixel_count': '1'}, {'pixel': '2442', 'count': 106, 'im2pixel_count': '2'}... ]}, 'im1pixel_count': '1'}, 
+#  {'2442': {'im2pixels': [{'pixel': '2441', 'count': 102, 'im2pixel_count': '1'}, {'pixel': '2442', 'count': 104, 'im2pixel_count': '2'}...]}, 'im1pixel_count': '2'}....], 
+# 'im1rel_pix_c': '107', 'im2rel_pix_c': '107'}]
 im1im2rel_p_matches = []
 
 
@@ -355,126 +354,117 @@ for closest_match_shape in closest_match_shapes:
    
    
    if im1rel_pos and im2rel_pos:
+      im1im2rel_p_matches.append( { "im1shapeid": best_match[0],  "im1nbr_sid": closest_match_shape[0], "im2shapeid": best_match[1], "im2nbr_sid": closest_match_shape[1],
+                                    "pixels": [], "im1rel_pix_c": None, "im2rel_pix_c": None } )
+      cur_shape_index = im1im2rel_p_matches.index( { "im1shapeid": best_match[0],  "im1nbr_sid": closest_match_shape[0], "im2shapeid": best_match[1], "im2nbr_sid": closest_match_shape[1],
+                                    "pixels": [], "im1rel_pix_c": None, "im2rel_pix_c": None } ) 
+
       for im1rep in im1rel_pos:
          
          for im1pixel, im1pindexes in im1rep.items():
             
+
+            
             if im1pixel == "count" and type( im1pindexes ) != list :
-               im1im2rel_p_matches[impindex_l]["im1pixel_count"] = im1pindexes
+               im1im2rel_p_matches[cur_shape_index]["pixels"][im1p_index]["im1pixel_count"] = im1pindexes
                
                continue
+            else:
+               im1im2rel_p_matches[cur_shape_index]["im1rel_pix_c"] = str( len( im1pindexes ) )
                
-            print("im1pixel " + str(im1pixel) )
+               im1im2rel_p_matches[cur_shape_index]["pixels"].append( { im1pixel: {"im2pixels": [] } } )
+               im1p_index = im1im2rel_p_matches[cur_shape_index]["pixels"].index( { im1pixel: {"im2pixels": [] } } )               
+                 
+            print("im1pixel " + im1pixel )
 
             for im2rep in im2rel_pos:
                for im2pixel, im2pindexes in im2rep.items():
                   if im2pixel == "count" and type( im2pindexes ) != list :
-                     im1im2rel_p_matches[impindex_l]["im2pixel_count"] = im2pindexes
+                     im1im2rel_p_matches[cur_shape_index]["pixels"][im1p_index][im1pixel]["im2pixels"][im2pixels_index]["im2pixel_count"] = im2pindexes
                      continue
+                  else:
+                     im1im2rel_p_matches[cur_shape_index]["im2rel_pix_c"] = str( len( im2pindexes ) )
 
-                  im1im2rel_p_matches.append( { "im1shapeid": best_match[0],  "im1nbr_sid": closest_match_shape[0], "im1pixel": im1pixel, "im1rel_pix_c": str( len(im1pindexes) ) } )
-                  impindex_l = im1im2rel_p_matches.index( { "im1shapeid": best_match[0],  "im1nbr_sid": closest_match_shape[0], "im1pixel": im1pixel, "im1rel_pix_c": str( len(im1pindexes) ) }  )
 
                   
                   cur_match_counter = 0
-                  im1im2rel_p_matches[impindex_l]["im2shapeid"] = best_match[1]
-                  im1im2rel_p_matches[impindex_l]["im2nbr_sid"] = closest_match_shape[1]
-                  im1im2rel_p_matches[impindex_l]["im2pixel"] = im2pixel
-                  im1im2rel_p_matches[impindex_l]["im2rel_pix_c"] = str( len(im2pindexes) )
+
+                  im1im2rel_p_matches[cur_shape_index]["pixels"][im1p_index][im1pixel]["im2pixels"].append( {"pixel": im2pixel} )
+                  im2pixels_index = im1im2rel_p_matches[cur_shape_index]["pixels"][im1p_index][im1pixel]["im2pixels"].index( {"pixel": im2pixel} )
+                  
+                  
                   
                   for im1pindex in im1pindexes:
                      
                      for im2pindex in im2pindexes:
                            
-                        if im1pindex["x"] + 1 <= im2pindex["x"] and im1pindex["x"] - 1 <= im2pindex["x"]:
-                           if im1pindex["y"] + 1 <= im2pindex["y"] and im1pindex["y"] - 1 <= im2pindex["y"]:
+                        if im1pindex["x"] + 1 >= im2pindex["x"] and im1pindex["x"] - 1 <= im2pindex["x"]:
+                           if im1pindex["y"] + 1 >= im2pindex["y"] and im1pindex["y"] - 1 <= im2pindex["y"]:
                               cur_match_counter += 1
                               break
       
-                  im1im2rel_p_matches[impindex_l]["count"] = cur_match_counter
+                  im1im2rel_p_matches[cur_shape_index]["pixels"][im1p_index][im1pixel]["im2pixels"][im2pixels_index]["count"] = cur_match_counter
 
     
     
-               
-print("im1im2rel_p_matches")
-print(im1im2rel_p_matches)
+# im1im2rel_p_matches
+#    
+# [{'im1shapeid': '2420', 'im1nbr_sid': '1802', 'im2shapeid': '2420', 'im2nbr_sid': '4213', 
+# 'pixels': [ {'2441': {'im2pixels': [{'pixel': '2441', 'count': 104, 'im2pixel_count': '1'}, {'pixel': '2442', 'count': 106, 'im2pixel_count': '2'}... ]}, 'im1pixel_count': '1'}, 
+#  {'2442': {'im2pixels': [{'pixel': '2441', 'count': 102, 'im2pixel_count': '1'}, {'pixel': '2442', 'count': 104, 'im2pixel_count': '2'}...]}, 'im1pixel_count': '2'}....], 
+# 'im1rel_pix_c': '107', 'im2rel_pix_c': '107'}, { another image1 and image2 shape }]
 
 
 # im1rel_pix_c and im2rel_pix_c are counts of non-contact area pixels
-# [ {'im1shapeid': '36901', 'im1nbr_sid': '36360', 'im1rel_pix_c': '35', 'im2shapeid': '37260', 'im2nbr_sid': '36540', 'im2rel_pix_c': '56', 'im1p_total': im1p_total, 'im2p_total': im2p_total,
-#    'im1pixels': [ all image1 pixel indexes ], 'im2pixels': [ all image2 pixel indexes ]},
-#   {'im1pixel': 35487, 'im2pixel': 36903, 'count': 0, 'im2pixel_count': '1', 'im1pixel_count': '3'}, 
-#   {'im1pixel': 35488, 'im2pixel': 36903, 'count': 0, 'im2pixel_count': '1', 'im1pixel_count': '3'}, ...... ]
-im1im2nbr_rslt = []
-im1im2nbr_rslt.append( { "im1shapeid": im1im2rel_p_matches[0]["im1shapeid"], "im1nbr_sid": im1im2rel_p_matches[0]["im1nbr_sid"],
-                         "im1rel_pix_c": im1im2rel_p_matches[0]["im1rel_pix_c"], "im2shapeid": im1im2rel_p_matches[0]["im2shapeid"],
-                         "im2nbr_sid": im1im2rel_p_matches[0]["im2nbr_sid"], "im2rel_pix_c": im1im2rel_p_matches[0]["im2rel_pix_c"] } )
-im1im2nbr_rslt[0]["im1pixels"] = []
-im1im2nbr_rslt[0]["im2pixels"] = []
+# [ {'im1shapeid': '36901', 'im1nbr_sid': '36360', 'im2shapeid': '37260', 'im2nbr_sid': '36540', 'total_p_matches': '60' }.... ]
+im1im2nbr_rslts = []
 
 
 
 rel_pos_match_threshold = 0.7
-first = True
+
 for im1im2rel_p_match in im1im2rel_p_matches:
+
+   im1im2nbr_rslts.append( {"im1shapeid": im1im2rel_p_match["im1shapeid"], "im1nbr_sid": im1im2rel_p_match["im1nbr_sid"],
+                            "im2shapeid": im1im2rel_p_match["im2shapeid"], "im2nbr_sid": im1im2rel_p_match["im2nbr_sid"] } )
+                            
+   cur_shape_index = im1im2nbr_rslts.index( {"im1shapeid": im1im2rel_p_match["im1shapeid"], "im1nbr_sid": im1im2rel_p_match["im1nbr_sid"],
+                            "im2shapeid": im1im2rel_p_match["im2shapeid"], "im2nbr_sid": im1im2rel_p_match["im2nbr_sid"] } )
+                            
+   total_m_count = 0
    
-   # initialization that will be done only one time
-   if first:
-      im1p_total = im2p_total = im1im2match_total = 0
-      im1im2match_total
-      
-      first = False
+   im1p_count = 0
    
-      match = False
-   
-   # 'im2p_total': im2p_total can be obtained from looping all im2 pixels of first im1pixel
-   if im1im2rel_p_match["im1pixel"] == im1im2rel_p_matches[0]["im1pixel"]:
-      im2p_total += int( im1im2rel_p_match["im2pixel_count"] )
+   for im1pixel_dict in im1im2rel_p_match["pixels"]:
+         
+         for im1pixel_or_c, im2pixels_or_c in im1pixel_dict.items():
+            
+            if im1pixel_or_c == "im1pixel_count":
+               im1p_count += int(im1pixel_dict[im1pixel_or_c])
+            
+            else:
+               match = False
+               for im2p, im2p_results in im2pixels_or_c.items():
+               
+                  for im2p_result in im2p_results:
+                  
+                     if int(im2p_result["count"]) / int(im1im2rel_p_match["im1rel_pix_c"]) >= rel_pos_match_threshold:
+                        total_m_count += int(im1pixel_dict["im1pixel_count"])
+                        
+                        match = True
+                        break
+                        
+                  if match:
+                     break
+               
+   if total_m_count / im1p_count > 0.5:
+      im1im2nbr_rslts[cur_shape_index]["match"] = True
+      im1im2nbr_rslts[cur_shape_index]["match_count"] = str( total_m_count / im1p_count )
       
-      im1im2nbr_rslt[0]["im2pixels"].append( im1im2rel_p_match["im2pixel"] )
-
-   if int(im1im2rel_p_match["count"]) / int(im1im2rel_p_match["im1rel_pix_c"]) >= rel_pos_match_threshold:
-      match = True
       
-      im1im2nbr_rslt.append( { "im1pixel": im1im2rel_p_match["im1pixel"], "im2pixel": im1im2rel_p_match["im2pixel"], "count": im1im2rel_p_match["count"], 
-                               "im2pixel_count": im1im2rel_p_match["im2pixel_count"] } )     
+print("im1im2nbr_rslts")
+print(im1im2nbr_rslts)
       
-      
-      
-
-   if im1im2rel_p_match.get("im1pixel_count"):
-      # im1pixel_count is at the end of im1pixel so put into im1pixels list in im1im2nbr_rslt
-      im1im2nbr_rslt[0]["im1pixels"].append( im1im2rel_p_match["im1pixel"] )
-      
-      im1p_total += int( im1im2rel_p_match.get("im1pixel_count") )
-
-      im1im2nbr_rslt[0]["im2p_total"] = str( im2p_total )
-
-      if match:
-         im1im2nbr_rslt.append( { "im1pixel": im1im2rel_p_match["im1pixel"], "im2pixel": im1im2rel_p_match["im2pixel"], "count": im1im2rel_p_match["count"], 
-                               "im1pixel_count": im1im2rel_p_match["im1pixel_count"] } )
-      
-         im1im2match_total += int( im1im2rel_p_match["im1pixel_count"] )
-      
-      # initialize for the next im1pixel
-      match = False
-
-
-
-
-   if im1im2rel_p_matches[-1] == im1im2rel_p_match:
-      # last im1pixel
-      im1im2nbr_rslt[0]["im1p_total"] = str( im1p_total )
-
-
-      
-      if im1im2match_total / im1p_total > 0.5:
-         print("im1shape " + im1im2rel_p_matches[0]["im1shapeid"] + " im1 neighbor shape " + im1im2rel_p_matches[0]["im1nbr_sid"] + \
-               " and im2shape " + im1im2rel_p_matches[0]["im2shapeid"] + " and im2 neighbor shape " + im1im2rel_p_matches[0]["im2nbr_sid"] + \
-               " matched by " + str(im1im2match_total / im1p_total) )
-
-
-
 
 
 

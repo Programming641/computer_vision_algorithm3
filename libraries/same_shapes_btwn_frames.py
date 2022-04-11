@@ -11,199 +11,123 @@ from libraries.cv_globals import debug
 
 
 # boundary relative position matches. 
-def boundary_rel_pos(original_boundary_pixels, compare_boundary_pixels, shape_ids):
+#
+# this is used for matches between two shape's boundaries and not for boundaries found by "find_direct_neigbbors"
+# because "find_direct_neighbors" produces duplicate pixels where shapeA's pixel is neighbor to multiple shapeB's pixels.
+#
+# input parameter, im1bnd_pixels, im2bnd_pixels have following form
+# {1: {'x': 0, 'y': 0}, 2: {'x': 1, 'y': 0},.... }
+def boundary_rel_pos(im1bnd_pixels, im2bnd_pixels, imfiles, directory):
 
-   original_smallest_y = min(int(d['y']) for d in original_boundary_pixels.values())
-   original_largest_y = max(int(d['y']) for d in original_boundary_pixels.values())
-   
-   original_height = original_largest_y - original_smallest_y
-   
-   compare_smallest_y = min(int(d['y']) for d in compare_boundary_pixels.values())
-   compare_largest_y = max(int(d['y']) for d in compare_boundary_pixels.values())
-   
-   compare_height = compare_largest_y - compare_smallest_y
-   
-   height_diff = abs(original_height - compare_height)
-   
-   starting_pixel = {}
-   
-   threshold = 3
-   
-   relative_boundary_pix = []
-   
-   #  for y in range(start, stop) stop value is excluded
-   for y in range(original_smallest_y, original_largest_y + 1):
 
-   
-   
-      # pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_y = [k for k in original_boundary_pixels  if (int(original_boundary_pixels[k]['y'])) == y]
-      
-      
-      # we first obtain all x values for the current running y value
-      x_es_in_current_y = []
-      
-      
-      # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_y:
-         # putting all x values for all xy coordinates that have current running y vaule
-         x_es_in_current_y.append(original_boundary_pixels[key]['x'])
+   if len( im1bnd_pixels ) > len( im2bnd_pixels ) and len( im2bnd_pixels ) * 2 < len( im1bnd_pixels ):
+      return None
+   elif len( im1bnd_pixels ) * 2 < len( im2bnd_pixels ):
+      return None
 
+   def get_rel_pos( pixels, imwidth  ):
+      rel_pos = []
+      for pixel in pixels.values():
+   
+         pindex = pixel["y"] * imwidth + pixel["x"] 
       
-      # we need to sort x values so that we can work with neighbor x values
-      x_es_in_current_y.sort()
+         rel_pos.append( { pindex: [ ] } )
       
-      if original_smallest_y == y:
-         leftMost_x = min( x_es_in_current_y )
-
+         relpos_index = rel_pos.index( { pindex: [ ] } )
+      
+         for ano_pixel in pixels.values():
+            if pixel == ano_pixel:
+               continue
          
-         starting_pixel['starting_x'] = leftMost_x
-         starting_pixel['starting_y'] = y
+            relative_pos = { "x": ano_pixel["x"] - pixel["x"] , "y": ano_pixel["y"] - pixel["y"] }
       
-         relative_boundary_pix.append(starting_pixel)
+            rel_pos[relpos_index][pindex].append( relative_pos )      
+
+      return rel_pos
+
+# -----------------------------------------------------------------------------------------------------
+
+   # directory is specified but does not contain /
+   if directory != "" and directory[-1] != ('/'):
+      directory +='/'
+
+   img1 = Image.open("images/" + str(directory) + imfiles[0] + ".png")
+
+   im1width = img1.size[0]
+   
+   img2 = Image.open("images/" + str(directory) + imfiles[1] + ".png")
+
+   im2width = img2.size[0]
+
+   im1rel_pos = get_rel_pos( im1bnd_pixels, im1width )
+   im2rel_pos = get_rel_pos( im2bnd_pixels, im2width )
+   
+   
+   # pixel_rel_pos_m_threshold calculation
+   stnd_rel_pos_threshold = 0.5
+   im1rel_pos_count = len( im1rel_pos[0][ list(im1rel_pos[0].keys())[0] ] )
+   im2rel_pos_count = len( im2rel_pos[0][ list(im2rel_pos[0].keys())[0] ] )
+
+   rel_pos_count_diff = im2rel_pos_count  - im1rel_pos_count
+   rel_pos_count_multiplier = ( rel_pos_count_diff / im2rel_pos_count ) + 1
+   pixel_rel_pos_m_threshold = rel_pos_count_multiplier * stnd_rel_pos_threshold
+   
+   
+   im1im2rel_p_matches = []
+   match_count = 0
+   for im1rep in im1rel_pos:
          
-      for x_values in x_es_in_current_y:
-         temp = {}
-         temp['x'] = x_values - starting_pixel['starting_x']
-         temp['y'] = y - starting_pixel['starting_y']
+      for im1pixel, im1pindexes in im1rep.items():
          
-         relative_boundary_pix.append(temp)
-   
-   
-   original_couter = 0
-   
+         im1im2rel_p_matches.append( { "im1pindex": im1pixel } )
+         lindex = im1im2rel_p_matches.index( { "im1pindex": im1pixel } )
 
-   
-   matches = []
-   consecutive_list = []
-   
-   
-   orig_ended = False
-   comp_starting_pixel = {}
-   pixel_counter = 0
-   for i in range( 0, height_diff):
-      temp_matches =[]
-      consecutive_counter = 0
-      prev_consec_counter = None
-      for comp_y in range(compare_smallest_y, compare_largest_y + 1):   
-         if comp_y == compare_largest_y + 1: 
-            break   
-        
-        # for consecutive matches, number of pixel matches will be added.
-         if consecutive_counter == 0:
-            cur_pix_counter = 0      
-            
-         if original_couter + i > len(relative_boundary_pix) / 2 or original_couter > len(relative_boundary_pix) / 2:
-            if prev_consec_counter and cur_pix_counter:
-               temp = {}
-               temp['consecutive'] = prev_consec_counter
-               temp['num_pix_hit'] = cur_pix_counter
-               consecutive_list.append(temp)
-            
-            
-            orig_ended = True
-  
-            break
-            
-
-
-         
-         # comp_pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-         comp_pixel_ids_with_current_y = [k for k in compare_boundary_pixels  if (int(compare_boundary_pixels[k]['y'])) == comp_y]
-      
-      
-         # we first obtain all x values for the current running y value
-         comp_x_es_in_current_y = []
-      
-      
-         # key is the coordinate pair id.  
-         for key in comp_pixel_ids_with_current_y:
-            
-            # putting all x values for all xy coordinates that have current running y vaule
-            comp_x_es_in_current_y.append(compare_boundary_pixels[key]['x'])
-
-      
-         # we need to sort x values so that we can work with neighbor x values
-         comp_x_es_in_current_y.sort()
-
-         cur_comp_coord = {}
-         if compare_smallest_y == comp_y:
-            comp_leftMost_x = min( comp_x_es_in_current_y )
-
-         
-            comp_starting_pixel['starting_x'] = comp_leftMost_x
-            comp_starting_pixel['starting_y'] = comp_y
-
-         else:
-            cur_orig_x_es = []
-            
-            # getting all x values for current y
-            for orig_pixels in relative_boundary_pix:
-               if 'y' in orig_pixels:
-                  if orig_pixels['y'] == original_couter + i:
-                     cur_orig_x_es.append( orig_pixels['x'] )
-            
-            once = False
-            for comp_x_es in comp_x_es_in_current_y:
-               cur_comp_coord['x'] = comp_x_es - comp_starting_pixel['starting_x']
-               cur_comp_coord['y'] = comp_y - comp_starting_pixel['starting_y']
+         cur_p_matched = False
+         for im2rep in im2rel_pos:
+            for im2pixel, im2pindexes in im2rep.items():
                
+               im1im2rel_p_matches[lindex]["im2pindex"] = im2pixel
                
-               for cur_orig_x in cur_orig_x_es:
+               cur_match_counter = 0
+               im1relpos_counter = 0
+               for im1pindex in im1pindexes:
+                  if im1relpos_counter >= len( im2pindexes ):
+                     break
                   
-                  if abs( cur_orig_x - cur_comp_coord['x'] ) < threshold:
-                     temp = {}
-                     temp['original_x'] = cur_orig_x + starting_pixel['starting_x']
-                     temp['original_y'] = original_couter + i + starting_pixel['starting_y']
-                     temp['compare_x'] = comp_x_es
-                     temp['compare_y'] = comp_y
+                  if im1pindex["x"] + 1 >= im2pindexes[im1relpos_counter]["x"] and im1pindex["x"] - 1 <= im2pindexes[im1relpos_counter]["x"]:
+                     if im1pindex["y"] + 1 >= im2pindexes[im1relpos_counter]["y"] and im1pindex["y"] - 1 <= im2pindexes[im1relpos_counter]["y"]:
+                        cur_match_counter += 1
                   
-                     temp_matches.append(temp)
-                     
-                     cur_pix_counter += 1
-                     
-                     if not once:
-                        # count consecutive for each row, and not for each pixel on the same row.
-                        consecutive_counter += 1
-                        once = True
-               
-         if prev_consec_counter == None:
-            prev_consec_counter = consecutive_counter
-         elif prev_consec_counter == consecutive_counter:
-            # consecutive_counter has not changed from prev_consec_counter. this means that current y did not match. consecutiveness ended
-            # at current y
-            temp = {}
-            temp['consecutive'] = prev_consec_counter
-            temp['num_pix_hit'] = cur_pix_counter
-            consecutive_list.append(temp)
-            
-            consecutive_counter = 0
-            
-         prev_consec_counter = consecutive_counter   
-         original_couter += 1
+                  im1relpos_counter += 1
       
-      if not matches:
-         matches = temp_matches
-      elif len(temp_matches) > len(matches):
-         matches = temp_matches
-      
-      if orig_ended:
-         break
-   
-   
-   consecutive_counter = 0
-   for consecutive in consecutive_list:
-      if consecutive['consecutive'] != 0:
-         consecutive_counter += consecutive['consecutive'] * ( consecutive['num_pix_hit'] * 0.3 )
+               im1im2rel_p_matches[lindex]["count"] = cur_match_counter
 
-   if len(original_boundary_pixels) > len(compare_boundary_pixels):
-      possible_match_count = len(compare_boundary_pixels)
+               if cur_match_counter / len( im1pindexes ) >= pixel_rel_pos_m_threshold:
+                  # current pixel matched
+                  match_count += 1
+                  
+                  cur_p_matched = True
+                  break
+
+            if cur_p_matched:
+               break
+
+
+         if im1rel_pos[-1] == im1rep:
+            # last im1pixel
+
+            # total pixel match devided by total image1 pixels. im1rel_pos can be used here if it has no duplicate pixels.
+            if match_count / len( im1rel_pos ) > stnd_rel_pos_threshold:
+               return match_count * ( ( match_count / len(im1rel_pos) ) + 1 )
+
+   if match_count == 0:
+      return  -1 * ( stnd_rel_pos_threshold  * len(im1rel_pos) )
    else:
-      possible_match_count = len(original_boundary_pixels)
+      return  -1 * ( stnd_rel_pos_threshold / ( match_count / len( im1rel_pos ) ) ) * len(im1rel_pos)
 
-  
-   print("boundary_rel_pos matched " + str(len(matches)) + " out of " + str(possible_match_count) )
-   return len(matches)
+
+
+
    
 
 
