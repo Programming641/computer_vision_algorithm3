@@ -274,9 +274,9 @@ this is not the end of this algorithm! I'm tired for now... I'll work on it when
 
 
 
-# Future plans
+# importance notice
 
-If you have executed some of the scripts here, you notice that it takes awful lot of time to process. So my future plan is to change my code to numpy. and then possibly to gpu.
+I'm doing fundraising campaign! if you can, please support! I highly appreciate it!
 
-- convert existing code to numpy.
-- possibly incorporate GPU.
+https://www.indiegogo.com/projects/computer-vision-algorithms-created-from-scratch/x/29011915#/
+
