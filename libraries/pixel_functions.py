@@ -12,7 +12,12 @@ if total_appearance_difference_threshold - appearance_difference >= 0:
 
 
 '''
+
+import math
+
 def compute_appearance_difference(current_pix, compare_pixel):
+
+   apprnc_diff_threshold = 30
 
    if len(current_pix) == 3 and len(compare_pixel) == 3:
       original_red, original_green, original_blue = current_pix
@@ -35,9 +40,15 @@ def compute_appearance_difference(current_pix, compare_pixel):
    green_how_far = exclude_negative_Num( green_difference - average )
    blue_how_far = exclude_negative_Num( blue_difference - average )
 
-   total_appearance_difference = total_difference + red_how_far * 1.3 + green_how_far * 1.3 + blue_how_far * 1.3
+   apprnc_diff = total_difference + red_how_far * 1.3 + green_how_far * 1.3 + blue_how_far * 1.3
+   
+   if apprnc_diff_threshold - apprnc_diff >= 0:
+      # appearance did not change more than threshold value
+      return False, apprnc_diff_threshold - apprnc_diff
 
-   return total_appearance_difference
+   else:
+      # appearance changed
+      return True, apprnc_diff_threshold - apprnc_diff
 
 
 
@@ -98,6 +109,87 @@ def find_brightness_change(current_shape_id_color, current_neighbor_color, brigh
 
    return False
 
+
+
+
+
+
+def get_nbr_pixels(pixel_index, image_size):
+
+   # list for storing neighbor index numbers
+   neighbors = []
+
+   # assigning the positions for comparing neighbor pixels. starting with top going clockwise.
+   ignore_neighbor_position_dict = { 'top' : False, 'top_right' : False, 'right' : False, 'bottom_right': False, 'bottom': False, 'bottom_left' : False, 'left': False, 'top_left': False }
+
+   y = math.floor(pixel_index / image_size[0])
+
+   x  = pixel_index % image_size[0]
+   
+   # determining if the current pixel is the leftmost pixel
+   # no need to compare with top left, left, bottom left
+   if x == 0:
+ 
+      ignore_neighbor_position_dict['top_left'] = True
+      ignore_neighbor_position_dict['left'] = True
+      ignore_neighbor_position_dict['bottom_left'] = True
+    
+   # determing the first row
+   # no need to compare with top left, top, top right
+   if pixel_index <= image_size[0] -1:
+      ignore_neighbor_position_dict['top_left'] = True
+      ignore_neighbor_position_dict['top'] = True
+      ignore_neighbor_position_dict['top_right'] = True  
+
+   # determining the rightmost pixel. x counts from 0 to width - 1
+   # no need to compare with top right, right, bottom right
+   if x == image_size[0] - 1:
+      ignore_neighbor_position_dict['top_right'] = True
+      ignore_neighbor_position_dict['right'] = True
+      ignore_neighbor_position_dict['bottom_right'] = True
+
+   # determining last row . y counts from 0 to height - 1
+   # no need to compare with bottom left, bottom, bottom right
+   if y == image_size[1] - 1:
+      ignore_neighbor_position_dict['bottom_left'] = True
+      ignore_neighbor_position_dict['bottom'] = True
+      ignore_neighbor_position_dict['bottom_right'] = True
+
+   if ignore_neighbor_position_dict['top'] == False:   
+      top_neighbor = pixel_index - image_size[0]
+      neighbors.append(top_neighbor)
+
+
+   if ignore_neighbor_position_dict['top_right'] == False:     
+      top_right_neighbor = pixel_index - image_size[0] + 1
+      neighbors.append(top_right_neighbor)
+
+
+   if ignore_neighbor_position_dict['right'] == False:  
+      right_neighbor = pixel_index + 1
+      neighbors.append(right_neighbor)
+
+   if ignore_neighbor_position_dict['bottom_right'] == False:
+      bottom_right_neighbor = pixel_index + image_size[0] + 1
+      neighbors.append(bottom_right_neighbor)      
+
+   if ignore_neighbor_position_dict['bottom'] == False:
+      bottom_neighbor = pixel_index + image_size[0]
+      neighbors.append(bottom_neighbor)   
+
+   if ignore_neighbor_position_dict['bottom_left'] == False:    
+      bottom_left_neighbor = pixel_index + image_size[0] - 1 
+      neighbors.append(bottom_left_neighbor) 
+
+   if ignore_neighbor_position_dict['left'] == False:   
+      left_neighbor =    pixel_index - 1
+      neighbors.append(left_neighbor) 
+
+   if ignore_neighbor_position_dict['top_left'] == False:  
+      top_left_neighbor =  pixel_index - image_size[0] - 1
+      neighbors.append(top_left_neighbor) 
+
+   return neighbors
 
 
 

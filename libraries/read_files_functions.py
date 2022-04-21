@@ -271,7 +271,7 @@ def rd_dict_k_v_l(image_filename, directory_under_images, filepath):
 # read list dict key value list
 # data inside the file has the form below
 # [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]
-def rd_ldict_k_v_l(image_filename, directory):
+def rd_ldict_k_v_l(image_filename, directory, filepath):
 
    # directory is passed in parameter but does not contain /
    if directory != "" and directory[-1] != ('/'):
@@ -282,7 +282,7 @@ def rd_ldict_k_v_l(image_filename, directory):
 
    image_width, image_height = target_image.size
 
-   image_file = open("shapes/" + directory + "shape_nbrs/" + image_filename + "_shape_nbrs.txt")
+   image_file = open(filepath)
    image_file_contents = image_file.read()
    
    all_matches = []
