@@ -6,7 +6,8 @@ import sys
 from PIL import Image
 
 
-filename = "rpt_ptn_test2"
+filename = "1clrgrp"
+directory = "videos/street"
 
 
 
@@ -22,7 +23,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
     shapes_filename = filename + "_shapes.txt"
 
     # directory is specified but does not contain /
-    if directory != "" and directory.find('/') == -1:
+    if directory != "" and directory[-1] != '/':
        directory +='/'
 
 
@@ -34,14 +35,12 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
     # so to extract the shapes image name only, you just remove last space + shapes.txt
     original_image_filename = shapes_filename[:-11]
 
-    if os.path.exists("shapes/" + shapes_filename[:-4]) == False:
-       os.mkdir("shapes/" + shapes_filename[:-4])
+    if os.path.exists("shapes/" + directory + shapes_filename[:-4]) == False:
+       os.mkdir("shapes/" + directory + shapes_filename[:-4])
 
-    foldername = ""
     if shape_id_in_need != None:
-       foldername = "objectshape/"
-       if os.path.exists("shapes/objectshape/" + shapes_filename[:-4]) == False:
-          os.mkdir("shapes/objectshape/" + shapes_filename[:-4])
+       if os.path.exists("shapes/circleda/" + shapes_filename[:-4]) == False:
+          os.mkdir("shapes/circleda/" + directory + shapes_filename[:-4])
 
 
 
@@ -55,7 +54,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
 
 
 
-    shapes_file = open("shapes/" + shapes_filename)
+    shapes_file = open("shapes/" + directory + shapes_filename)
     shapes_file_contents = shapes_file.read()
 
 
@@ -152,7 +151,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
              print("shape " + str(shape_progress_counter))  
              
              # saving one shape
-             new_image.save("shapes/" + foldername + shapes_filename[:-4] + '/' + shapes_id + '.png')
+             new_image.save("shapes/circleda/" + directory + shapes_filename[:-4] + '/' + shapes_id + '.png')
       
     shapes_file.close() 
     
@@ -163,4 +162,4 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
 
 
 if __name__ == '__main__':
-   get_whole_image_shape(False, filename )
+   get_whole_image_shape(False, filename, directory )

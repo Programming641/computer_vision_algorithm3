@@ -4,9 +4,9 @@ from libraries import pixel_functions
 
 import os
 
-filename = "nbr_shape2"
+filename = "4clrgrp"
 
-directory = ""
+directory = "videos/street"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != ('/'):
