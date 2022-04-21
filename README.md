@@ -272,11 +272,3 @@ may not be stable at this time! I only did a quick test only but it worked great
 this is not the end of this algorithm! I'm tired for now... I'll work on it when I get time and motivation....
 
 
-
-
-# importance notice
-
-I'm doing fundraising campaign! if you can, please support! I highly appreciate it!
-
-https://www.indiegogo.com/projects/computer-vision-algorithms-created-from-scratch/x/29011915#/
-
