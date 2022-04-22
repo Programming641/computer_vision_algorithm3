@@ -266,8 +266,7 @@ def rd_dict_k_v_l(image_filename, directory_under_images, filepath):
        
        
 
-# not good to use this form of data structure!! you could just use ONE dictionary with list as its value. not list of dictionaries.
-# maybe when you need to use this method is when you plan to add data to the dictionary later on. 
+
 # read list dict key value list
 # data inside the file has the form below
 # [{'7062': ['7274']}, {'7071': ['7285', '7063']}, {'7270': ['7271', '7482', '8749', '37219']}, {'7286': ['7285', '7287', '8749', '37219']}, {'7287': ['7286', '8749', '37219']}]

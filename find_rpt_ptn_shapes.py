@@ -181,10 +181,8 @@ def process_neighbor ( cur_already_processed, shape_id,  nbr_shapeid , called_fr
                      cur_rpt_ptn_shape_rgb = ( shapes_colors[cur_rpt_ptn_shape_id]['r'], shapes_colors[cur_rpt_ptn_shape_id]['g'], shapes_colors[cur_rpt_ptn_shape_id]['b'] )               
                
          if cur_rpt_ptn_shape_rgb:
-            total_appearance_difference_threshold = 0
             changed, ch_v = pixel_functions.compute_appearance_difference(cur_rpt_ptn_shape_rgb, cur_neighbor_rgb)
 
-  
             if not changed:
                # appearance did not change more than threshold value
                print("nested neighbor " + str(nbr_shapeid) + " has same color as any of the cur_rpt_ptn" )
@@ -213,10 +211,25 @@ def process_neighbor ( cur_already_processed, shape_id,  nbr_shapeid , called_fr
       
       for candidate_shapeid in shapeIDs_with_all_indexes:
          if candidate_shapeid in nbr_shapeid_nbrs:
+            if not candidate_shapeid in already_processed and candidate_shapeid not in cur_already_processed:
+            
+               # check if candidate_shapeid is already in the rpt_ptn_shapes
+               skip = False
+               if rpt_ptn_shapes:
+                  for rpt_ptn_shape in rpt_ptn_shapes:
+                     for src_id , rpt_ptn_neighbors in rpt_ptn_shape.items():
+                        if candidate_shapeid == src_id or candidate_shapeid in rpt_ptn_neighbors:
+                           skip = True
+                           break
+                     if skip:
+                        break
+                  if skip:
+                     continue
+               
 
-            nested_nbr_shape_id = candidate_shapeid
+               nested_nbr_shape_id = candidate_shapeid
                      
-            process_neighbor(cur_already_processed, nbr_shapeid, nested_nbr_shape_id, False, cur_rpt_ptn )
+               process_neighbor(cur_already_processed, nbr_shapeid, nested_nbr_shape_id, False, cur_rpt_ptn )
                
        
 
@@ -228,7 +241,18 @@ def process_neighbor ( cur_already_processed, shape_id,  nbr_shapeid , called_fr
 for src_shapeid in shapeIDs_with_all_indexes:
 
    print("src_shapeid " + src_shapeid )  
-   
+   # check if src_shapeid is already in the rpt_ptn_shapes
+   skip = False
+   if rpt_ptn_shapes:
+      for rpt_ptn_shape in rpt_ptn_shapes:
+         for src_id , rpt_ptn_neighbors in rpt_ptn_shape.items():
+            if src_shapeid == src_id or src_shapeid in rpt_ptn_neighbors:
+               skip = True
+               break
+         if skip:
+            break
+      if skip:
+         continue   
    
    # initialization of cur_rpt_ptn_counter
    cur_rpt_ptn_counter = 0
@@ -245,47 +269,36 @@ for src_shapeid in shapeIDs_with_all_indexes:
    cur_already_processed = []
    cur_already_processed.append(src_shapeid)
 
-   for candidate_shapeid in shapeIDs_with_all_indexes:
+   # for finding src_shapeid's neighbors 
+   shapeid_nbrs = []
+   for shape_nbr in shape_nbrs:
+      for shapeid, shapeid_nbr in shape_nbr.items():
+         if shapeid == src_shapeid:
+            shapeid_nbrs = shapeid_nbr
+
+
+   for src_nbr in shapeid_nbrs:
       
-      if src_shapeid == candidate_shapeid or candidate_shapeid in already_processed:
+      if src_shapeid == src_nbr or src_nbr in already_processed:
          # itself or already processed as src_shapeid
          continue
 
-      # check if candidate_shapeid is already in the rpt_ptn_shapes
+      # check if src_nbr is already in the rpt_ptn_shapes
       skip = False
       if rpt_ptn_shapes:
          for rpt_ptn_shape in rpt_ptn_shapes:
             for src_id , rpt_ptn_neighbors in rpt_ptn_shape.items():
-               if candidate_shapeid == src_id or candidate_shapeid in rpt_ptn_neighbors:
+               if src_nbr == src_id or src_nbr in rpt_ptn_neighbors:
                   skip = True
                   break
             if skip:
                break
          if skip:
             continue
-              
-      
-      src_candidate_nbr_search =  True
-      for shape_nbr in shape_nbrs:
-         for shapeid, shapeid_nbr in shape_nbr.items():
-            if shapeid == src_shapeid:
-            
-               if candidate_shapeid in shapeid_nbr:
-                  # candidate_shapeid now becomes src_nbr_id
-                  src_nbr_id = candidate_shapeid
 
-                  process_neighbor(cur_already_processed, src_shapeid, src_nbr_id,  True , cur_rpt_ptn )
-                  
-                  # src_shapeid and candidate_shapeid finished, so break out of this shape_nbrs loop
-                  src_candidate_nbr_search = False
-                  break
-               else:
-                  # src_shapeid and candidate_shapeid are not neighbor to each other
-                  src_candidate_nbr_search = False
-                  break
-                  
-         if not src_candidate_nbr_search:
-            break
+      cur_already_processed.append( src_nbr )
+      process_neighbor(cur_already_processed, src_shapeid, src_nbr,  True , cur_rpt_ptn )
+
 
 
 

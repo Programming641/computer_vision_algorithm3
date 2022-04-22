@@ -1212,8 +1212,9 @@ def get_all_shapes_colors(filename, directory):
 
 
 
-
-def localize_shape( shape_coordinates , image_areas , shape_id ):
+# returns
+# { "shapeid number": [ image_area number, image_area number ... ] }
+def localize_shape( shape_coordinates , image_areas , shapeid ):
 
 
    def get_shape_locations( shape_coordinates ):
@@ -1274,7 +1275,7 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
 
    shape_in_image_areas = []
    
-   location_threshold = 8  
+   location_threshold = 5  
    
    location_labels = [ { 'top_middle': {'y_threshold': ( - location_threshold ), 'x_threshold': ( location_threshold, - location_threshold ) }, \
                       'right': { 'y_threshold': ( location_threshold, - location_threshold ), 'x_threshold': ( location_threshold ) }, \
@@ -1312,7 +1313,7 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
                         image_shape_loc_match = True
                      
                         temp = {}
-                        temp['shape_id'] = shape_id
+                        temp['shapeid'] = shapeid
                         temp['image_area'] = area_num
                      
                         shape_in_image_areas.append( temp )
@@ -1330,7 +1331,7 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
                                  image_shape_loc_match = True
                      
                                  temp = {}
-                                 temp['shape_id'] = shape_id
+                                 temp['shapeid'] = shapeid
                                  temp['image_area'] = area_num
                      
                                  shape_in_image_areas.append( temp )
@@ -1347,15 +1348,31 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
                                  image_shape_loc_match = True
                     
                                  temp = {}
-                                 temp['shape_id'] = shape_id
+                                 temp['shapeid'] = shapeid
                                  temp['image_area'] = area_num
                      
                                  shape_in_image_areas.append( temp )
                         
                                  break   
    
+   # currently shape_in_image_areas have following form
+   # [{'shapeid': '30184', 'image_area': 5}, {'shapeid': '30184', 'image_area': 10}]
+   # this should be in following form
+   # { "shapeid number": [ image_area number, image_area number ... ] }
+   shape_im_areas = {}
+   im_a_shapeid = None
+   for shape_in_image_area in shape_in_image_areas:
+      for sid_or_im_a in shape_in_image_area:
+         if len(shape_im_areas) == 0 and sid_or_im_a == "shapeid":
+            im_a_shapeid = shape_in_image_area[sid_or_im_a]
+            shape_im_areas[ im_a_shapeid ] = []
+            
+            
+         
+         elif sid_or_im_a == "image_area":
+            shape_im_areas[im_a_shapeid].append( shape_in_image_area[sid_or_im_a] )
    
-   return shape_in_image_areas
+   return shape_im_areas
 
 
 
@@ -1366,6 +1383,7 @@ def localize_shape( shape_coordinates , image_areas , shape_id ):
 # {'179': {'x': 179, 'y': 0}} single pixel
 # multiple pixels
 # {27273: {'x': 93, 'y': 151}, 27453: {'x': 93, 'y': 152}, 27452: {'x': 92, 'y': 152}, 27632: {'x': 92, 'y': 153}}
+# shape_ids are original and compare shapeid
 # shape_ids is as follows
 # shape_ids = [ int('550' ), int ('179') ]
 # returns locations list if they are close, if not, returns empty list
@@ -1412,10 +1430,6 @@ def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, s
       
          image_areas.append(temp)
 
-
-
-   orig_comp_locations = []
-
       
    orig_locations = localize_shape( orig_coords , image_areas , shape_ids[0] )
 
@@ -1427,34 +1441,74 @@ def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, s
    comp_locations = localize_shape( comp_coords , image_areas , shape_ids[1] )
    
    matched_areas = []
-   for comp_location in comp_locations:
-      for orig_image_area in orig_image_areas:
+   for comp_location in comp_locations.values():
+      for orig_image_area in orig_image_areas.values():
             
-         if comp_location['image_area'] == orig_image_area:
-            matched_areas.append( orig_image_area )
+         for comp_loc in comp_location:
+            if comp_loc in orig_image_area:
+               matched_areas.append( comp_loc )
                 
          
    if matched_areas:
       temp = {}
-      temp['orig_shape_id'] = shape_ids[0]
-      temp['comp_shape_id'] = shape_ids[1]
-            
-      area_counter = 1
+      temp['orig_shapeid'] = shape_ids[0]
+      temp['comp_shapeid'] = shape_ids[1]
+      temp["m_areas"] = []
+
       for matched_area in matched_areas:
-         temp['matched_area' + str(area_counter) ] = matched_area
-         area_counter += 1
-               
-      orig_comp_locations.append( temp )
+         temp["m_areas"].append(matched_area)
 
-   return orig_comp_locations
-
+      return temp
+   else:
+      return None
 
 
 
 
 
 
+def get_shape_im_locations( im_file, directory, shape_coords, shapeid ):
 
+
+   # needed for creating image areas
+   image = Image.open("images/" + directory + im_file + ".png")
+   im_width, im_height = image.size
+
+
+   # divide image into 5 columns, 5 rows
+   image_divider = 5
+   im_area_width = round(im_width / image_divider)
+   im_area_height = round(im_height / image_divider)
+   
+   image_areas = []
+   
+   column_num = 0
+   for column_num in range(0, image_divider):
+      for row_num in range(0, image_divider):
+         if row_num == 0:
+            left = 0
+            right = im_area_width
+         else:
+            left = (im_area_width * row_num) + 1
+            right = (im_area_width * row_num) + im_area_width
+         
+         if column_num == 0:
+            top = 0
+            bottom = im_area_height
+         else:
+            top = ( column_num * im_area_height ) + 1
+            bottom = ( column_num * im_area_height ) + im_area_height
+      
+         temp = {}
+         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
+      
+         image_areas.append(temp)
+
+
+      
+   shape_locations = localize_shape( shape_coords , image_areas , shapeid )
+
+   return shape_locations
 
 
 
