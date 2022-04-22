@@ -105,6 +105,7 @@ shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixel
 
 - execute put_pixels_into_clr_grps.py
 - excute finding_shapes.py
+- execute create_shape_locations.py
 - execute create_shape_neighbors.py
 - execute find_rpt_ptn_shapes.py
 - execute recreate_rpt_ptn_shapes.py
