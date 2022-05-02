@@ -25,7 +25,7 @@ top directory
 ->images
        |
        ->optional directory under images folder for organizing your image files
-       
+->temp  
 ->shapes 
 
 ->libraries
