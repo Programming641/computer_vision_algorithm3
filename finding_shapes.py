@@ -8,104 +8,27 @@ from PIL import Image
 import math
 
 from collections import OrderedDict
+from libraries.cv_globals import proj_dir
 
+shapes_dir = proj_dir + "/shapes/"
+images_dir = proj_dir + "/images/"
 
-image_filename = 'blue1_clr_grp'
+image_filename = '1clrgrp'
 
-directory = ""
+directory = "videos/street"
 
 # directory is specified but does not contain /
-if directory != "" and directory.find('/') == -1:
+if directory != "" and directory[-1] != '/':
    directory +='/'
 
 
-original_image = Image.open("images/" + directory + image_filename + ".png")
+original_image = Image.open(images_dir + directory + image_filename + ".png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
 
 # shapes[shape's index value ] = [ pixel index1, pixel index2, .... ]
 shapes = OrderedDict()
-
-def get_neighbor_pixels(pixel_index):
-
-   # list for storing neighbor index numbers
-   neighbors = []
-
-   # assigning the positions for comparing neighbor pixels. starting with top going clockwise.
-   ignore_neighbor_position_dict = { 'top' : False, 'top_right' : False, 'right' : False, 'bottom_right': False, 'bottom': False, 'bottom_left' : False, 'left': False, 'top_left': False }
-
-   y = math.floor(pixel_index / image_size[0])
-
-   x  = pixel_index % image_size[0]
-   
-   # determining if the current pixel is the leftmost pixel
-   # no need to compare with top left, left, bottom left
-   if x == 0:
- 
-      ignore_neighbor_position_dict['top_left'] = True
-      ignore_neighbor_position_dict['left'] = True
-      ignore_neighbor_position_dict['bottom_left'] = True
-    
-   # determing the first row
-   # no need to compare with top left, top, top right
-   if pixel_index <= image_size[0] -1:
-      ignore_neighbor_position_dict['top_left'] = True
-      ignore_neighbor_position_dict['top'] = True
-      ignore_neighbor_position_dict['top_right'] = True  
-
-   # determining the rightmost pixel. x counts from 0 to width - 1
-   # no need to compare with top right, right, bottom right
-   if x == image_size[0] - 1:
-      ignore_neighbor_position_dict['top_right'] = True
-      ignore_neighbor_position_dict['right'] = True
-      ignore_neighbor_position_dict['bottom_right'] = True
-
-   # determining last row . y counts from 0 to height - 1
-   # no need to compare with bottom left, bottom, bottom right
-   if y == image_size[1] - 1:
-      ignore_neighbor_position_dict['bottom_left'] = True
-      ignore_neighbor_position_dict['bottom'] = True
-      ignore_neighbor_position_dict['bottom_right'] = True
-
-   if ignore_neighbor_position_dict['top'] == False:   
-      top_neighbor = pixel_index - image_size[0]
-      neighbors.append(top_neighbor)
-
-
-   if ignore_neighbor_position_dict['top_right'] == False:     
-      top_right_neighbor = pixel_index - image_size[0] + 1
-      neighbors.append(top_right_neighbor)
-
-
-   if ignore_neighbor_position_dict['right'] == False:  
-      right_neighbor = pixel_index + 1
-      neighbors.append(right_neighbor)
-
-   if ignore_neighbor_position_dict['bottom_right'] == False:
-      bottom_right_neighbor = pixel_index + image_size[0] + 1
-      neighbors.append(bottom_right_neighbor)      
-
-   if ignore_neighbor_position_dict['bottom'] == False:
-      bottom_neighbor = pixel_index + image_size[0]
-      neighbors.append(bottom_neighbor)   
-
-   if ignore_neighbor_position_dict['bottom_left'] == False:    
-      bottom_left_neighbor = pixel_index + image_size[0] - 1 
-      neighbors.append(bottom_left_neighbor) 
-
-   if ignore_neighbor_position_dict['left'] == False:   
-      left_neighbor =    pixel_index - 1
-      neighbors.append(left_neighbor) 
-
-   if ignore_neighbor_position_dict['top_left'] == False:  
-      top_left_neighbor =  pixel_index - image_size[0] - 1
-      neighbors.append(top_left_neighbor) 
-
-   return neighbors
-
-
-
 
 
 #image_size[0] is width
@@ -122,23 +45,20 @@ for y in range(image_size[1]):
       # initializing current pixel' shape number. This 
       current_shape_id = None
       
-      total_appearance_difference_threshold = 30
+      # this is needed for checking if pixel has same color with every pixels in the confirmed shapes
+      cur_shape_containing_confirmed_shapes = None
       
-      cur_pixel_neighbors = get_neighbor_pixels(current_pixel_index)
-
-
-      #getting current pixel RGB values
-      current_pixel_RGB = original_pixel[current_pixel_index]
-      
+      cur_pixel_neighbors = pixel_functions.get_nbr_pixels(current_pixel_index, image_size)      
 
       # check if current pixel is in other pixel's shapes.
       if len(shapes) != 0:
          # last in first out
          for shape_id, shapes_lists in reversed(shapes.items()):
-            for shapes_pixel in shapes_lists:
-               if shapes_pixel == current_pixel_index:
-                  # current pixel is found in existing shape. current shape will be this found shape
-                  current_shape_id = shape_id
+            if current_pixel_index in shapes_lists:
+               # current pixel is found in existing shape. current shape will be this found shape
+               current_shape_id = shape_id
+               
+               cur_shape_containing_confirmed_shapes = shapes_lists
 
 
       # current pixel was not found in all shapes so create its own shape
@@ -146,8 +66,6 @@ for y in range(image_size[1]):
          # create shape with current pixel's number as shape's id
          current_shape_id = current_pixel_index
          # make sure to put current pixel in current pixel shape
-         
-         print(" creating new shape " + str(current_shape_id) )
          
          shapes[current_shape_id] = [current_shape_id]
 
@@ -159,73 +77,75 @@ for y in range(image_size[1]):
       # iterating each one of current pixel's unfound neighbors
       for neighbor in cur_pixel_neighbors:
          
-         neighbor_shape_found, cur_pix_nei_shape_appearance, cur_shape_nei_shape_appearance = False, False, False
+         neighbor_shape_found, cur_shape_nei_shape_appearance = False, False
          neighbor_shape_index = None  
          
+         cur_nbr_containing_shapes = []
          # check if this neighbor is already in the shape
          for shape_id, shapes_lists in reversed(shapes.items()):
             # iterating all neighbor shapes
-            for shapes_pixel in shapes_lists:
-               # iterating all pixels in neighor shape
-               
-               if shapes_pixel == neighbor:    
-                  neighbor_shape_found = True              
-                  # check if this neighbor's shape id's appearance is the same. If it not, then it likely mean that
-                  # appearance is gradually changing.
-      
-                  neighbor_shape_index = shape_id
-                 
-                  if neighbor_shape_index == current_shape_id:
+            if neighbor in shapes_lists:
+                  
+                  # check if neighbor is already in the same shape as current_pixel_index
+                  if shape_id == current_shape_id:
+                     neighbor_shape_found = True 
                      continue
-                 
-                 
-                  neighbor_shape_pixel_RGB = original_pixel[neighbor_shape_index]
-      
-                  appearance_difference = pixel_functions.compute_appearance_difference(current_pixel_RGB, neighbor_shape_pixel_RGB)
-              
-                  if total_appearance_difference_threshold - appearance_difference >= 0:
-                     cur_pix_nei_shape_appearance = True
-                     
-                     print("current pixel " + str(current_pixel_index) + " neighbor shape pixel " + str(neighbor_shape_index) + 
-                     " have similar appearance" )
-         
-                  appearance_difference = pixel_functions.compute_appearance_difference(cur_shape_pixel_RGB, neighbor_shape_pixel_RGB) 
-                  if total_appearance_difference_threshold - appearance_difference >= 0:
-                     # this is for avoiding mutating shapes dictionary during iteration
-                     cur_shape_nei_shape_appearance = True
-                     
-                     print("current shape pixel " + str(current_shape_id) + " neighbor shape pixel " + str(neighbor_shape_index) +
-                     " have same appearance" )
+                  
+                  cur_nbr_containing_shapes = shapes_lists
+                               
+                  neighbor_shape_index = shape_id                
+                              
 
 
-         if cur_shape_nei_shape_appearance == True:
-            # avoiding mutating shapes dictionary during iteration
-            # neighbor's shape and current shape need to be merged    
-            
+         if cur_nbr_containing_shapes:
+            # neighbor is found in neighbor_shape_index
+            # check if all pixels in the  neighbor_shape_index have same same as current_shape_id
+            # merge two shapes only if they all have the same color
             # merging all pixels in neighbor shape into current shape
-            for neighbor_pixels in shapes[neighbor_shape_index]:
-               shapes[current_shape_id].append(neighbor_pixels)
+
+            all_pixels_same_clr = None
+            for cur_nbr_containing_pixel in cur_nbr_containing_shapes:
+               for cur_shape_pixel in shapes[current_shape_id]:
                
-            shapes.pop(neighbor_shape_index)       
+                  clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[cur_nbr_containing_pixel] ,
+                                                 original_pixel[cur_shape_pixel], 30 )
+                  
+                  # color changed is true or color did not change but brightness is not within threshold
+                  if clrch or ( not clrch and not brit_thres ):
+                     all_pixels_same_clr = False
+                     break
 
-
+               if all_pixels_same_clr == False:
+                  break
+                  
+            if all_pixels_same_clr != False:
+               shapes[current_shape_id].extend(shapes[neighbor_shape_index])
+               
+               shapes.pop(neighbor_shape_index)       
 
 
          if  neighbor_shape_found == False:
 
             neighbor_pixel_RGB = original_pixel[neighbor]
-            appearance_difference = pixel_functions.compute_appearance_difference(cur_shape_pixel_RGB, neighbor_pixel_RGB )
+
+            # make sure all pixels have same color as neighbor, then you can put neighbor in current_shape_id shape
+            all_pixels_same_clr = None
+            if cur_shape_containing_confirmed_shapes:
+               for pixels in cur_shape_containing_confirmed_shapes:
+                  clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[pixels], neighbor_pixel_RGB, 30 )
                  
-            if total_appearance_difference_threshold - appearance_difference >= 0:
-
-               # neighbor pixel will be added to current shape
-               shapes[current_shape_id].append(neighbor)            
+                  if clrch or ( not clrch and not brit_thres ):
+                     all_pixels_same_clr = False
+                     break
+               
+               if all_pixels_same_clr != False:
+                  
+                  # neighbor pixel will be added to current shape
+                  shapes[current_shape_id].append(neighbor)                 
             
-            
-                 
 
 
-file = open('shapes/' + image_filename + '_shapes.txt', 'w')
+file = open(shapes_dir + directory + image_filename + "_shapes.txt", 'w')
 file.write(str(shapes))
 file.close()
 

@@ -1,15 +1,19 @@
 import re
 import math
 from PIL import Image
-import time
-import sys
+import time, sys
 import ast
+from libraries.cv_globals import proj_dir
 
+shapes_dir = proj_dir + "/shapes/"
+images_dir = proj_dir + "/images/"
 
 
 # if clr_include is True then it will return the following
 # {0: [{0: (102, 153, 153)}, {1: (102, 153, 153)}, {181: (102, 153, 153)} .... ], ..... }
-# if not, then it returns the following
+# list includes shapeid's pixel as well
+# 
+# if clr_include is not present, then it returns the following
 # returned value has below form
 # {{{ }}} one dictionary containing two nested dictionaries
 # shapes[shapes_id][pixel_index] = {}
@@ -22,13 +26,13 @@ def rd_shapes_file(image_filename, directory, clr_include=None):
            directory +='/'
 
 
-    original_image = Image.open("images/" + directory + image_filename + ".png")
+    original_image = Image.open(images_dir + directory + image_filename + ".png")
 
     image_width, image_height = original_image.size
 
     original_image_data = original_image.getdata()
 
-    image_file = open('shapes/' + directory + image_filename + '_shapes.txt')
+    image_file = open(shapes_dir + directory + image_filename + '_shapes.txt')
     image_file_contents = image_file.read()
     
     '''
@@ -150,7 +154,7 @@ def rd_dict_k_v_l(image_filename, directory_under_images, filepath):
        directory_under_images +='/'
 
 
-    original_image = Image.open("images/" + directory_under_images + image_filename + ".png")
+    original_image = Image.open(images_dir + directory_under_images + image_filename + ".png")
 
     image_width, image_height = original_image.size
 
@@ -277,7 +281,7 @@ def rd_ldict_k_v_l(image_filename, directory, filepath):
       directory +='/'
 
 
-   target_image = Image.open("images/" + directory + image_filename + ".png")
+   target_image = Image.open(images_dir + directory + image_filename + ".png")
 
    image_width, image_height = target_image.size
 
@@ -331,13 +335,13 @@ def rd_imdiff( im1file, im2file, directory, imshape ):
       directory +='/'
 
 
-   original_image = Image.open("images/" + directory + im1file + ".png")
+   original_image = Image.open(images_dir + directory + im1file + ".png")
 
    image_width, image_height = original_image.size
 
    original_image_data = original_image.getdata()
 
-   image_file = open('shapes/' + directory + im1file[0:1] + "." + im2file[0:1] + im1file[1: len(im1file) ] + "_diff" + imshape + 'shapes.txt')
+   image_file = open(shapes_dir + directory + im1file[0:1] + "." + im2file[0:1] + im1file[1: len(im1file) ] + "_diff" + imshape + 'shapes.txt')
    image_file_contents = image_file.read()
 
 

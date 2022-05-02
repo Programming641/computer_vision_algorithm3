@@ -7,9 +7,9 @@ import sys
 from PIL import Image
 import re
 
-filename = "7"
+filename = "bird01"
 
-directory = "videos/street"
+directory = "bird"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != "/":

@@ -3,17 +3,20 @@ from libraries import pixel_shapes_functions
 from libraries import pixel_functions
 
 import os, sys
+from libraries.cv_globals import proj_dir
 
-im_file = "swanclrgrp"
+shapes_dir = proj_dir + "/shapes/"
 
-directory = ""
+im_file = "1clrgrp"
+
+directory = "videos/street"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != ('/'):
    directory +='/'
 
-shape_locations_path = "shapes/" + directory + "locations/" + im_file + "_loc.txt"
-shape_neighbors_path = 'shapes/' + directory + 'shape_nbrs/'
+shape_locations_path = shapes_dir + directory + "locations/" + im_file + "_loc.txt"
+shape_neighbors_path = shapes_dir + directory + 'shape_nbrs/'
 
 if not os.path.isdir(shape_neighbors_path):
    os.makedirs(shape_neighbors_path)
@@ -40,10 +43,10 @@ for shapeid in shapes:
          shapes_in_im_areas[shapeid] = s_locs[ list(s_locs.keys())[0] ]
          break
 
-
+all_shapes = len(shapes)
 for src_shapeid in shapes:
 
-   print("src_shapeid " + src_shapeid )
+   print("src_shapeid " + src_shapeid + " " +  str(all_shapes) + " remaining" )
    
    cur_shape_neighbors = {}
    
@@ -79,10 +82,10 @@ for src_shapeid in shapes:
 
          cur_shape_neighbors[src_shapeid].append(candidate_shapeid)
 
-
-   print("current neighbors")
-   print(cur_shape_neighbors)   
+ 
    all_shape_neighbors.append(cur_shape_neighbors)
+   
+   all_shapes -= 1
             
             
             

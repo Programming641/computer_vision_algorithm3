@@ -3,11 +3,14 @@ import os
 from PIL import ImageTk, Image
 from libraries import pixel_shapes_functions
 from libraries import read_files_functions
+from libraries.cv_globals import proj_dir
+
+shapes_dir = proj_dir + "/shapes/"
 
 
-im_file = "swanclrgrp"
+im_file = "1clrgrp"
 
-directory = ""
+directory = "videos/street"
 
 location_fname = im_file + "_loc.txt"
 
@@ -15,8 +18,8 @@ location_fname = im_file + "_loc.txt"
 if directory != "" and directory[-1] != '/':
    directory +='/'
 
-if os.path.exists("shapes/" + directory + "locations/" ) == False:
-   os.makedirs("shapes/" + directory + "locations/")
+if os.path.exists(shapes_dir + directory + "locations/" ) == False:
+   os.makedirs(shapes_dir + directory + "locations/")
 
 
 # returned value has below form
@@ -41,7 +44,7 @@ for shapeid in shapes:
    shape_locations.append( temp ) 
    
 
-file = open("shapes/" + directory + "locations/" + location_fname, 'w')
+file = open(shapes_dir + directory + "locations/" + location_fname, 'w')
 file.write(str(shape_locations))
 file.close()
 

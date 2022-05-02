@@ -1,52 +1,61 @@
 import re
 import math
-import os
-import sys
+import os, sys
+import shutil
 
 from PIL import Image
+
+from libraries.cv_globals import proj_dir
+
+shapes_dir = proj_dir + "/shapes/"
+images_dir = proj_dir + "/images/"
 
 
 filename = "1clrgrp"
 directory = "videos/street"
 
+# choices are "shapes", "brightness", 
+recreate_what = "shapes"
 
 
 '''
 this module serves 2 purposes. One is to recreate the each shape of the image. Another purpose is to return xy coordinate values of the each 
 shape to the caller. If parameter is true then, it is a request to return xy coordinates of all image shapes
 
-2nd parameter, shape_id_in_need is a list that contains all shape id numbers
+2nd parameter, shapeids_in_need is a list that contains all shape id numbers
 '''
-def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=None):
-
-
-    shapes_filename = filename + "_shapes.txt"
-
+def get_whole_image_shape(parameter, recreate_what, filename,  directory="", shapeids_in_need=None):
     # directory is specified but does not contain /
     if directory != "" and directory[-1] != '/':
        directory +='/'
+       
+    
+    # by default shapes_filename is "_shapes.txt"
+    shapes_filename = filename + "_shapes.txt"
+    
+    foldername = ""
+    if recreate_what == "shapes":
+       
+       foldername = shapes_dir + directory + shapes_filename[:-4] 
+          
+    elif shapeids_in_need:
+       foldername = shapes_dir + directory + "circleda/" + filename
+   
+    elif recreate_what == "brightness":
+       shapes_filename = filename + "_britshapes.txt"
+       foldername = shapes_dir + directory + "brit/" + filename
 
+    # delete and create folder
+    if foldername and os.path.exists(foldername) == True:
+       shutil.rmtree(foldername)
+   
+    if foldername and os.path.exists(foldername) == False:
+       os.makedirs(foldername)     
 
+    if foldername != "" and foldername[-1] != '/':
+       foldername +='/'
 
-
-
-
-    # shapes file has the rule for its filename. Its filename consists of name of the image shape + shapes.txt.
-    # so to extract the shapes image name only, you just remove last space + shapes.txt
-    original_image_filename = shapes_filename[:-11]
-
-    if os.path.exists("shapes/" + directory + shapes_filename[:-4]) == False:
-       os.mkdir("shapes/" + directory + shapes_filename[:-4])
-
-    if shape_id_in_need != None:
-       if os.path.exists("shapes/circleda/" + shapes_filename[:-4]) == False:
-          os.mkdir("shapes/circleda/" + directory + shapes_filename[:-4])
-
-
-
-
-
-    original_image = Image.open("images/" + directory + original_image_filename + ".png")
+    original_image = Image.open(images_dir + directory + filename + ".png")
 
     image_width, image_height = original_image.size
 
@@ -54,7 +63,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
 
 
 
-    shapes_file = open("shapes/" + directory + shapes_filename)
+    shapes_file = open(shapes_dir + directory + shapes_filename)
     shapes_file_contents = shapes_file.read()
 
 
@@ -98,7 +107,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
  
        # it is a request to create shapes that fell inside the mouse circled area but the current running shape is not 
        # inside the mouse circled area
-       if shape_id_in_need != None and not str(shapes_id) in shape_id_in_need:
+       if shapeids_in_need != None and not str(shapes_id) in shapeids_in_need:
           continue
           
 
@@ -151,7 +160,7 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
              print("shape " + str(shape_progress_counter))  
              
              # saving one shape
-             new_image.save("shapes/circleda/" + directory + shapes_filename[:-4] + '/' + shapes_id + '.png')
+             new_image.save(foldername + shapes_id + '.png')
       
     shapes_file.close() 
     
@@ -162,4 +171,4 @@ def get_whole_image_shape(parameter, filename, directory="", shape_id_in_need=No
 
 
 if __name__ == '__main__':
-   get_whole_image_shape(False, filename, directory )
+   get_whole_image_shape(False, recreate_what, filename, directory )

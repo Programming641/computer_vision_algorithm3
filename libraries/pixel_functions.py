@@ -1,114 +1,88 @@
 
-'''
-Example of use.
-
-total_appearance_difference_threshold = 20
-
-appearance_difference = compute_appearance_difference(current_pixel_shape_RGB, top_pixel_RGB)
-
-# check to see if total appearance difference value is within the threshold. if so, this neighbor pixel will be put in current pixel's shape          
-if total_appearance_difference_threshold - appearance_difference >= 0:
-   # appearance did not change more than threshold value
-
-
-'''
 
 import math
 
-def compute_appearance_difference(current_pix, compare_pixel):
 
-   apprnc_diff_threshold = 30
+# returns Boolean, Boolean, brightness value
+# first boolean is color change
+# second boolean is within brightness threshold value
+# third value is actual brightness change value
+def compute_appearance_difference(orig_pix, comp_pix, brit_thres):
 
-   if len(current_pix) == 3 and len(compare_pixel) == 3:
-      original_red, original_green, original_blue = current_pix
-      compare_red, compare_green, compare_blue = compare_pixel
-   else:
-      original_red, original_green, original_blue, alpha = current_pix
-      compare_red, compare_green, compare_blue, alpha = compare_pixel      
-    
-    
-   red_difference = abs(original_red - compare_red)
-   green_difference = abs(original_green - compare_green)
-   blue_difference = abs(original_blue - compare_blue)
-    
-   total_difference = red_difference + green_difference + blue_difference
-
-   average = total_difference / 3
-
-   # exclude 0 or negative values because 0 or negative values mean that difference is smaller than average.
-   red_how_far = exclude_negative_Num( red_difference - average )
-   green_how_far = exclude_negative_Num( green_difference - average )
-   blue_how_far = exclude_negative_Num( blue_difference - average )
-
-   apprnc_diff = total_difference + red_how_far * 1.3 + green_how_far * 1.3 + blue_how_far * 1.3
+   color_ch_threshold = 10
    
-   if apprnc_diff_threshold - apprnc_diff >= 0:
-      # appearance did not change more than threshold value
-      return False, apprnc_diff_threshold - apprnc_diff
+   if type(orig_pix) is dict and type(comp_pix) is dict:
+      red_difference = orig_pix['r'] - comp_pix['r']
+      green_difference = orig_pix['g'] - comp_pix['g']
+      blue_difference = orig_pix['b'] - comp_pix['b']
+  
+   elif type(orig_pix) is tuple and type(comp_pix) is tuple:
+      red_difference = orig_pix[0] - comp_pix[0]
+      green_difference = orig_pix[1] - comp_pix[1]
+      blue_difference = orig_pix[2] - comp_pix[2]      
 
+  
+   if red_difference >= 0:
+      if green_difference >= 0:
+         rg_diff = abs( red_difference - green_difference )
+      else:
+         # red_difference is 0 or positive, green_difference is negative
+         rg_diff = abs(green_difference) + red_difference
+        
+      if blue_difference >= 0:
+         # red_difference is 0 or positive, blue_difference is also 0 or positive
+         rb_diff = abs( red_difference - blue_difference )
+      else:
+         # red_difference is 0 or positive, blue_difference is negative
+         rb_diff = abs(blue_difference) + red_difference
    else:
-      # appearance changed
-      return True, apprnc_diff_threshold - apprnc_diff
-
-
-
-
-
-def exclude_negative_Num(num):
-
-   if num > 0:
-      return num
-   else:
-      return 0
-
-
-
-def find_brightness_change(current_shape_id_color, current_neighbor_color, brightness_threshold):
-
-   all_positive = False
-   all_negative = False
-   
-   if type(current_shape_id_color) is dict and type(current_neighbor_color) is dict:
-      red_difference = current_shape_id_color['r'] - current_neighbor_color['r']
-      green_difference = current_shape_id_color['g'] - current_neighbor_color['g']
-      blue_difference = current_shape_id_color['b'] - current_neighbor_color['b']
-  
-   elif type(current_shape_id_color) is tuple and type(current_neighbor_color) is tuple:
-      red_difference = current_shape_id_color[0] - current_neighbor_color[0]
-      green_difference = current_shape_id_color[1] - current_neighbor_color[1]
-      blue_difference = current_shape_id_color[2] - current_neighbor_color[2]      
-  
-  
-  
-  
-   # make sure that all signs are the same otherwise it is considered color change
-   # checking here for all positive signs
-   if red_difference > 0 and green_difference > 0 and blue_difference > 0:
-      all_positive = True
-  
-   # checking here for all negative signs
-   if red_difference < 0 and green_difference < 0 and blue_difference < 0:
-      all_negative = True
-  
-
-   # proceed to process if different signs are not present
-   if all_negative == True or all_positive == True:
+      if green_difference >= 0:
+         # red_difference is negative and green_difference is 0 or positive
+         rg_diff = abs(red_difference) + green_difference
+      else:
+         # red_difference is negative and green_difference is negative
+         rg_diff = abs( red_difference - green_difference )
      
-      average_difference = ( abs(red_difference) + abs(green_difference) + abs(blue_difference) ) / 3
-      
-      red_difference = average_difference - abs(red_difference)
-      green_difference = average_difference - abs(green_difference)
-      blue_difference = average_difference - abs(blue_difference)
-      
-      total_difference = abs(red_difference) + abs(green_difference) + abs(blue_difference)
-      
-      if total_difference <= brightness_threshold:
-         # current neighbor has the brightness change from the current running shape
-         return True
+      if blue_difference >= 0:
+         # red_difference is negative and blue_difference is 0 or positive
+         rb_diff = abs(red_difference) + blue_difference
+      else:
+         # red_difference is negative and blue_difference is negative
+         rb_diff = abs( red_difference - blue_difference )
+   
+   
+   if green_difference >= 0:
+      if blue_difference >= 0:
+         gb_diff = abs( green_difference - blue_difference )
+      else:
+         # green_difference is 0 or positive and blue_difference is negative
+         gb_diff = abs(blue_difference) + green_difference
+   else:
+      if blue_difference >= 0:   
+         # green_difference is negative and blue_difference is 0 or positive
+         gb_diff = abs(green_difference) + blue_difference
+      else:
+         # green_difference is negative and blue_difference is negative
+         gb_diff = abs( green_difference - blue_difference )
 
+   
+   clr_change = rg_diff + rb_diff + gb_diff
 
-   return False
+      
+   # this should be applied only if color change did not happen. average brightness change
+   average_britch = ( abs(red_difference) + abs(green_difference) + abs(blue_difference) ) / 3      
+      
+   if clr_change <= color_ch_threshold :
+      if average_britch <= brit_thres:
+         # color stayed and brightness is within threshold value
+         return False, True, average_britch
+      else:
+         # color stayed but not within threshold value
+         return False, False, average_britch
+            
 
+   # color changed
+   return True, None, None
 
 
 
