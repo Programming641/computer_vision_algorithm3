@@ -13,9 +13,9 @@ images_dir = proj_dir + "/images/"
 temp_dir = proj_dir + "/temp/"
 
 
-filename = "1clrgrp"
+filename = "2clrgrp"
 
-directory = "videos/street"
+directory = "videos/birdflying"
 
 # directory is passed in parameter but does not contain /
 if directory != "" and directory[-1] != ('/'):
@@ -153,13 +153,105 @@ def group_by_same_color( cur_match_results, subgroup=None, matched_grp=None, unm
 
 def put_into_rpt_ptn_shapes( matched_groups, all_cur_rpt_ptns, rpt_ptn_shapes ):
    # put all same color src_nbrs in the same repeating pattern shape.
+   
+   def compareList(l1,l2):
+      l1.sort()
+      l2.sort()
+      if(l1==l2) and l1 and l2:
+         return "Equal"
+      else:
+         return "Non equal"
+   
+   
+
+   
+   # check if src_nbrs in the matched_groups are contained in the exactly the same all_cur_rpt_ptns. if so, skip them and put only one
+   # into all_same_clr_src_nbrs
+   matched_groups_in_all_cur_rpt_ptns = []
    for one_src_nbrs in matched_groups:
+      cur_matched_group = []
+      already_added_indexes = []
+      for same_clr_shapeid in  one_src_nbrs:
+         for all_cur_rpt_ptn in all_cur_rpt_ptns:
+            if same_clr_shapeid in all_cur_rpt_ptn:
+               if all_cur_rpt_ptns.index( all_cur_rpt_ptn ) not in already_added_indexes:
+                  cur_matched_group.append( all_cur_rpt_ptns.index( all_cur_rpt_ptn ) )
+                  already_added_indexes.append( all_cur_rpt_ptns.index( all_cur_rpt_ptn ) )
+
+      matched_groups_in_all_cur_rpt_ptns.append( cur_matched_group )
+   
+   
+   cur_matched_group_index = 0
+   ano_cur_matched_group_index = 0
+   src_nbr_pairs_in_same_cur_rpt_ptns = []
+   for matched_group in matched_groups_in_all_cur_rpt_ptns:
+      cur_matched_group = []
+      first = True
+      for ano_matched_group in matched_groups_in_all_cur_rpt_ptns:
+         if cur_matched_group_index == ano_cur_matched_group_index:
+            # itself
+            continue
+            
+         for contained_indexes in src_nbr_pairs_in_same_cur_rpt_ptns:
+            if cur_matched_group_index in contained_indexes and ano_cur_matched_group_index in contained_indexes:
+               continue
+         
+         contained_in_same_cur_rpt_pnts = compareList( matched_group, ano_matched_group )
+         
+         if contained_in_same_cur_rpt_pnts == "Equal":
+            if first:
+               cur_matched_group.append( cur_matched_group_index )
+               cur_matched_group.append( ano_cur_matched_group_index )
+               first = False
+            else:
+               cur_matched_group.append( ano_cur_matched_group_index )
+            
+         
+         
+         ano_cur_matched_group_index += 1
+      
+      cur_matched_group_index += 1
+      
+      if cur_matched_group:
+         src_nbr_pairs_in_same_cur_rpt_ptns.append( cur_matched_group )
+
+
+   # delete all_cur_rpt_ptn after looping all matched_groups
+   same_clr_rpt_ptn_items = []
+   
+   all_same_clr_src_nbrs = []   
+   
+   for one_src_nbrs in matched_groups:
+      # first, check if current matched_group is contained in exactly the same all_cur_rpt_ptns as another matched_group
+      skip = False
+      for src_nbr_pair_indexes in src_nbr_pairs_in_same_cur_rpt_ptns:
+         if matched_groups.index( one_src_nbrs ) in src_nbr_pair_indexes and len(src_nbr_pair_indexes) >= 2:
+            src_nbr_pair_indexes.remove( matched_groups.index( one_src_nbrs ) )
+            
+            skip = True
+            break
+   
+      if skip:
+         continue
+   
+   
       # one_src_nbrs contains shapeids with same color
       cur_same_clr_src_nbrs = []
-      same_clr_rpt_ptn_items = []
+      added_all_cur_rpt_ptn = []
+
       src_nbr_not_in_rpt_ptn = []
-            
+      
+      # take results from looping both shapes in the one_src_nbrs
+      first = True
+
+      if debug:
+         print("current matched_group")
+         print(str( one_src_nbrs ) )
+         print()
+      
       for same_clr_shapeid in  one_src_nbrs:
+         
+         
          src_nbr_found = False
          # then, look for repeating pattern that contains same_clr_shapeid
          for all_cur_rpt_ptn in all_cur_rpt_ptns:
@@ -167,7 +259,11 @@ def put_into_rpt_ptn_shapes( matched_groups, all_cur_rpt_ptns, rpt_ptn_shapes ):
 
                         
                src_nbr_found = True
-               cur_same_clr_src_nbrs += all_cur_rpt_ptn
+               
+               if all_cur_rpt_ptns.index(all_cur_rpt_ptn) not in added_all_cur_rpt_ptn:
+                  cur_same_clr_src_nbrs += all_cur_rpt_ptn
+                  
+                  added_all_cur_rpt_ptn.append( all_cur_rpt_ptns.index(all_cur_rpt_ptn) )
                
                # if same color src_nbr is found in all_cur_rpt_ptn, then this all_cur_rpt_ptn will be deleted from all_cur_rpt_ptns
                if all_cur_rpt_ptn not in same_clr_rpt_ptn_items:
@@ -176,20 +272,27 @@ def put_into_rpt_ptn_shapes( matched_groups, all_cur_rpt_ptns, rpt_ptn_shapes ):
          if not src_nbr_found:
             src_nbr_not_in_rpt_ptn.append( same_clr_shapeid )
             
+         if first:
+            first = False
+            continue
+            
+            
       # current same color src_nbr ended
       if cur_same_clr_src_nbrs:
-
-
-         for same_clr_rpt_ptn_item in same_clr_rpt_ptn_items:
-
-            all_cur_rpt_ptns.remove( same_clr_rpt_ptn_item )
-               
+      
+         # each all_cur_rpt_ptn may contain same shapes, so delete them
+         res = []
+         for i in cur_same_clr_src_nbrs:
+            if i not in res:
+               res.append(i) 
+      
+         cur_same_clr_src_nbrs = res
 
          if src_nbr_not_in_rpt_ptn:
             cur_same_clr_src_nbrs += src_nbr_not_in_rpt_ptn
-                                
-               
-         rpt_ptn_shapes.append( { cur_same_clr_src_nbrs[0]: cur_same_clr_src_nbrs } )
+                                        
+         
+         all_same_clr_src_nbrs.append( { cur_same_clr_src_nbrs[0]: cur_same_clr_src_nbrs } )
             
       elif src_nbr_not_in_rpt_ptn:
                   
@@ -197,12 +300,25 @@ def put_into_rpt_ptn_shapes( matched_groups, all_cur_rpt_ptns, rpt_ptn_shapes ):
          # same color src_nbrs did not have any nested neighbors. then just put same color src_nbrs into rpt_ptn_shapes
          temp = [ src_shapeid ]
          temp += src_nbr_not_in_rpt_ptn
-
                   
-                  
-         rpt_ptn_shapes.append( { src_shapeid: temp } )
+         all_same_clr_src_nbrs.append( { src_shapeid: temp } )
 
-       
+
+   # check if same_clr_src_nbrs contain exactly the same all_cur_rpt_ptn
+   # this happens if src_nbrs are in the same all_cur_rpt_ptn  
+   res = []
+   for i in all_same_clr_src_nbrs:
+      if debug:
+         print("adding")
+         print(str(i))
+         print("to rpt_ptn_shapes")
+      
+      rpt_ptn_shapes.append( i )
+
+
+   for same_clr_rpt_ptn_item in same_clr_rpt_ptn_items:
+
+      all_cur_rpt_ptns.remove( same_clr_rpt_ptn_item )      
          
          
 
@@ -355,7 +471,6 @@ for shape_nbr in shape_nbrs_clrs:
          continue
       
       print("src_shapeid " + src_shapeid + " " + str( all_shapes ) + " remaining" )
-
          
       if debug_counter < 0:
          break
@@ -416,7 +531,6 @@ for shape_nbr in shape_nbrs_clrs:
       
 
 
-
       # this is for getting src_nbr color from shape_nbr
       src_nbr_counter = 0
       for src_nbr in src_nbrs:
@@ -451,9 +565,7 @@ for shape_nbr in shape_nbrs_clrs:
       # check if repeating pattern shape contains at least one nested neighbor
       if len( cur_rpt_ptn ) > 2:
          all_cur_rpt_ptns.append( cur_rpt_ptn )
-         
-         
-
+     
       
       # check if current src_nbrs have same color
       if src_nbr_same_clr:
@@ -525,6 +637,7 @@ for shape_nbr in shape_nbrs_clrs:
          # { 5: { 1: True, 12: False, 13: True }, 1: { 5: True, 12: False, 13: True }, 12: { 5: False, 1: False, 13: False }, 
          #       13: { 5: True, 1: True, 12: False } }
          
+         
          for group_src_nbr_shapeid, src_nbrs_in_group in grouped_by_same_clr_src_nbrs.items():
             cur_unmatched = []
             cur_match_results = {}
@@ -561,6 +674,7 @@ for shape_nbr in shape_nbrs_clrs:
             
             for matched_group in matched_groups:
                matched_group.append( group_src_nbr_shapeid )
+         
          
             put_into_rpt_ptn_shapes( matched_groups, all_cur_rpt_ptns, rpt_ptn_shapes )
 

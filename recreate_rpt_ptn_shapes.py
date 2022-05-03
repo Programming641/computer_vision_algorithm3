@@ -10,7 +10,7 @@ import shutil
 
 filename = "1clrgrp"
 
-directory = "videos/street"
+directory = "videos/cutting_vegetables"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
