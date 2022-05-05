@@ -106,15 +106,10 @@ shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixel
 ![1](https://user-images.githubusercontent.com/56218301/166858334-4a30ac83-3bfd-4d06-8908-968aa7a1b9be.png)
 
 edges executed on original image
-
 ![street_orig_edges](https://user-images.githubusercontent.com/56218301/166858353-74c41ce2-d166-430d-8cd9-5ead23b42f0c.png)
-
 edges executed on color group with direct neighbors.
-
 ![street_edge_dneighbors](https://user-images.githubusercontent.com/56218301/166858392-cf1d5db9-cb05-423b-abbf-8e386270955f.png)
-
 edges executed on color group with nested neighbors.
-
 ![street_edge_nestednbrs](https://user-images.githubusercontent.com/56218301/166858419-c36135bf-0935-4533-8346-2220eb42925c.png)
 
 ![dog](https://user-images.githubusercontent.com/56218301/166858462-be64a678-31f2-44d0-be93-7d1ce5b9865f.png)
