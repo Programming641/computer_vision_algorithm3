@@ -107,41 +107,22 @@ find_edges.py
 ![1](https://user-images.githubusercontent.com/56218301/166858334-4a30ac83-3bfd-4d06-8908-968aa7a1b9be.png)
 
 edges executed on original image
+edges executed on color group with direct neighbors.
+edges executed on color group with nested neighbors.
 
 ![street_orig_edges](https://user-images.githubusercontent.com/56218301/166858353-74c41ce2-d166-430d-8cd9-5ead23b42f0c.png)
-
-edges executed on color group with direct neighbors.
 ![street_edge_dneighbors](https://user-images.githubusercontent.com/56218301/166858392-cf1d5db9-cb05-423b-abbf-8e386270955f.png)
-
-edges executed on color group with nested neighbors.
 ![street_edge_nestednbrs](https://user-images.githubusercontent.com/56218301/166858419-c36135bf-0935-4533-8346-2220eb42925c.png)
 
+
 ![dog](https://user-images.githubusercontent.com/56218301/166858462-be64a678-31f2-44d0-be93-7d1ce5b9865f.png)
-
-executed on original
-
 ![dog_orig_edges](https://user-images.githubusercontent.com/56218301/166858470-5e33fd34-b396-4717-b4d7-f706bb3542ae.png)
-
-direct neighbors
-
 ![dog_dneighbors_edges](https://user-images.githubusercontent.com/56218301/166858486-bfe02663-8fe2-4514-ad80-119be8e31492.png)
-
-nested neighbors
-
 ![dog_nested_nbrs_edges](https://user-images.githubusercontent.com/56218301/166858510-0fd6caa5-2508-4a11-b5f5-ab173052ac9d.png)
 
 ![bird01](https://user-images.githubusercontent.com/56218301/166858535-f1b6c6c6-b11d-4e9a-be5e-b9bb3d7bd78e.png)
-
-executed on original
-
 ![bird_orig_edges](https://user-images.githubusercontent.com/56218301/166858548-94cc7a4e-2e0e-4772-8d05-f3b6de172665.png)
-
-direct neighbors
-
 ![bird_dneighbors_edges](https://user-images.githubusercontent.com/56218301/166858578-684e25fa-7937-4c65-88b5-791490b44937.png)
-
-nested neighbors
-
 ![bird_nested_nbrs_edges](https://user-images.githubusercontent.com/56218301/166858599-b303b319-e78f-4b28-847c-8fd506b251ce.png)
 
 
