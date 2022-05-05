@@ -46,11 +46,6 @@ for y in range(image_size[1]):
    
       # converting for the getdata(). y is the row that you want to get data for. current_pixel_index is the current pixel's index number
       current_pixel_index = (y * image_size[0])+ x
-      
-      if current_pixel_index == 10402:
-         debug = False
-         print("current_pixel_index " + str(current_pixel_index))
-         print()
 
       
       cur_pixel_neighbors = pixel_functions.get_nbr_pixels(current_pixel_index, image_size)      
@@ -68,9 +63,6 @@ for y in range(image_size[1]):
          clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[current_pixel_index] ,
                                                  original_pixel[neighbor], 50, clr_thres=50 )
                                                  
-         if debug and neighbor == 9922:
-            print("neighbor " + str(neighbor) + " clrch " + str( clrch ) + " brit_thres " + str(brit_thres) + " brit_ch_v " + str(brit_ch_v) )
-            print()
                   
          # color changed is true
          if clrch :
@@ -84,9 +76,6 @@ for y in range(image_size[1]):
             # this neighbor stayed but maybe this neighbor's neighbor may have rapid change
             nested_nbrs = pixel_functions.get_nbr_pixels(neighbor, image_size)
             
-            if debug and neighbor == 9922:
-               print("neibor " + str(neighbor) + " nested neighbors " + str( nested_nbrs ) )
-               print()
             
             for nested_nbr in nested_nbrs:
                if not nested_nbr in cur_pixel_neighbors or nested_nbr != current_pixel_index:
@@ -94,8 +83,6 @@ for y in range(image_size[1]):
                   clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[current_pixel_index] ,
                                                  original_pixel[nested_nbr], 50, clr_thres=50 )
                   
-                  if debug and neighbor == 9922:
-                     print("current nested neighbor " + str(nested_nbr) + " clrch " + str( clrch ) + " brit_thres " + str(brit_thres) + " brit_ch_v " + str(brit_ch_v) )
                                                  
                   if clrch or ( not brit_thres ):
                   
