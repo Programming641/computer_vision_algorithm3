@@ -106,9 +106,9 @@ find_edges.py
 
 ![1](https://user-images.githubusercontent.com/56218301/166858334-4a30ac83-3bfd-4d06-8908-968aa7a1b9be.png)
 
-edges executed on original image
-edges executed on color group with direct neighbors.
-edges executed on color group with nested neighbors.
+- edges executed on original image. 
+- edges executed on color group with direct neighbors.
+- edges executed on color group with nested neighbors.
 
 ![street_orig_edges](https://user-images.githubusercontent.com/56218301/166858353-74c41ce2-d166-430d-8cd9-5ead23b42f0c.png)
 ![street_edge_dneighbors](https://user-images.githubusercontent.com/56218301/166858392-cf1d5db9-cb05-423b-abbf-8e386270955f.png)
