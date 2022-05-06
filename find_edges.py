@@ -14,9 +14,9 @@ from libraries.cv_globals import proj_dir
 shapes_dir = proj_dir + "/shapes/"
 images_dir = proj_dir + "/images/"
 
-image_filename = 'bird01clrgrp'
+image_filename = 'origsize1clrgrp'
 
-directory = "bird"
+directory = "videos/street/original"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
@@ -61,11 +61,12 @@ for y in range(image_size[1]):
          neighbor_y = math.floor( neighbor / image_size[0])
 
          clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[current_pixel_index] ,
-                                                 original_pixel[neighbor], 50, clr_thres=50 )
+                                                 original_pixel[neighbor], 70, clr_thres=70 )
                                                  
                   
-         # color changed is true
-         if clrch :
+         
+         if clrch or ( not brit_thres ) :
+            # color changed is true or brightness is over threshold
             edge_image.putpixel( ( neighbor_x, neighbor_y ) , (255, 0, 0) )
             
             
@@ -81,11 +82,11 @@ for y in range(image_size[1]):
                if not nested_nbr in cur_pixel_neighbors or nested_nbr != current_pixel_index:
                   
                   clrch, brit_thres, brit_ch_v = pixel_functions.compute_appearance_difference(original_pixel[current_pixel_index] ,
-                                                 original_pixel[nested_nbr], 50, clr_thres=50 )
+                                                 original_pixel[nested_nbr], 70, clr_thres=70 )
                   
                                                  
                   if clrch or ( not brit_thres ):
-                  
+                     # color changed is true or brightness is over threshold
                      nested_nbr_x = nested_nbr % image_size[0]
                      nested_nbr_y = math.floor( nested_nbr / image_size[0])
                   
@@ -94,9 +95,9 @@ for y in range(image_size[1]):
                   
          if debug:
             sys.exit()            
+         
 
-
-edge_image.save("test.png")
+edge_image.save("street_orig1clrgrp_70_70.png")
 
 
 

@@ -7,9 +7,12 @@ import math
 # first boolean is color change
 # second boolean is within brightness threshold value
 # third value is actual brightness change value
-def compute_appearance_difference(orig_pix, comp_pix, brit_thres):
+def compute_appearance_difference(orig_pix, comp_pix, brit_thres, clr_thres=None):
 
-   color_ch_threshold = 10
+   if not clr_thres:
+      color_ch_threshold = 10
+   else:
+      color_ch_threshold = clr_thres
    
    if type(orig_pix) is dict and type(comp_pix) is dict:
       red_difference = orig_pix['r'] - comp_pix['r']

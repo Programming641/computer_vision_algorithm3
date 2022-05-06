@@ -1531,6 +1531,45 @@ def get_shape_im_locations( im_file, directory, shape_coords, shapeid ):
 
 
 
+def get_im_areas( im_file, directory ):
+
+   # needed for creating image areas
+   image = Image.open("images/" + directory + im_file + ".png")
+   im_width, im_height = image.size
+
+
+   # divide image into 5 columns, 5 rows
+   image_divider = 5
+   im_area_width = round(im_width / image_divider)
+   im_area_height = round(im_height / image_divider)
+   
+   image_areas = []
+   
+   column_num = 0
+   for column_num in range(0, image_divider):
+      for row_num in range(0, image_divider):
+         if row_num == 0:
+            left = 0
+            right = im_area_width
+         else:
+            left = (im_area_width * row_num) + 1
+            right = (im_area_width * row_num) + im_area_width
+         
+         if column_num == 0:
+            top = 0
+            bottom = im_area_height
+         else:
+            top = ( column_num * im_area_height ) + 1
+            bottom = ( column_num * im_area_height ) + im_area_height
+      
+         temp = {}
+         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
+      
+         image_areas.append(temp)
+
+
+   return image_areas 
+
 
 
 
