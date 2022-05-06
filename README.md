@@ -105,14 +105,15 @@ find_edges.py
 **examples**
 
 -executing on the original produces such great results!
-![origsize1](https://user-images.githubusercontent.com/56218301/167110517-aa04770c-893c-4b68-a170-8dc663aa69a5.png)
+![1](https://user-images.githubusercontent.com/56218301/167111595-cda24611-a4f1-4a6d-8516-d675dcbabd59.png)
 ![leaf_mov_orig1clrgrp_70_70resized](https://user-images.githubusercontent.com/56218301/167110586-851fedc0-4b58-4865-8cb1-0af54f8a2acb.png)
 
-![origsize1](https://user-images.githubusercontent.com/56218301/167110643-57924e6d-4282-4b51-91c9-35daddbeedd7.png)
-![sea_ride_orig1clrgrp_70_70](https://user-images.githubusercontent.com/56218301/167110676-4931c950-dace-4d24-84b5-951996aa19c8.png)
+![1](https://user-images.githubusercontent.com/56218301/167111645-54b68a84-1710-41e5-8dde-e5e5fb066d76.png)
+![sea_ride_orig1clrgrp_70_70resized](https://user-images.githubusercontent.com/56218301/167111935-707a1dd4-dfd7-47f4-963f-e7fd865fa58a.png)
 
-![origsize1](https://user-images.githubusercontent.com/56218301/167110708-701f78c3-5c0b-4a30-9798-bb5c2924c0a4.png)
-![street_orig1clrgrp_70_70](https://user-images.githubusercontent.com/56218301/167110733-02c7e52e-53f6-40bc-a69f-fbca34dd1575.png)
+![1](https://user-images.githubusercontent.com/56218301/167112014-16aa3325-5446-4c97-84e0-ad8ad945c192.png)
+![street_orig1clrgrp_70_70resized](https://user-images.githubusercontent.com/56218301/167112277-22a42350-6860-4ee0-9ee6-dd413ccd92ec.png)
+
 
 
 
