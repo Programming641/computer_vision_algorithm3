@@ -105,6 +105,7 @@ find_edges.py
 **examples**
 
 -executing on the original produces such great results!
+
 ![1](https://user-images.githubusercontent.com/56218301/167111595-cda24611-a4f1-4a6d-8516-d675dcbabd59.png)
 ![leaf_mov_orig1clrgrp_70_70resized](https://user-images.githubusercontent.com/56218301/167110586-851fedc0-4b58-4865-8cb1-0af54f8a2acb.png)
 
