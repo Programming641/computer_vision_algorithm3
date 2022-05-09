@@ -225,7 +225,17 @@ taking difference between frames above
 ![diff12result2](https://user-images.githubusercontent.com/56218301/160788795-a4598c9d-78bb-4b55-930a-01fa6345f94d.png)
 
 
+![analyzing image difference1-1](https://user-images.githubusercontent.com/56218301/167390316-7160fc3f-403b-4fd0-9815-a9557bde4daf.png)
 
+![analyzing image difference2-1](https://user-images.githubusercontent.com/56218301/167390372-40847e6b-9acc-4e8b-8775-48d18043d190.png)
+
+![analyzing image difference3-1](https://user-images.githubusercontent.com/56218301/167390405-8a80cbf8-1eb4-4b0b-a540-849fac50ef5b.png)
+
+below uses shape changes.
+
+findim_ch_shapes.py
+
+![analyzing image difference4-1](https://user-images.githubusercontent.com/56218301/167390444-d03f5bd5-814e-4bf7-9e25-625fc406a36d.png)
 
 
 
