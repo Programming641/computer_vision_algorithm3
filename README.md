@@ -237,9 +237,7 @@ original image
 
 ![analyzing image difference3-1](https://user-images.githubusercontent.com/56218301/167390405-8a80cbf8-1eb4-4b0b-a540-849fac50ef5b.png)
 
-below uses shape changes.
 
-findim_ch_shapes.py
 
 original image
 
@@ -248,6 +246,12 @@ original image
 
 
 ![analyzing image difference4-1](https://user-images.githubusercontent.com/56218301/167390444-d03f5bd5-814e-4bf7-9e25-625fc406a36d.png)
+
+below uses shape changes.
+
+findim_ch_shapes.py
+
+![analyzing image difference  pixel changes and shape changes](https://user-images.githubusercontent.com/56218301/167391578-df1d4c13-199a-4c4a-9901-fd916e023e5e.png)
 
 
 
