@@ -12,7 +12,7 @@ images_dir = proj_dir + "/images/"
 
 
 filename = "1clrgrp"
-directory = "videos/street"
+directory = "videos/cutveg"
 
 # choices are "shapes", "brightness", 
 recreate_what = "shapes"

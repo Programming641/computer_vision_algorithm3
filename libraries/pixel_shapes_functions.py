@@ -1228,6 +1228,59 @@ def get_all_shapes_colors(filename, directory):
     return shapes_colors
 
 
+def get_image_areas( im_file, directory ):
+
+   # needed for creating image areas
+   image = Image.open("images/" + directory + im_file + ".png")
+   im_width, im_height = image.size
+   
+   # image width can not have decimal point values because decimal point value creates number less than the actual image width or height.
+   # so divider has to be the one that can exactly divide image width or height
+   
+   # divide image into columns and rows
+   image_dividers = [ 5, 6, 7, 8 ]
+   
+   image_divider = None
+   for temp_divider in image_dividers:
+      if im_width % temp_divider == 0:
+         
+         im_area_width = round(im_width / temp_divider)
+         im_area_height = round(im_height / temp_divider)
+         
+         image_divider = temp_divider
+         
+         break
+   
+   if not image_divider:
+      print("ERROR at get_image_areas method. No image divider found")
+      sys.exit()
+   
+   image_areas = []
+   
+   column_num = 0
+   for column_num in range(0, image_divider):
+      for row_num in range(0, image_divider):
+         if row_num == 0:
+            left = 0
+            right = im_area_width
+         else:
+            left = (im_area_width * row_num) + 1
+            right = (im_area_width * row_num) + im_area_width
+         
+         if column_num == 0:
+            top = 0
+            bottom = im_area_height
+         else:
+            top = ( column_num * im_area_height ) + 1
+            bottom = ( column_num * im_area_height ) + im_area_height
+      
+         temp = {}
+         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
+      
+         image_areas.append(temp)
+
+   return image_areas
+
 
 
 
@@ -1294,7 +1347,7 @@ def localize_shape( shape_coordinates , image_areas , shapeid ):
 
    shape_in_image_areas = []
    
-   location_threshold = 5  
+   location_threshold = 3  
    
    location_labels = [ { 'top_middle': {'y_threshold': ( - location_threshold ), 'x_threshold': ( location_threshold, - location_threshold ) }, \
                       'right': { 'y_threshold': ( location_threshold, - location_threshold ), 'x_threshold': ( location_threshold ) }, \
@@ -1420,34 +1473,7 @@ def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, s
    if not (image_width == compare_image_width and image_height == compare_image_height):
       return False
 
-   # divide image into 5 columns, 5 rows
-   image_divider = 5
-   image_area_width = round(image_width / image_divider)
-   image_area_height = round(image_height / image_divider)
-   
-   image_areas = []
-   
-   column_num = 0
-   for column_num in range(0, image_divider):
-      for row_num in range(0, image_divider):
-         if row_num == 0:
-            left = 0
-            right = image_area_width
-         else:
-            left = (image_area_width * row_num) + 1
-            right = (image_area_width * row_num) + image_area_width
-         
-         if column_num == 0:
-            top = 0
-            bottom = image_area_height
-         else:
-            top = ( column_num * image_area_height ) + 1
-            bottom = ( column_num * image_area_height ) + image_area_height
-      
-         temp = {}
-         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
-      
-         image_areas.append(temp)
+   image_areas = get_image_areas( im_file, directory )
 
       
    orig_locations = localize_shape( orig_coords , image_areas , shape_ids[0] )
@@ -1489,40 +1515,7 @@ def are_shapes_near(orig_file, comp_file, directory, orig_coords, comp_coords, s
 def get_shape_im_locations( im_file, directory, shape_coords, shapeid ):
 
 
-   # needed for creating image areas
-   image = Image.open("images/" + directory + im_file + ".png")
-   im_width, im_height = image.size
-
-
-   # divide image into 5 columns, 5 rows
-   image_divider = 5
-   im_area_width = round(im_width / image_divider)
-   im_area_height = round(im_height / image_divider)
-   
-   image_areas = []
-   
-   column_num = 0
-   for column_num in range(0, image_divider):
-      for row_num in range(0, image_divider):
-         if row_num == 0:
-            left = 0
-            right = im_area_width
-         else:
-            left = (im_area_width * row_num) + 1
-            right = (im_area_width * row_num) + im_area_width
-         
-         if column_num == 0:
-            top = 0
-            bottom = im_area_height
-         else:
-            top = ( column_num * im_area_height ) + 1
-            bottom = ( column_num * im_area_height ) + im_area_height
-      
-         temp = {}
-         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
-      
-         image_areas.append(temp)
-
+   image_areas = get_image_areas( im_file, directory )
 
       
    shape_locations = localize_shape( shape_coords , image_areas , shapeid )
@@ -1530,45 +1523,6 @@ def get_shape_im_locations( im_file, directory, shape_coords, shapeid ):
    return shape_locations
 
 
-
-def get_im_areas( im_file, directory ):
-
-   # needed for creating image areas
-   image = Image.open("images/" + directory + im_file + ".png")
-   im_width, im_height = image.size
-
-
-   # divide image into 5 columns, 5 rows
-   image_divider = 5
-   im_area_width = round(im_width / image_divider)
-   im_area_height = round(im_height / image_divider)
-   
-   image_areas = []
-   
-   column_num = 0
-   for column_num in range(0, image_divider):
-      for row_num in range(0, image_divider):
-         if row_num == 0:
-            left = 0
-            right = im_area_width
-         else:
-            left = (im_area_width * row_num) + 1
-            right = (im_area_width * row_num) + im_area_width
-         
-         if column_num == 0:
-            top = 0
-            bottom = im_area_height
-         else:
-            top = ( column_num * im_area_height ) + 1
-            bottom = ( column_num * im_area_height ) + im_area_height
-      
-         temp = {}
-         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
-      
-         image_areas.append(temp)
-
-
-   return image_areas 
 
 
 
@@ -1623,7 +1577,7 @@ def highlight_matches( shape_ids, filenames, xy_coordinates, func_name ):
 # in_shapes are the list containing shapeids
 # [ shapeid1, shapeid2, ..... ]
 # newim_fname is new image filename
-def cr_im_from_shapeslist( imfname, imdir, in_shapes, newim_fname ):
+def cr_im_from_shapeslist( imfname, imdir, in_shapes, newim_fname, background_rgb=None ):
 
    shapes_filename = imfname + "_shapes.txt"
 
@@ -1645,7 +1599,10 @@ def cr_im_from_shapeslist( imfname, imdir, in_shapes, newim_fname ):
 
    image_width, image_height = original_image.size
    
-   new_image = Image.new('RGB', (image_width, image_height) )
+   if not background_rgb:
+      new_image = Image.new('RGB', (image_width, image_height) )
+   else:
+      new_image = Image.new('RGB', (image_width, image_height), background_rgb )
 
    original_image_data = original_image.getdata()
 

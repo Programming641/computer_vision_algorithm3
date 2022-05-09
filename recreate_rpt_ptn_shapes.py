@@ -4,28 +4,31 @@ import os
 from libraries import read_files_functions
 
 import shutil
+import winsound
 
 
 
 
 filename = "1clrgrp"
 
-directory = "videos/cutting_vegetables"
+directory = "videos/street"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
    directory +='/'
 
-repeating_shapes_pattern_filename = "shapes/" + directory + filename + "_rpt_ptn_shapes.txt"
+rpt_ptn_folder = "shapes/" + directory + "rpt_ptn/"
 
-repeating_shapes_pattern_foldername = "shapes/" + directory  + "/rpt_ptn/" + filename + "/"
+repeating_shapes_pattern_filename = rpt_ptn_folder + filename + "_rpt_ptn_shapes.txt"
+
+rpt_ptn_shape_foldername = rpt_ptn_folder + filename + "/"
 
 # delete and create folder
-if os.path.exists(repeating_shapes_pattern_foldername) == True:
-   shutil.rmtree(repeating_shapes_pattern_foldername)
+if os.path.exists(rpt_ptn_shape_foldername) == True:
+   shutil.rmtree(rpt_ptn_shape_foldername)
    
-if os.path.exists(repeating_shapes_pattern_foldername) == False:
-   os.makedirs(repeating_shapes_pattern_foldername)
+if os.path.exists(rpt_ptn_shape_foldername) == False:
+   os.makedirs(rpt_ptn_shape_foldername)
 
 
 original_image = Image.open("images/" + directory + filename + ".png")
@@ -50,7 +53,7 @@ prev_shape_id = None
 same_shape_id_counter = 1
 for rpt_ptn_dict in repeating_shapes_patterns:
 
-   new_image = Image.new('RGB', (image_width, image_height), ( 0, 0, 0) )
+   new_image = Image.new('RGB', (image_width, image_height), ( 0, 0, 255) )
 
    for shape_id, rpt_ptn_shape_ids in rpt_ptn_dict.items():
       if prev_shape_id == None:
@@ -82,12 +85,14 @@ for rpt_ptn_dict in repeating_shapes_patterns:
    prev_shape_id = shape_id
 
    if same_shape_id_counter != 1:
-      new_image.save(repeating_shapes_pattern_foldername + str(shape_id) + "_" + str(same_shape_id_counter) + ".png")
+      new_image.save(rpt_ptn_shape_foldername + str(shape_id) + "_" + str(same_shape_id_counter) + ".png")
    else:
-      new_image.save(repeating_shapes_pattern_foldername + str(shape_id) + ".png")
+      new_image.save(rpt_ptn_shape_foldername + str(shape_id) + ".png")
 
 
-
+frequency = 2500  # Set Frequency To 2500 Hertz
+duration = 1000  # Set Duration To 1000 ms == 1 second
+winsound.Beep(frequency, duration)
 
 
 

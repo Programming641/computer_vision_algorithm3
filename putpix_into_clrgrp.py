@@ -6,10 +6,11 @@
 import sys
 from PIL import Image
 import re
+import winsound
 
-filename = "bird01"
+filename = "2"
 
-directory = "bird"
+directory = "videos/table_outside"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != "/":
@@ -120,6 +121,13 @@ for y in range(image_size[1]):
 
 
 original_image.save("images/" + directory + filename + "clrgrp.png")
+
+
+
+
+frequency = 2500  # Set Frequency To 2500 Hertz
+duration = 1000  # Set Duration To 1000 ms == 1 second
+winsound.Beep(frequency, duration)
 
 
 

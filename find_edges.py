@@ -14,9 +14,9 @@ from libraries.cv_globals import proj_dir
 shapes_dir = proj_dir + "/shapes/"
 images_dir = proj_dir + "/images/"
 
-image_filename = 'origsize1clrgrp'
+image_filename = 'origsize2clrgrp'
 
-directory = "videos/street/original"
+directory = "videos/cutveg/original"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
@@ -67,7 +67,7 @@ for y in range(image_size[1]):
          
          if clrch or ( not brit_thres ) :
             # color changed is true or brightness is over threshold
-            edge_image.putpixel( ( neighbor_x, neighbor_y ) , (255, 0, 0) )
+            edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
             
             
                
@@ -90,14 +90,14 @@ for y in range(image_size[1]):
                      nested_nbr_x = nested_nbr % image_size[0]
                      nested_nbr_y = math.floor( nested_nbr / image_size[0])
                   
-                     edge_image.putpixel( ( nested_nbr_x, nested_nbr_y ) , (255, 0, 0) )
+                     edge_image.putpixel( ( nested_nbr_x, nested_nbr_y ) , (0, 0, 255) )
 
                   
          if debug:
             sys.exit()            
          
 
-edge_image.save("street_orig1clrgrp_70_70.png")
+edge_image.save("cutveg_origsize2clrgrp_70_70.png")
 
 
 

@@ -8,9 +8,9 @@ from libraries.cv_globals import proj_dir
 shapes_dir = proj_dir + "/shapes/"
 
 
-im_file = "1clrgrp"
+im_file = "2clrgrp"
 
-directory = "videos/street"
+directory = "videos/waves_sunset"
 
 location_fname = im_file + "_loc.txt"
 

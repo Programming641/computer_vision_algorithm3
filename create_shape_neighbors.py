@@ -4,12 +4,13 @@ from libraries import pixel_functions
 
 import os, sys
 from libraries.cv_globals import proj_dir
+import winsound
 
 shapes_dir = proj_dir + "/shapes/"
 
 im_file = "1clrgrp"
 
-directory = "videos/street"
+directory = "videos/waves_sunset"
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != ('/'):
@@ -43,6 +44,7 @@ for shapeid in shapes:
          shapes_in_im_areas[shapeid] = s_locs[ list(s_locs.keys())[0] ]
          break
 
+debug = False
 all_shapes = len(shapes)
 for src_shapeid in shapes:
 
@@ -57,9 +59,11 @@ for src_shapeid in shapes:
    # {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, 86{'x': 177, 'y': 319}, 16679: {'x': 178, 'y': 229}}
    # containing coordinates of boundary pixels
    src_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(shapes[src_shapeid] )
+   
 
    # comparing every one of shape of the image with every other shapes of the image
    for candidate_shapeid in shapes:
+      
       
       if src_shapeid == candidate_shapeid :
          # itself or already processed as src_shapeid
@@ -74,15 +78,21 @@ for src_shapeid in shapes:
          continue
       
       candidate_pixels = pixel_shapes_functions.get_boundary_pixels(shapes[candidate_shapeid] )
-         
+
       # returned value example. {'src': {'x': 33, 'y': 33}, 1: {'x': 33, 'y': 34}, 2: {'x': 34, 'y': 34}}
       matched_neighbor_coords = pixel_shapes_functions.find_direct_neighbors( src_boundary_pixels, candidate_pixels )
+
+
 
       if matched_neighbor_coords:
 
          cur_shape_neighbors[src_shapeid].append(candidate_shapeid)
 
- 
+
+   if not cur_shape_neighbors[src_shapeid]:
+      print("ERROR. current shape " + src_shapeid + " could not find neighbors")
+      sys.exit()
+      
    all_shape_neighbors.append(cur_shape_neighbors)
    
    all_shapes -= 1
@@ -92,6 +102,10 @@ for src_shapeid in shapes:
 shape_neighbor_file.write(str( all_shape_neighbors ) )
 shape_neighbor_file.close()
 
+
+frequency = 2500  # Set Frequency To 2500 Hertz
+duration = 1000  # Set Duration To 1000 ms == 1 second
+winsound.Beep(frequency, duration)
 
 
 
