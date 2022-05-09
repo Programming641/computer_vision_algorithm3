@@ -225,6 +225,7 @@ taking difference between frames above
 ![diff12result2](https://user-images.githubusercontent.com/56218301/160788795-a4598c9d-78bb-4b55-930a-01fa6345f94d.png)
 
 original image
+
 ![1](https://user-images.githubusercontent.com/56218301/167390805-f775ed91-e365-42c8-9e80-f95527575cd1.png)
 ![2](https://user-images.githubusercontent.com/56218301/167390826-7fcb291c-5ee0-496c-a867-e6abf3f468c2.png)
 
@@ -239,6 +240,12 @@ original image
 below uses shape changes.
 
 findim_ch_shapes.py
+
+original image
+
+![1](https://user-images.githubusercontent.com/56218301/167391021-b5861fcb-fce7-493e-806a-8e8b0e761134.png)
+![2](https://user-images.githubusercontent.com/56218301/167391040-d3633f39-287c-40aa-a5e3-3efe26623e02.png)
+
 
 ![analyzing image difference4-1](https://user-images.githubusercontent.com/56218301/167390444-d03f5bd5-814e-4bf7-9e25-625fc406a36d.png)
 
