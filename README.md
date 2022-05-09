@@ -224,6 +224,11 @@ taking difference between frames above
 ![diff12result1](https://user-images.githubusercontent.com/56218301/160788785-b54ff963-6a0c-4b57-8a36-b090b3aa3dc8.png)
 ![diff12result2](https://user-images.githubusercontent.com/56218301/160788795-a4598c9d-78bb-4b55-930a-01fa6345f94d.png)
 
+original image
+![1](https://user-images.githubusercontent.com/56218301/167390805-f775ed91-e365-42c8-9e80-f95527575cd1.png)
+![2](https://user-images.githubusercontent.com/56218301/167390826-7fcb291c-5ee0-496c-a867-e6abf3f468c2.png)
+
+
 
 ![analyzing image difference1-1](https://user-images.githubusercontent.com/56218301/167390316-7160fc3f-403b-4fd0-9815-a9557bde4daf.png)
 
