@@ -152,7 +152,9 @@ Original Image
 
 combine_rpt_ptn_shapes.py
 
-***great resul! but big disadvantage is very very slow!!!!***
+***great result but big disadvantage is very very slow!!!!***
+
+I'll work on it to improve its speed.
 
 ![1](https://user-images.githubusercontent.com/56218301/167757599-d4fff3bc-4316-4162-bee4-89087b563550.png)
 
