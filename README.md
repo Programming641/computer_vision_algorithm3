@@ -34,70 +34,83 @@ top directory
 
 ### Instructions
 
-- First you need to execute put_pixels_into_clr_grps.py
+#### preparation before executing python scripts.
+
+- set PYTHONPATH environment variable
+
+this needs to be the project top directory
+
+in windows 10
+
+~~~
+set PYTHONPATH= "this project top directory"
+~~~
+
+also set global variable of top project directory
+
+#### libraries/cv_globals.py
+
+![global top_directory](https://user-images.githubusercontent.com/56218301/223993262-cba3c9d3-4d73-4340-9b2e-0e87ec0ee180.png)
+
+#### putpix_into_clgrp.py 
+
+![putpix_into_clrgrp](https://user-images.githubusercontent.com/56218301/223995514-43e1f79c-5b7d-4bef-96b0-2301c54bc904.png)
+
 
 ~~~
 py  putpix_into_clgrp.py 
 ~~~
 
-You need to provide image filename as needed.
+examples of results
 
-Then you need to execute
+original
 
-- py -3 "finding_shapes.py"
+![1](https://user-images.githubusercontent.com/56218301/223995965-405a2f40-f1e0-4f1f-8bf2-e7468c6c5fbf.png)
 
-make sure to provide filename and optional directory.
+![1](https://user-images.githubusercontent.com/56218301/223996102-4571793b-8cbd-4440-9cd2-d94277af52d4.png)
 
 
-after executing the finding_shapes.py
+#### find_shapes.py
+
+![find_shapes](https://user-images.githubusercontent.com/56218301/223996977-9bc09cd2-aabe-45cb-bd16-197db59a3717.png)
+
+execute "find_shapes.py" without any parameters just like many of the other python scripts of this project.
+
+
+![find_shapes2](https://user-images.githubusercontent.com/56218301/223997693-1ac5aa6a-cff7-4768-87d0-9c029285941e.png)
+
+
+after executing it, 
 
 "filename"_shapes.txt will be created under shapes folder
 
-- Then, you can execute "recreate_shapes.py" to see each one of shapes
+![shapes files](https://user-images.githubusercontent.com/56218301/223998871-8408ec9f-d0ee-4785-94b5-f4b1ffa48acf.png)
 
-To get boundaries of shape, 
 
-"get_boundary_pixels test.py"
+- Then, execute "recreate_shapes.py". This is needed by some python scripts below to show images of shapes.
 
-First, you need to have already executed finding_shapes.py for the intented image.
+![recreate_shapes](https://user-images.githubusercontent.com/56218301/223999818-49c7df2a-7611-4bd8-bf1d-f2027efae418.png)
 
-you need to change filename and directory as before.
+execute it without parameters
 
-Also you will need shape id number in the below variable
+~~~
+py recreate_shapes.py
+~~~
 
-pixel_ids_list = [shape id number ]
+### scripts that need to be executed to run most of the scripts
 
-this shape id number is the one created by finding_shapes.py
+- putpix_into_clrgrp.py
+- find_shapes.py
+- create_shape_locations.py
+- create_shape_neighbors.py
+- find_edges.py
+- findim_pixch.py
+- recreate_shapes.py
 
-Also below lines
 
-b_filename = "20085"
 
-b_directory = "boundary_test"
 
-b_filename is the shape id number mentioned above
 
-b_directory is optional but you will need to put shape id number's image for the below line
-
-image_original = 'images/' + b_directory + b_filename + '.png'
-
-image_original is the shape id number image that is created by "recreate_shapes.py"
-
-below are some examples of "get_boundary_pixels test.py"
-
-original image and image transformed by put_pixels_into_clr_grps
-
-![hanger001](https://user-images.githubusercontent.com/56218301/139683609-18d83a72-58f8-4523-9a86-84675c091327.png)
-![hanger001_color_group](https://user-images.githubusercontent.com/56218301/139676481-55cbdf86-1da0-4f2a-a9c1-2ae5e604414a.png)
-
-shapes created by "recreate_shapes.py" and boundary found by "get_boundary_pixels test.py"
-
-![20085](https://user-images.githubusercontent.com/56218301/139615314-d99024d5-5012-4f4c-8f78-f0e59a9e821b.png)
-![20085_boundary](https://user-images.githubusercontent.com/56218301/139615338-52c6ee02-0e08-4a13-a9ae-3da5ac9d4eb9.png)
-![27468](https://user-images.githubusercontent.com/56218301/139615346-e3b990c9-d424-48a4-b2f2-941b3c2cf118.png)
-![27468_boundary](https://user-images.githubusercontent.com/56218301/139615354-be0a7369-2b85-4dad-8675-3fe047e41219.png)
-![54720](https://user-images.githubusercontent.com/56218301/139615366-5b67a080-d7f5-4802-a1cb-04b10b4bf4b5.png)
-![54720_boundary](https://user-images.githubusercontent.com/56218301/139615370-cbc099c6-9804-4a85-af05-5b38937c6917.png)
 
 ## edge detection
 find_edges.py
@@ -122,8 +135,8 @@ find_edges.py
 
 ### Instructions
 
-- execute put_pixels_into_clr_grps.py
-- excute finding_shapes.py
+- execute putpix_into_clrgrp.py
+- excute find_shapes.py
 - execute create_shape_locations.py
 - execute create_shape_neighbors.py
 - execute find_rpt_ptn_shapes.py
@@ -165,11 +178,6 @@ I'll work on it to improve its speed.
 
 
 # Video Analysis
-
-
-
-
-
 
 ## Requirement
 
@@ -250,58 +258,93 @@ findim_ch_shapes.py
 
 execute findimage_pixelchange.py
 
-
 execute process_pixch_btnframes.py
 
-## match image1 shape and its neighbor with image2 shape and its neighbor
-
-### instruction
-
-Once you obtain the frames from video, you need to execute finding_shapes.py and so on the same as image analysis written above.
-
-1. execute putpix_into_clgrp.py on *two consequtive* images/frames.
-2. execute finding_shapes.py on both images/frames.
-3. execute recreate_shapes.py
-4. execute create_shape_neighbors.py
-5. execute shapes_within_same_object_move_together_test3.py
-
-![code change instruction](https://user-images.githubusercontent.com/56218301/162130519-c562663e-90e0-448c-a1c6-cc08d4b37249.png)
-
-make sure you have provided two images and specify directory. also choose target image shape "t_shape" from image1 
-
-![closestmatch shapes result](https://user-images.githubusercontent.com/56218301/162130697-0f679f4f-dfc5-4a8a-a934-bfb8ae9c1bd2.png)
-
-if you run it, first you will see image1 shape matching with image2 shapes like above.
-
-![execution result](https://user-images.githubusercontent.com/56218301/162130908-20073ef8-0aa3-42af-b2c5-a80fe0baeaba.png)
-
-then you will see image1 shape and its neighbor shape match with image2 shape and its neighbor.
-
-
-![execution result shape image](https://user-images.githubusercontent.com/56218301/162131994-a819ec89-3d42-4ecc-a9eb-b36073106fab.png)
-
-this means that image1 shape and its neighbor moved to the new location in image2 and they now became image2 shape and its neighbor
-
-### another example
-
-![shape match result](https://user-images.githubusercontent.com/56218301/162132895-979541c0-526c-49dd-9b49-040f507494e1.png)
-
-shape match results are reasonably good!
-
-**direction of match evaluation is from above image with below image! and not from below image to above image!**
-
-
-![execution result2](https://user-images.githubusercontent.com/56218301/162133423-3aa40af7-8c37-47ea-a195-63553c740bda.png)
-
-![execution result shape image2](https://user-images.githubusercontent.com/56218301/162134073-df4f021c-66a9-4791-b05d-d47654d7a145.png)
 
 
 
-## Caution
-may not be stable at this time! I only did a quick test only but it worked great with test data.
+
+## find_staying_Lshp_btwn_frames.py
+
+this script finds large shapes ( shapes with more than 50 pixels ) that did not move to another locations but stayed or moved a little in the next frame.
+
+
+execution examples
+
+original images
+
+![24](https://user-images.githubusercontent.com/56218301/224001739-d137e267-b4ce-42b3-bcbf-2e54c733a9da.png)
+![25](https://user-images.githubusercontent.com/56218301/224001769-58c8f5c0-bd64-4dfe-860f-7f3404a33582.png)
+
+putpix_into_clrgrp.py --minimized colors version--
+
+![24](https://user-images.githubusercontent.com/56218301/224001806-60ea7997-c070-4f6a-9df8-d9836e126b4a.png)
+![25](https://user-images.githubusercontent.com/56218301/224001821-987b8e80-513e-422a-9388-78a867cccb20.png)
+
+
+the results are perfect! works 100%!
+
+![find_staying_Lshp_btwn_frames](https://user-images.githubusercontent.com/56218301/224004907-6459650e-bccc-4511-b0f4-b0fce91c3407.png)
+
+
+
+
+
+
+
+
+## find_staying_Lshp_wo_pixch_btwn_frames.py
+
+this is similar to find_staying_Lshp_btwn_frames.py but what is different is that this finds large shapes even if lots of pixel changes occurred.
+
+execution examples
+
+original images
+
+![10](https://user-images.githubusercontent.com/56218301/224007382-cd3d944d-f9a4-4421-93f7-202b78711fa4.png)
+![11](https://user-images.githubusercontent.com/56218301/224007393-f4e7ca8e-f205-4d7e-b5ad-520b9711681c.png)
+
+![10](https://user-images.githubusercontent.com/56218301/224007410-cc393a1a-a9b2-4366-a8b4-9d68ddb221c7.png)
+![11](https://user-images.githubusercontent.com/56218301/224007422-18295251-0322-42b2-bd02-f8f9a0ae0364.png)
+
+
+![find_staying_Lshp_wo_pixch_btwn_frames](https://user-images.githubusercontent.com/56218301/224009151-123a108f-de8e-47b8-ad6f-665ebdcd3083.png)
+
+
+## find_internal_s_pixc_shapes.py
+
+this script finds small pixels shapes that entirely surrounded by the one large shape. entirely surronded by one large shape means that they are internal shapes within the one large shape.
+
+
+![internal shapes1](https://user-images.githubusercontent.com/56218301/224010500-3c13d4e3-4e7e-47db-bf72-8f44fbbe3526.png)
+
+![internal shapes2](https://user-images.githubusercontent.com/56218301/224010518-369e2132-3830-4aa8-a878-e2e9f63d75f4.png)
+
+example
+
+original
+
+![24](https://user-images.githubusercontent.com/56218301/224011010-f37efd1c-a726-4bf7-ba22-56b89119cf89.png)
+![24](https://user-images.githubusercontent.com/56218301/224011021-c4452f77-8579-42ee-b192-e85fd7f28f7b.png)
+
+
+![50934](https://user-images.githubusercontent.com/56218301/224011136-fe8e535d-b462-434b-bff0-f3e360c0e3b2.png)
+![73989](https://user-images.githubusercontent.com/56218301/224011150-c200e5f9-7ac6-4202-a0e6-23c8f6dba75c.png)
+
+![101926](https://user-images.githubusercontent.com/56218301/224011195-217af7f1-1c25-4946-bc08-8552c7540600.png)
+![101932](https://user-images.githubusercontent.com/56218301/224011225-1785cb73-01d0-4e8b-9bd2-c75769528065.png)
+![102222](https://user-images.githubusercontent.com/56218301/224011237-8ee65fc7-c7b4-4d2d-911b-6c242c7427c4.png)
+
+
+
+
+execute  recreate_internal_s_pixc_shapes.py to see the results
+
+
+
 
 
 ## Note
-this is not the end of this algorithm! I'm tired for now... I'll work on it when I get time and motivation....
+this is not the end of the project! Now, I am getting closer to first milestone of object detection!
 
 
