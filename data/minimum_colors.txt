@@ -1,0 +1,40 @@
+
+1.		Yellow	#FFFF00
+2.		Green	#006400
+3.		Red	#FF0000
+4.		Blue	#0000FF
+5.		Purple	#A020F0
+6.		Orange	#FF6600
+7.		Teal	#008080
+8.		Olive	#808000
+9.		Azure	#007FFF
+
+11.		Mint	#3EB489
+12.		Navy Blue	#000080
+13.		Gold	#FFD700
+14.		Tan	#D2B48C
+15.		Black	#000000
+16.		Peach	#FFE5B4
+
+
+19.		Cyan	#00FFFF
+
+21.		Mauve	#E0b0FF
+22.		Pink	#FFC0CB
+23.		Brown	#964B00
+24.		Turquoise	#30D5C8
+
+26.		Lavender	#E6E6FA
+
+28.		Clay	#CC7357
+29.		Indigo	#4B0082
+30.		Silver	#C0C0C0
+31.		Charcoal	#36454F
+
+33.		Gray	#808080
+34.		Violet	#8F00FF
+35.		Bronze	#CD7F32
+
+37.		Magenta	#FF00FF
+
+39.		Beige	#F5F5DC
