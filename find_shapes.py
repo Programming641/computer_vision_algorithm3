@@ -6,25 +6,39 @@ from libraries import pixel_functions
 
 from PIL import Image
 import math
-import os
+import os, sys
 import winsound
 
 from collections import OrderedDict
 from libraries.cv_globals import proj_dir
 
+if proj_dir != "" and proj_dir[-1] != "/":
+   proj_dir +='/'
+
 shapes_dir = proj_dir + "/shapes/"
 images_dir = proj_dir + "/images/"
 
-image_filename = '2clrgrp'
+image_filename = '21'
 
-directory = "videos/waves_sunset"
+directory = "videos/waves_sunset/resized/min"
+
+if len(sys.argv) >= 2:
+   image_filename = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
+
+   directory = sys.argv[1]
+
+   print("execute script find_shapes.py. filename " + image_filename + " directory " + directory )
+
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
    directory +='/'
 
-if os.path.exists(shapes_dir + directory ) == False:
-   os.makedirs(shapes_dir + directory )
+target_im_shapes_dir = shapes_dir + directory + "shapes/"
+
+
+if os.path.exists(target_im_shapes_dir ) == False:
+   os.makedirs(target_im_shapes_dir)
    
    
 
@@ -95,7 +109,7 @@ for y in range(image_size[1]):
                   # check if neighbor is already in the same shape as current_pixel_index
                   if shape_id == current_shape_id:
                      neighbor_shape_found = True 
-                     continue
+                     break
                   
                   cur_nbr_containing_shapes = shapes_lists
                                
@@ -151,7 +165,7 @@ for y in range(image_size[1]):
             
 
 
-file = open(shapes_dir + directory + image_filename + "_shapes.txt", 'w')
+file = open(target_im_shapes_dir + image_filename + "_shapes.txt", 'w')
 file.write(str(shapes))
 file.close()
 

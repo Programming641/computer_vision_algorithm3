@@ -3,29 +3,59 @@
 #
 #
 
-import sys
+import sys, os
 from PIL import Image
 import re
 import winsound
+from libraries import pixel_functions
+from libraries.cv_globals import proj_dir
 
-filename = "2"
+if proj_dir != "" and proj_dir[-1] != "/":
+   proj_dir +='/'
 
-directory = "videos/table_outside"
+image_dir = proj_dir + "images/"
+
+# -------------------       user input begin     ---------------------
+# user input: filename, directory ( example. videos/cat/original ), 
+filename = "21"
+directory = "videos/waves_sunset/resized"
+# types of color groups. choices are clrgrp ( for color group ), min ( for minimum )
+clr_grp_type = "min"
+# -------------------       user input end       ---------------------
+
+
+
+
+
+if len(sys.argv) >= 2:
+   filename = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
+   directory = sys.argv[1]
+   clr_grp_type = sys.argv[2]
+
+   print("execute script putpix_into_clrgrp.py. filename " + filename + " directory " + directory + " clr_grp_type " + clr_grp_type )
+
+
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != "/":
    directory +='/'
 
 
-original_image = Image.open("images/" + directory + filename + ".png")
+original_image = Image.open(image_dir + directory + filename + ".png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
+debug = 10
 
 def get_closest_color(image_pixel):
 
-    file = open("data\list of colors3.txt")
+    global debug
 
+    if clr_grp_type == "clrgrp":
+       file = open(proj_dir + "data/list of colors3.txt")
+    elif clr_grp_type == "min":
+       file = open(proj_dir + "data/minimum_colors.txt")
+    
     lines = file.readlines()
 
     #dictionary for storing color group name and rgb values. this is needed after finding the image pixel's closest color group
@@ -93,11 +123,6 @@ def exclude_negative_Num(num):
 
 
 
-
-
-debug = False
-
-
 #image_size[0] is image width
 for y in range(image_size[1]):
    print("y is " + str(y))
@@ -113,14 +138,13 @@ for y in range(image_size[1]):
 
         original_image.putpixel( (x,y), (red, green, blue))
         
-        if debug == True:
-           break
-        
-   if debug == True:
-       break
+
+save_dirname = image_dir + directory + clr_grp_type
+if not os.path.exists(save_dirname):
+   os.makedirs(save_dirname)
 
 
-original_image.save("images/" + directory + filename + "clrgrp.png")
+original_image.save(save_dirname + "/" + filename + ".png")
 
 
 

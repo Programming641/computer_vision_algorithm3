@@ -6,18 +6,29 @@ import os, sys
 from libraries.cv_globals import proj_dir
 import winsound
 
-shapes_dir = proj_dir + "/shapes/"
+top_shapes_dir = proj_dir + "/shapes/"
 
 im_file = "1clrgrp"
 
-directory = "videos/waves_sunset"
+directory = "videos/street"
+
+if sys.argv:
+   im_file = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
+   
+   location_fname = im_file + "_loc.txt"
+
+   directory = sys.argv[1]
+
+   print("execute script create_shape_neighbors.py. filename " + im_file + " directory " + directory )
+
+
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != ('/'):
    directory +='/'
 
-shape_locations_path = shapes_dir + directory + "locations/" + im_file + "_loc.txt"
-shape_neighbors_path = shapes_dir + directory + 'shape_nbrs/'
+shape_locations_path = top_shapes_dir + directory + "locations/" + im_file + "_loc.txt"
+shape_neighbors_path = top_shapes_dir + directory + 'shape_nbrs/'
 
 if not os.path.isdir(shape_neighbors_path):
    os.makedirs(shape_neighbors_path)
@@ -44,21 +55,23 @@ for shapeid in shapes:
          shapes_in_im_areas[shapeid] = s_locs[ list(s_locs.keys())[0] ]
          break
 
-debug = False
+shapes_boundaries = {}
+# get boundary pixels of all shapes
+for shapeid in shapes:
+   shapes_boundaries[shapeid] = pixel_shapes_functions.get_boundary_pixels(shapes[shapeid] )
+
+
+
 all_shapes = len(shapes)
 for src_shapeid in shapes:
 
-   print("src_shapeid " + src_shapeid + " " +  str(all_shapes) + " remaining" )
+   if all_shapes % 100 == 0:
+      print("src_shapeid " + src_shapeid + " " +  str(all_shapes) + " remaining" )
+   
    
    cur_shape_neighbors = {}
    
    cur_shape_neighbors[src_shapeid] = []
-   
-   
-   # boundary_pixels has the following form
-   # {1: {'x': 0, 'y': 234}, 2: {'x': 61, 'y': 221}, 86{'x': 177, 'y': 319}, 16679: {'x': 178, 'y': 229}}
-   # containing coordinates of boundary pixels
-   src_boundary_pixels = pixel_shapes_functions.get_boundary_pixels(shapes[src_shapeid] )
    
 
    # comparing every one of shape of the image with every other shapes of the image
@@ -77,10 +90,9 @@ for src_shapeid in shapes:
       if not same_im_area:
          continue
       
-      candidate_pixels = pixel_shapes_functions.get_boundary_pixels(shapes[candidate_shapeid] )
 
       # returned value example. {'src': {'x': 33, 'y': 33}, 1: {'x': 33, 'y': 34}, 2: {'x': 34, 'y': 34}}
-      matched_neighbor_coords = pixel_shapes_functions.find_direct_neighbors( src_boundary_pixels, candidate_pixels )
+      matched_neighbor_coords = pixel_shapes_functions.find_direct_neighbors( shapes_boundaries[src_shapeid] , shapes_boundaries[candidate_shapeid] )
 
 
 

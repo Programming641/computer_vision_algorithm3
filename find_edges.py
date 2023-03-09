@@ -1,45 +1,60 @@
-#
-# algorithm for determining the closest match with the color group uses how far away the RGB value is from original
-#
-#
+
 from libraries import pixel_functions
 
 from PIL import Image
 import math
 import os, sys
+import pickle
 
 from collections import OrderedDict
-from libraries.cv_globals import proj_dir
+from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir
 
-shapes_dir = proj_dir + "/shapes/"
-images_dir = proj_dir + "/images/"
 
-image_filename = 'origsize2clrgrp'
+image_filename = '1'
 
-directory = "videos/cutveg/original"
+directory = "videos/cat/min"
 
-# directory is specified but does not contain /
+if len(sys.argv) > 1:
+   image_filename = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
+
+   directory = sys.argv[1]
+
+   print("execute script find_edges.py. filename " + image_filename + " directory " + directory )
+
 if directory != "" and directory[-1] != '/':
    directory +='/'
 
 
-if os.path.exists(shapes_dir + directory ) == False:
-   os.makedirs(shapes_dir + directory )
-   
-   
+edge_dir = top_shapes_dir + directory + "edges/"
+edge_data_dir = edge_dir + "data/"
 
-original_image = Image.open(images_dir + directory + image_filename + ".png")
+if os.path.exists(edge_dir ) == False:
+   os.makedirs(edge_dir )
+if os.path.exists(edge_data_dir ) == False:
+   os.makedirs(edge_data_dir )
+
+
+original_image = Image.open(top_images_dir + directory + image_filename + ".png")
 original_pixel = original_image.getdata()
 image_size = original_image.size
 
-edge_image = Image.open(images_dir + directory + image_filename + ".png")
+edge_image = Image.open(top_images_dir + directory + image_filename + ".png")
+
+pixch = False
+if pixch:
+   pixch_edge_image = Image.open(top_shapes_dir + directory + "pixch/" + "pixdiff" + image_filename + "." + 
+                      str(int(image_filename) + 1) + "result" + str(int(image_filename) + 1) + ".png")
+
+#shape_ch_edge_image = Image.open(top_shapes_dir + "videos/monkey/" + "shapes_ch/" + "diff3.4result4_clrgrp.png")
+
+
+
+edge_data = set()
 
 debug = False
 
 #image_size[0] is width
 for y in range(image_size[1]):
-   print("y is " + str(y))
-
 
    for x in range(image_size[0]):
    
@@ -69,6 +84,13 @@ for y in range(image_size[1]):
             # color changed is true or brightness is over threshold
             edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
             
+            if pixch:
+               pixch_edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
+               #shape_ch_edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
+            
+            
+            edge_data.add( neighbor )
+            
             
                
          
@@ -91,17 +113,27 @@ for y in range(image_size[1]):
                      nested_nbr_y = math.floor( nested_nbr / image_size[0])
                   
                      edge_image.putpixel( ( nested_nbr_x, nested_nbr_y ) , (0, 0, 255) )
+                     
+                     if pixch:
+                        pixch_edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
+                        #shape_ch_edge_image.putpixel( ( neighbor_x, neighbor_y ) , (0, 0, 255) )
+                     
+                     edge_data.add( nested_nbr )
 
                   
          if debug:
             sys.exit()            
          
 
-edge_image.save("cutveg_origsize2clrgrp_70_70.png")
+edge_image.save(edge_dir + image_filename + ".png" )
 
+with open(edge_data_dir + image_filename + ".data", 'wb') as fp:
+   pickle.dump(edge_data, fp)
+fp.close()
 
-
-
+if pixch:
+   pixch_edge_image.save(edge_dir + "pixch" + image_filename + "." + str(int(image_filename) + 1) + ".png")
+   #shape_ch_edge_image.save(edge_dir + "shapes_ch3.4.png")
 
 
 

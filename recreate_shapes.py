@@ -11,11 +11,13 @@ shapes_dir = proj_dir + "/shapes/"
 images_dir = proj_dir + "/images/"
 
 
-filename = "1clrgrp"
-directory = "videos/cutveg"
+filename = "10"
+directory = "videos/street3/resized/min"
 
 # choices are "shapes", "brightness", 
 recreate_what = "shapes"
+
+backgnd_color = ( 0, 0, 255 )
 
 
 '''
@@ -28,15 +30,15 @@ def get_whole_image_shape(parameter, recreate_what, filename,  directory="", sha
     # directory is specified but does not contain /
     if directory != "" and directory[-1] != '/':
        directory +='/'
-       
+    
+    shapes_fdir = directory + "shapes/"
     
     # by default shapes_filename is "_shapes.txt"
     shapes_filename = filename + "_shapes.txt"
     
     foldername = ""
     if recreate_what == "shapes":
-       
-       foldername = shapes_dir + directory + shapes_filename[:-4] 
+       foldername =  shapes_dir + shapes_fdir + shapes_filename[:-4] 
           
     elif shapeids_in_need:
        foldername = shapes_dir + directory + "circleda/" + filename
@@ -63,7 +65,7 @@ def get_whole_image_shape(parameter, recreate_what, filename,  directory="", sha
 
 
 
-    shapes_file = open(shapes_dir + directory + shapes_filename)
+    shapes_file = open(shapes_dir + shapes_fdir + shapes_filename)
     shapes_file_contents = shapes_file.read()
 
 
@@ -99,7 +101,7 @@ def get_whole_image_shape(parameter, recreate_what, filename,  directory="", sha
     for shape in match:
 
        if parameter == False:
-          new_image = Image.new('RGB', (image_width, image_height) )
+          new_image = Image.new('RGB', (image_width, image_height), ( backgnd_color ) )
 
        shapes_id_pattern = '\([0-9]{1,' + str(len(str(image_width * image_height))) + '},'
        match_temp = re.search(shapes_id_pattern, shape)
