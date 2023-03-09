@@ -346,4 +346,4 @@ execute  recreate_internal_s_pixc_shapes.py to see the results
 ## Note
 this is not the end of the project! Now, I am getting closer to first milestone of object detection!
 
-
+** if you like this project, please consider supporting me by sponsoring this project or hire me so I can work on this project for you! **
