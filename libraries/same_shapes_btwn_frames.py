@@ -51,11 +51,11 @@ def boundary_rel_pos(im1bnd_pixels, im2bnd_pixels, imfiles, directory):
    if directory != "" and directory[-1] != ('/'):
       directory +='/'
 
-   img1 = Image.open("images/" + str(directory) + imfiles[0] + ".png")
+   img1 = Image.open("images/" + directory + imfiles[0] + ".png")
 
    im1width = img1.size[0]
    
-   img2 = Image.open("images/" + str(directory) + imfiles[1] + ".png")
+   img2 = Image.open("images/" + directory + imfiles[1] + ".png")
 
    im2width = img2.size[0]
 
@@ -1451,8 +1451,8 @@ def process_real_p_rows_matches(matched_rows, empty_flag):
          comp_count = ( temp[pixel_count_label + str(comp_consec_pix['id_num'])] + temp[pixel_count_label + str(multiple_consec_comp_in_row['id_num'])] ) * 4
          x_distance = comp_count - ( temp['x_distance_diff'] * 2 )
          
-         print("x_distance")
-         print( " id_num " + str(temp['id_num']) + " id_num2 " + str(temp['id_num2']) + " id_num pixel count " + str(temp[pixel_count_label + str(comp_consec_pix['id_num'])] ) + " id_num2 pixel count " + str(temp[pixel_count_label + str(multiple_consec_comp_in_row['id_num'])] ) + " x_distance_diff " + str(temp['x_distance_diff']) + " result " + str(x_distance) )
+         #print("x_distance")
+         #print( " id_num " + str(temp['id_num']) + " id_num2 " + str(temp['id_num2']) + " id_num pixel count " + str(temp[pixel_count_label + str(comp_consec_pix['id_num'])] ) + " id_num2 pixel count " + str(temp[pixel_count_label + str(multiple_consec_comp_in_row['id_num'])] ) + " x_distance_diff " + str(temp['x_distance_diff']) + " result " + str(x_distance) )
          return x_distance
 
 
@@ -1874,7 +1874,7 @@ def process_real_p_rows_matches(matched_rows, empty_flag):
    if same_row_total:
       final_results += same_row_total
 
-   print("same_direction_total " + str(same_direction_total) + " same_row_total " + str(same_row_total) )
+   #print("same_direction_total " + str(same_direction_total) + " same_row_total " + str(same_row_total) )
    
 
    # removing duplicates
@@ -1992,8 +1992,8 @@ def process_real_p_virtical_matches(matched_columns, empty_flag):
          comp_count = ( temp[pixel_count_label + str(comp_consec_pix['id_num'])] + temp[pixel_count_label + str(multiple_consec_comp_in_column['id_num'])] ) * 4
          y_distance = comp_count - ( temp['y_distance_diff'] * 2 )
          
-         print("y_distance")
-         print( " id_num " + str(temp['id_num']) + " id_num2 " + str(temp['id_num2']) + " id_num pixel count " + str(temp[pixel_count_label + str(comp_consec_pix['id_num'])] ) + " id_num2 pixel count " + str(temp[pixel_count_label + str(multiple_consec_comp_in_column['id_num'])] ) + " y_distance_diff " + str(temp['y_distance_diff']) + " result " + str(y_distance) )
+         #print("y_distance")
+         #print( " id_num " + str(temp['id_num']) + " id_num2 " + str(temp['id_num2']) + " id_num pixel count " + str(temp[pixel_count_label + str(comp_consec_pix['id_num'])] ) + " id_num2 pixel count " + str(temp[pixel_count_label + str(multiple_consec_comp_in_column['id_num'])] ) + " y_distance_diff " + str(temp['y_distance_diff']) + " result " + str(y_distance) )
          return y_distance
 
 

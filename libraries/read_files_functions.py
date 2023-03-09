@@ -32,7 +32,7 @@ def rd_shapes_file(image_filename, directory, clr_include=None):
 
     original_image_data = original_image.getdata()
 
-    image_file = open(shapes_dir + directory + image_filename + '_shapes.txt')
+    image_file = open(shapes_dir + directory + "shapes/" + image_filename + '_shapes.txt')
     image_file_contents = image_file.read()
     
     '''
