@@ -1,25 +1,35 @@
 
-import os
+import os, sys
 from PIL import ImageTk, Image
 from libraries import pixel_shapes_functions
 from libraries import read_files_functions
-from libraries.cv_globals import proj_dir
-
-shapes_dir = proj_dir + "/shapes/"
+from libraries.cv_globals import top_shapes_dir
 
 
-im_file = "2clrgrp"
+im_file = "11"
 
-directory = "videos/waves_sunset"
+directory = "videos/street3/resized/min"
 
 location_fname = im_file + "_loc.txt"
+
+if len(sys.argv) > 1:
+   im_file = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
+   
+   location_fname = im_file + "_loc.txt"
+
+   directory = sys.argv[1]
+
+   print("execute script create_shape_locations.py. filename " + im_file + " directory " + directory )
+
+
+
 
 # directory is specified but does not contain /
 if directory != "" and directory[-1] != '/':
    directory +='/'
 
-if os.path.exists(shapes_dir + directory + "locations/" ) == False:
-   os.makedirs(shapes_dir + directory + "locations/")
+if os.path.exists(top_shapes_dir + directory + "locations/" ) == False:
+   os.makedirs(top_shapes_dir + directory + "locations/")
 
 
 # returned value has below form
@@ -29,9 +39,6 @@ if os.path.exists(shapes_dir + directory + "locations/" ) == False:
 shapes = read_files_functions.rd_shapes_file(im_file, directory)
 shape_locations = []
 for shapeid in shapes:
-
-
-   print("shapeid " + str(shapeid ) )
 
 
    shape_location = pixel_shapes_functions.get_shape_im_locations(im_file, directory, shapes[shapeid], shapeid  )
@@ -44,7 +51,9 @@ for shapeid in shapes:
    shape_locations.append( temp ) 
    
 
-file = open(shapes_dir + directory + "locations/" + location_fname, 'w')
+print("saving file " + top_shapes_dir + directory + "locations/" + location_fname  )
+print()
+file = open(top_shapes_dir + directory + "locations/" + location_fname, 'w')
 file.write(str(shape_locations))
 file.close()
 
