@@ -16,20 +16,7 @@ execute the following and see how it works for yourself!!!
 
 ## Directory structure
 
-For this to work, you need to have below directory structure.
-
-execution directory is where you execute python script files. Let's call this "top directory"
-~~~
-top directory
-|
-->images
-       |
-       ->optional directory under images folder for organizing your image files
-->temp  
-->shapes 
-
-->libraries
-~~~
+![無題](https://user-images.githubusercontent.com/56218301/229271311-e689ada3-ed6c-4e5c-b516-8d734e57c071.png)
 
 
 ### Instructions
