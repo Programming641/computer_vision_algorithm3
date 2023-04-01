@@ -308,10 +308,11 @@ execute  recreate_internal_s_pixc_shapes.py to see the results
 
 ## algorithms/spixc/find_spixc_shapes_nbrs_among_frames.py
 
-required scripts 
-find_spixc_shapes_nbrs.py 
-find_spixc_shapes_nbrs_btwn_frames.py 
-recreate_shapes/spixc_shapes_nbrs.py
+### required scripts
+
+- find_spixc_shapes_nbrs.py
+- find_spixc_shapes_nbrs_btwn_frames.py
+- recreate_shapes/spixc_shapes_nbrs.py
 
 ![無題](https://user-images.githubusercontent.com/56218301/229273162-75bf416d-48b8-4827-ab74-e8203d386250.png)
 
