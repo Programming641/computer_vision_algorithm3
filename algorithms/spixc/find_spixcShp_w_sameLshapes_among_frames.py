@@ -75,7 +75,7 @@ for ordered_btwn_frames_file in ordered_btwn_frames_files:
          for found_btwn_frames_index in found_btwn_frames_indexes:
             shapes_among_frames[ found_btwn_frames_index ][ second_filenum ] = btwn_frames_match[1]
       
-         # if btwn_frames_match's first iamge file shapeid is not found then add it as new list into shapes_among_frames
+         # if btwn_frames_match's first image file shapeid is not found then add it as new list into shapes_among_frames
          if len( found_btwn_frames_indexes ) == 0:
             shapes_among_frames.append( { first_filenum: btwn_frames_match[0], second_filenum: btwn_frames_match[1] } )
          

@@ -11,10 +11,10 @@ import os, sys
 import pickle
 import copy
 
-from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir
+from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir, internal
 
 
-image_filename = '12'
+image_filename = '13'
 directory = "videos/street3/resized/min"
 shapes_type = "intnl_spixcShp"
 
@@ -57,7 +57,7 @@ if shapes_type == "normal":
    nbr_filepath = top_shapes_dir + directory + "shape_nbrs/" + image_filename + "_shape_nbrs.txt"
    
 elif shapes_type == "intnl_spixcShp":
-   s_pixcShp_intnl_dir = top_shapes_dir + directory + "spixc_shapes/" + "internal/"
+   s_pixcShp_intnl_dir = top_shapes_dir + directory + "spixc_shapes/" + internal + "/"
    nbr_filepath = s_pixcShp_intnl_dir + "shape_nbrs/" + image_filename + "_shape_nbrs.txt"
 
 # {"shapeid": ["nbr_shapeid", "nbr_shapeid", ...], ...  }

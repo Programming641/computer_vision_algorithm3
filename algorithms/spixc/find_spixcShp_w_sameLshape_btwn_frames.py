@@ -11,8 +11,8 @@ import math
 from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir
 
 
-image_filename1 = "11"
-image_filename2 = "12"
+image_filename1 = "12"
+image_filename2 = "13"
 directory = "videos/street3/resized/min"
 
 shapes_type = "intnl_spixcShp"
@@ -94,9 +94,22 @@ for im1shapeid, im1spixcShp_n_Lshapes in im1spixcShp_w_same_Lshapes.items():
       
       if len( biggest_match ) == 1:
          last_results.append( biggest_match[0] )
+      elif len( biggest_match ) > 1:
+         # there are multiple biggest match count
+         # when there are multiple highest matches, then add them to the last_results
+         for index, each_biggest_match in enumerate(biggest_match):
+            if index >= 1:
+               # add image1shapeid and image2shapeid. match count is not needed because it has the same highest value
+               biggest_match[0].append( biggest_match[index][0] )
+               biggest_match[0].append( biggest_match[index][1] )
+               
+         last_results.append( biggest_match[0] )
+      
       else:
-         print("ERROR biggest_match should contain only one element in this list")
+         print("ERROR. biggest_match has to exist")
          sys.exit()
+         
+            
 
 
 with open(spixcShp_w_same_Lshapes_ddir + image_filename1 + "." + image_filename2 + ".data", 'wb') as fp:

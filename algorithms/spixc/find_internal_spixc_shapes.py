@@ -11,7 +11,7 @@ from libraries.cv_globals import top_shapes_dir, top_images_dir, internal
 from help_lib import create_shape_locations, create_shape_neighbors
 
 
-image_filename = '13'
+image_filename = '14'
 
 directory = "videos/street3/resized/min"
 
