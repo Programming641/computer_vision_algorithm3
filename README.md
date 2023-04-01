@@ -14,6 +14,8 @@ execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
+**recent update** all fundamental algorithms are now complete for now.. the rest is to analyze and combine the results from them!
+
 ## Directory structure
 
 ![無題](https://user-images.githubusercontent.com/56218301/229271311-e689ada3-ed6c-4e5c-b516-8d734e57c071.png)
