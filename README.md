@@ -14,7 +14,7 @@ execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
-**recent update** all fundamental algorithms are now complete for now.. the rest is to analyze and combine the results from them!
+**recent update:** all fundamental algorithms are now complete for now.. the rest is to analyze and combine the results from them!
 
 ## Directory structure
 
