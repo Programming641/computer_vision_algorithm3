@@ -3,7 +3,7 @@ import os, sys
 from PIL import ImageTk, Image
 from libraries import pixel_shapes_functions
 from libraries import read_files_functions
-from libraries.cv_globals import top_shapes_dir, top_images_dir
+from libraries.cv_globals import top_shapes_dir, top_images_dir, internal
 import pickle
 import math
 
@@ -54,8 +54,8 @@ def do_create( im_fname , directory, shapes_type=None ):
       
    
    elif shapes_type == "intnl_spixcShp":
-      s_pixcShp_intnl_loc_dir = top_shapes_dir + directory + "spixc_shapes/" + "internal/locations/"
-      shapes_dir = top_shapes_dir + directory + "spixc_shapes/" + "internal/" + "shapes/"
+      s_pixcShp_intnl_loc_dir = top_shapes_dir + directory + "spixc_shapes/" + internal + "/locations/"
+      shapes_dir = top_shapes_dir + directory + "spixc_shapes/" + internal + "/" + "shapes/"
       shapes_dfile = shapes_dir + im_fname + "shapes.data"
 
       if os.path.exists(s_pixcShp_intnl_loc_dir ) == False:
@@ -105,7 +105,7 @@ def do_create( im_fname , directory, shapes_type=None ):
 
 
 if __name__ == '__main__':
-   im1file = "13"
+   im1file = "14"
    directory = "videos/street3/resized/min"
    
    do_create( im1file, directory, "normal" )
