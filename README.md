@@ -320,6 +320,16 @@ execute  recreate_internal_s_pixc_shapes.py to see the results
 
 
 
+## algorithms/spixc/find_spixcShp_w_sameLshapes_among_frames.py
+
+### required scripts
+- find_spixcShp_Dnbr_sharing_Lshapes.py
+- find_spixcShp_w_sameLshape_btwn_frames.py
+- recreate_shapes/spixcShp_w_same_Lshapes.py
+
+![無題](https://user-images.githubusercontent.com/56218301/229276676-35483f83-e46d-49ba-9169-69f40abdb2d5.png)
+
+
 
 ## Note
 this is not the end of the project! Now, I am getting closer to first milestone of object detection!
