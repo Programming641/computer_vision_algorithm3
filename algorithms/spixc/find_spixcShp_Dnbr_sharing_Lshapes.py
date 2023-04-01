@@ -6,10 +6,10 @@ import os, sys
 import pickle
 import math
 
-from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir
+from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir, internal
 
 
-image_filename = '12'
+image_filename = '13'
 directory = "videos/street3/resized/min"
 
 shapes_type = "intnl_spixcShp"
@@ -44,7 +44,7 @@ fp.close()
 if shapes_type == "normal":
    nbr_filepath = top_shapes_dir + directory + "shape_nbrs/" + image_filename + "_shape_nbrs.txt"
 elif shapes_type == "intnl_spixcShp":
-   nbr_filepath = top_shapes_dir + directory + "spixc_shapes/internal/shape_nbrs/" + image_filename + "_shape_nbrs.txt"
+   nbr_filepath = top_shapes_dir + directory + "spixc_shapes/" + internal + "/shape_nbrs/" + image_filename + "_shape_nbrs.txt"
 else:
    print("ERROR in find_spixcShp_Dnbr_sharing_Lshapes.py. shapes_type " + shapes_type + " is not supported")
    sys.exit()
