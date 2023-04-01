@@ -3,7 +3,7 @@ from libraries import pixel_shapes_functions
 from libraries import pixel_functions
 
 import os, sys
-from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir
+from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir, internal
 import winsound
 import pickle
 import math
@@ -119,7 +119,7 @@ def do_create( im_file, directory, shapes_type=None ):
 
 
    elif shapes_type == "intnl_spixcShp":
-      s_pixcShp_intnl_dir = top_shapes_dir + directory + "spixc_shapes/" + "internal/"
+      s_pixcShp_intnl_dir = top_shapes_dir + directory + "spixc_shapes/" + internal + "/"
       s_pixcShp_intnl_loc_dir = s_pixcShp_intnl_dir + "locations/"
       shape_locations_path = s_pixcShp_intnl_loc_dir + im_file + "_loc.txt"
       shape_neighbors_path = s_pixcShp_intnl_dir + 'shape_nbrs/'
