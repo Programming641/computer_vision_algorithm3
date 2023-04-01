@@ -39,13 +39,13 @@ also set global variable of top project directory
 
 ![global top_directory](https://user-images.githubusercontent.com/56218301/223993262-cba3c9d3-4d73-4340-9b2e-0e87ec0ee180.png)
 
-#### putpix_into_clgrp.py 
+#### algorithms/fundamental/putpix_into_clgrp.py 
 
 ![putpix_into_clrgrp](https://user-images.githubusercontent.com/56218301/223995514-43e1f79c-5b7d-4bef-96b0-2301c54bc904.png)
 
 
 ~~~
-py  putpix_into_clgrp.py 
+py  algorithms/fundamental/putpix_into_clgrp.py 
 ~~~
 
 examples of results
@@ -57,7 +57,7 @@ original
 ![1](https://user-images.githubusercontent.com/56218301/223996102-4571793b-8cbd-4440-9cd2-d94277af52d4.png)
 
 
-#### find_shapes.py
+#### algorithms/fundamental/find_shapes.py
 
 ![find_shapes](https://user-images.githubusercontent.com/56218301/223996977-9bc09cd2-aabe-45cb-bd16-197db59a3717.png)
 
@@ -94,7 +94,10 @@ py recreate_shapes.py
 - findim_pixch.py
 - recreate_shapes.py
 
+#### help_lib/create_shape_locations.py
 
+
+![無題](https://user-images.githubusercontent.com/56218301/229271689-67c681ef-bc8a-4c2f-9cb1-ce16bc3d6d42.png)
 
 
 
@@ -122,16 +125,7 @@ find_edges.py
 
 ### Instructions
 
-- execute putpix_into_clrgrp.py
-- excute find_shapes.py
-- execute create_shape_locations.py
-- execute create_shape_neighbors.py
-- execute find_rpt_ptn_shapes.py
-- execute recreate_rpt_ptn_shapes.py
-- execute find_rpt_ptn_shapes2.py
-- execute recreate_rpt_ptn_shapes.py
-
-You need to provide image filename as needed. Please see above.
+I'll update on this later on.
 
 ### Execution Results examples
 
@@ -165,6 +159,8 @@ I'll work on it to improve its speed.
 
 
 # Video Analysis
+
+## the video analysis is all about finding the same shape between frames! sounds boring and tiring which is it is... but I believe computer vision for video is all about that!
 
 ## Requirement
 
@@ -228,26 +224,6 @@ original image
 
 
 ![analyzing image difference4-1](https://user-images.githubusercontent.com/56218301/167390444-d03f5bd5-814e-4bf7-9e25-625fc406a36d.png)
-
-below uses shape changes.
-
-findim_ch_shapes.py
-
-![analyzing image difference  pixel changes and shape changes](https://user-images.githubusercontent.com/56218301/167391578-df1d4c13-199a-4c4a-9901-fd916e023e5e.png)
-
-
-
-### instruction
-
-1. execute putting_pixels_into_color_groups revision 2.py on *two consequtive* images/frames.
-2. execute finding_shapes.py on both images/frames.
-3. make sure to provide image and shape directory
-
-execute findimage_pixelchange.py
-
-execute process_pixch_btnframes.py
-
-
 
 
 
