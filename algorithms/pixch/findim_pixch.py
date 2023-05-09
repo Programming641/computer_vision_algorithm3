@@ -9,8 +9,8 @@ from help_lib import create_pixch_image, create_pixch_shape_locations, find_pixc
 
 
 directory = "videos/street3/resized/min"
-im1file = "12"
-im2file = "13"
+im1file = "14"
+im2file = "15"
 rest_of_filename = ""
 
 
@@ -45,13 +45,12 @@ im2pxls = im2.getdata()
 im2width, im2height = im2.size
 
 
-pxlch_im = Image.new('RGB', (im1width,im1height))
+pxlch_im2 = Image.new('RGB', (im1width,im1height))
+pxlch_im1 = Image.new('RGB', (im1width,im1height))
 
-image_data = []
-pixch_data = []
-
-
-debug = False
+image2_data = []
+image1_data = []
+pixch_data = set()
 
 
 #image_size[0] is image width
@@ -65,45 +64,32 @@ for y in range(im1height):
     
     # if im1pxls[pixel_index] != im2pxls[pixel_index] and ( im1pxls[pixel_index] != (255, 255, 255) and im2pxls[pixel_index] != (255, 255, 255) ): 
     if im1pxls[pixel_index] != im2pxls[pixel_index] :
-       image_data.append( (255, 0, 0) )    
+       image2_data.append( (255, 0, 0) )    
+       image1_data.append( (255, 0, 0) )
 
-       pixch_data.append( str(pixel_index) )
+       pixch_data.add( str(pixel_index) )
 
     else:
        # if pixel did not chage
-       image_data.append( im2pxls[pixel_index] )
+       image2_data.append( im2pxls[pixel_index] )
+       image1_data.append( im1pxls[pixel_index] )
     
-  if debug == True:
-       break
-    
-  if debug == True:
-       break
 
 
-pxlch_im.putdata (image_data)
+pxlch_im2.putdata (image2_data)
+pxlch_im1.putdata( image1_data )
 
-
-temp_num = [x for x in list(im1file) if x.isdigit()]
-im1file_num = ""
-for i in range( 0, len( temp_num ) ):
-   im1file_num += temp_num[i]
-
-im2file_num = ""
-temp_num = [x for x in list(im2file) if x.isdigit()]
-for i in range( 0, len( temp_num ) ):
-   im2file_num += temp_num[i]
    
 if os.path.exists(pixch_imdir ) == False:
    os.makedirs(pixch_imdir )
 if os.path.exists(pixch_data_dir ) == False:
    os.makedirs(pixch_data_dir )
 
-if rest_of_filename != "":
-   rest_of_filename = "_" + rest_of_filename
 
-pxlch_im.save (pixch_imdir  + im1file_num + "." + im2file_num + "result" + im2file_num + rest_of_filename + ".png" )
+pxlch_im2.save (pixch_imdir  + im1file + "." + im2file + "." + im2file + ".png" )
+pxlch_im1.save(pixch_imdir  + im1file + "." + im2file + "." + im1file + ".png" )
 
-with open(pixch_data_dir  + im1file_num + "." + im2file_num + rest_of_filename + ".data", 'wb') as fp:
+with open(pixch_data_dir  + im1file + "." + im2file + ".data", 'wb') as fp:
    pickle.dump(pixch_data, fp)
 fp.close()
 
@@ -111,6 +97,21 @@ fp.close()
 create_pixch_image.do_create( im1file, im2file, directory )
 find_pixch_shapes.do_find( im1file, im2file, directory)
 create_pixch_shape_locations.do_create( im1file, im2file, directory)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
