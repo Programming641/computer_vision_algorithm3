@@ -22,17 +22,17 @@ def boundary_rel_pos(im1bnd_pixels, im2bnd_pixels, imfiles, directory, shapeids=
 
    def get_rel_pos( pixels, imwidth  ):
       rel_pos = {}
-      for pixel in pixels.values():
+      for pixel in pixels:
    
-         pindex = pixel["y"] * imwidth + pixel["x"] 
+         pindex = pixel[1] * imwidth + pixel[0] 
       
          rel_pos[pindex] = []
       
-         for ano_pixel in pixels.values():
+         for ano_pixel in pixels:
             if pixel == ano_pixel:
                continue
          
-            relative_pos = ( ano_pixel["x"] - pixel["x"] , ano_pixel["y"] - pixel["y"] )
+            relative_pos = ( ano_pixel[0] - pixel[0] , ano_pixel[1] - pixel[1] )
       
             rel_pos[pindex].append( relative_pos )      
 
@@ -487,10 +487,7 @@ def find_direct_n_far_consecutives(row_column_results, row_or_column, debug_col_
                         break
                         
                   # -----------------------------          changes between columns or rows evaluation  END         --------------------------------
-                        
 
-
-   print("find_direct_n_far_consecutives matches " + str(matches))
    
    match_total = 0
    consecutives_total = 0
@@ -600,8 +597,6 @@ def find_direct_n_far_consecutives(row_column_results, row_or_column, debug_col_
    
    pixel_shapes_functions.highlight_matches( shape_ids, filenames, dbg_xy_coords, "func1 " + str(row_or_column) )
          
-             
-   print("find_direct_n_far_consecutives match_total " + str(match_total) + " consecutives_total " + str(consecutives_total) )
    return match_total, consecutives_total
 
 
@@ -616,16 +611,16 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
    
 
       # pixel_ids_with_current_x contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_x = [k for k in compare_boundary_pixels  if (int(compare_boundary_pixels[k]['x'])) == compare_column_counter]
+      pixel_ids_with_current_x = [ xy for xy in compare_boundary_pixels  if int( xy[0] ) == compare_column_counter]
 
       # I first obtain all x values for the current running x value
       y_values_list_in_current_x = []
       
       
       # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_x:
+      for xy in pixel_ids_with_current_x:
          # putting all x values for all xy coordinates that have current running x vaule
-         y_values_list_in_current_x.append(compare_boundary_pixels[key]['y'])
+         y_values_list_in_current_x.append(xy[1])
 
       
       # we need to sort y values so that we can work with neighbor y values
@@ -673,13 +668,13 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
 
 
 
-   original_smallest_x = min(int(d['x']) for d in original_boundary_pixels.values())
-   original_largest_x = max(int(d['x']) for d in original_boundary_pixels.values())
+   original_smallest_x = min( [ int( xy[0] ) for xy in original_boundary_pixels ] )
+   original_largest_x = max( [ int( xy[0] ) for xy in original_boundary_pixels ] )
    
    original_shape_width = original_largest_x - original_smallest_x
 
-   compare_smallest_x = min(int(d['x']) for d in compare_boundary_pixels.values())
-   compare_largest_x = max(int(d['x']) for d in compare_boundary_pixels.values())
+   compare_smallest_x = min( [ int( xy[0] ) for xy in compare_boundary_pixels ] )
+   compare_largest_x = max( [ int( xy[0] ) for xy in compare_boundary_pixels ] )
   
    
    compare_shape_width = compare_largest_x - compare_smallest_x
@@ -709,7 +704,7 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
       original_column_counter += 1
 
       # pixel_ids_with_current_x contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_x = [k for k in original_boundary_pixels  if (int(original_boundary_pixels[k]['x'])) == x]
+      pixel_ids_with_current_x = [ xy for xy in original_boundary_pixels  if int( xy[0] ) == x]
       
       
       # we first obtain all y values for the current running x value
@@ -717,9 +712,9 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
       
       
       # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_x:
+      for xy in pixel_ids_with_current_x:
          # putting all y values for all xy coordinates that have current running x vaule
-         y_values_list_in_current_x.append(original_boundary_pixels[key]['y'])
+         y_values_list_in_current_x.append( xy[1] )
 
       
       # we need to sort y values so that we can work with neighbor y values
@@ -905,10 +900,6 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
    if consecutives_totals:
       final_results += consecutives_totals
    
-                     
-   
-
-   print("virtical boundary final_results " + str(final_results) )
 
    return final_results
 
@@ -920,23 +911,23 @@ def process_boundaries_vertically(original_boundary_pixels, compare_boundary_pix
 
    
 
-
+# original_boundary_pixels -> set of tuple xy
+# example data. { ( 155, 160 ), ... }
 def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_ids, filenames):
 
    def get_compare_row(compare_boundary_pixels, compare_row_counter):
    
 
       # pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_y = [k for k in compare_boundary_pixels  if (int(compare_boundary_pixels[k]['y'])) == compare_row_counter]
+      pixel_ids_with_current_y = [xy for xy in compare_boundary_pixels  if int( xy[1] ) == compare_row_counter]
 
       # we first obtain all x values for the current running y value
       x_values_list_in_current_y = []
       
-      
-      # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_y:
+       
+      for xy in pixel_ids_with_current_y:
          # putting all x values for all xy coordinates that have current running y vaule
-         x_values_list_in_current_y.append(compare_boundary_pixels[key]['x'])
+         x_values_list_in_current_y.append( xy[0] )
 
       
       # we need to sort x values so that we can work with neighbor x values
@@ -984,13 +975,13 @@ def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_
 
 
 
-   original_smallest_y = min(int(d['y']) for d in original_boundary_pixels.values())
-   original_largest_y = max(int(d['y']) for d in original_boundary_pixels.values())
+   original_smallest_y = min( [ int(xy[1]) for xy in original_boundary_pixels ] )
+   original_largest_y = max( [ int(xy[1]) for xy in original_boundary_pixels ] )
    
    original_shape_height = original_largest_y - original_smallest_y
 
-   compare_smallest_y = min(int(d['y']) for d in compare_boundary_pixels.values())
-   compare_largest_y = max(int(d['y']) for d in compare_boundary_pixels.values())
+   compare_smallest_y = min( [ int(xy[1]) for xy in compare_boundary_pixels ] ) 
+   compare_largest_y = max( [ int(xy[1]) for xy in compare_boundary_pixels ] )
   
    
    compare_shape_height = compare_largest_y - compare_smallest_y
@@ -1018,24 +1009,21 @@ def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_
       
       original_row_counter += 1
 
-      # pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_y = [k for k in original_boundary_pixels  if (int(original_boundary_pixels[k]['y'])) == y]    
+      # xy_with_current_y contains all xy coordinate pairs that have the current running y value.
+      xy_with_current_y = [ xy for xy in original_boundary_pixels  if ( int(xy[1]) ) == y ]    
       
       # we first obtain all x values for the current running y value
       x_values_list_in_current_y = []
       
       
       # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_y:
+      for xy in xy_with_current_y:
          # putting all x values for all xy coordinates that have current running y vaule
-         x_values_list_in_current_y.append(original_boundary_pixels[key]['x'])
+         x_values_list_in_current_y.append( xy[0] )
 
       
       # we need to sort x values so that we can work with neighbor x values
       x_values_list_in_current_y.sort()
-      
-      #print("original current row number " + str(y ) )
-      #print("x_values_list_in_current_y " + str(x_values_list_in_current_y) )
       
       rightMost_x = max( x_values_list_in_current_y )
       leftMost_x = min( x_values_list_in_current_y )
@@ -1220,10 +1208,6 @@ def process_boundaries(original_boundary_pixels, compare_boundary_pixels, shape_
    if consecutives_totals:
       final_results += consecutives_totals
    
-                  
-      
-   
-   print("horizontal boundary final_results " + str(final_results) )
    
    virtical_resuls = process_boundaries_vertically(original_boundary_pixels, compare_boundary_pixels, shape_ids, filenames)
 
@@ -1867,10 +1851,6 @@ def process_real_p_rows_matches(matched_rows, empty_flag):
    final_results += (matched_row_counts * 1.5) - (unmatched_row_counts * 1.5)
    final_results += x_distance   
    
-   print(" matched and unmatched rows results " + str( (matched_row_counts * 1.5) - (unmatched_row_counts * 1.5) ) )
-   
-   print(" real pixel horizontal final results " + str(final_results) )
-   
    return final_results
 
 
@@ -2409,7 +2389,6 @@ def process_real_p_virtical_matches(matched_columns, empty_flag):
    
    final_results += (matched_column_counts * 1.5) - (unmatched_column_counts * 1.5)
    final_results += y_distance    
-   print("virtical real pixel final_results " + str(final_results) )
    
    return final_results
 
@@ -2496,8 +2475,8 @@ def process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids ):
 
    def compare_w_shape(compare_pixels_dict, search_until, original_count_from_left, original_pixels_in_current_x, original_empty_pixels_in_current_x, shape_ids):
 
-      compare_smallest_x = min(int(d['x']) for d in compare_pixels_dict.values())
-      compare_largest_x = max(int(d['x']) for d in compare_pixels_dict.values())
+      compare_smallest_x = min(int(xy[0]) for xy in compare_pixels_dict)
+      compare_largest_x = max(int(xy[0]) for xy in compare_pixels_dict)
 
    
       comparison_result = []
@@ -2517,7 +2496,7 @@ def process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids ):
          
     
          # pixel_ids_with_current_x contains all xy coordinate pairs that have the current running y value.
-         pixel_ids_with_current_x = [k for k in compare_pixels_dict  if (int(compare_pixels_dict[k]['x'])) == x]
+         pixel_ids_with_current_x = [ xy for xy in compare_pixels_dict  if int(xy[0]) == x]
       
       
          # we first obtain all x values for the current running y value
@@ -2525,9 +2504,9 @@ def process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids ):
       
       
          # key is the coordinate pair id.  
-         for key in pixel_ids_with_current_x:
+         for xy in pixel_ids_with_current_x:
             # putting all x values for all xy coordinates that have current running y vaule
-            y_values_list_in_current_x.append(compare_pixels_dict[key]['y'])
+            y_values_list_in_current_x.append(xy[1])
 
       
          # we need to sort x values so that we can work with neighbor x values
@@ -2731,13 +2710,13 @@ def process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids ):
 
 
 
-   original_smallest_x = min(int(d['x']) for d in original_pixels_dict.values())
-   original_largest_x = max(int(d['x']) for d in original_pixels_dict.values())
+   original_smallest_x = min( int(xy[0]) for xy in original_pixels_dict )
+   original_largest_x = max( int(xy[0]) for xy in original_pixels_dict)
 
    original_shape_width = original_largest_x - original_smallest_x
    
-   compare_smallest_x = min(int(d['x']) for d in compare_pixels_dict.values())
-   compare_largest_x = max(int(d['x']) for d in compare_pixels_dict.values())
+   compare_smallest_x = min( int(xy[0]) for xy in compare_pixels_dict)
+   compare_largest_x = max( int(xy[0]) for xy in compare_pixels_dict)
    
    compare_shape_width = compare_largest_x - compare_smallest_x
 
@@ -2755,17 +2734,16 @@ def process_virtically(original_pixels_dict, compare_pixels_dict, shape_ids ):
    
    
       # pixel_ids_with_current_x contains all xy coordinate pairs that have the current running x value.
-      pixel_ids_with_current_x = [k for k in original_pixels_dict  if (int(original_pixels_dict[k]['x'])) == x]
+      pixel_ids_with_current_x = [ xy for xy in original_pixels_dict  if int( xy[0]) == x ]
       
       
       # we first obtain all y values for the current running x value
       y_values_list_in_current_x = []
       
       
-      # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_x:
+      for xy in pixel_ids_with_current_x:
          # putting all y values for all xy coordinates that have current running x vaule
-         y_values_list_in_current_x.append(original_pixels_dict[key]['y'])
+         y_values_list_in_current_x.append(xy[1])
 
       
       # we need to sort y values so that we can work with neighbor y values
@@ -2999,8 +2977,8 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
 
    def compare_w_shape(compare_pixels_dict, search_until, original_count_from_top, original_pixels_in_current_y, original_empty_pixels_in_current_y, shape_ids):
 
-      compare_smallest_y = min(int(d['y']) for d in compare_pixels_dict.values())
-      compare_largest_y = max(int(d['y']) for d in compare_pixels_dict.values())
+      compare_smallest_y = min(int(xy[1]) for xy in compare_pixels_dict)
+      compare_largest_y = max(int(xy[1]) for xy in compare_pixels_dict)
 
 
       # if original pixel and compare pixels are more than pixel_count_threshold amount apart, then skip this row
@@ -3027,7 +3005,7 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
          
     
          # pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-         pixel_ids_with_current_y = [k for k in compare_pixels_dict  if (int(compare_pixels_dict[k]['y'])) == y]
+         pixel_ids_with_current_y = [ xy for xy in compare_pixels_dict  if int(xy[1]) == y]
       
       
          # we first obtain all x values for the current running y value
@@ -3035,9 +3013,9 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
       
       
          # key is the coordinate pair id.  
-         for key in pixel_ids_with_current_y:
+         for xy in pixel_ids_with_current_y:
             # putting all x values for all xy coordinates that have current running y vaule
-            x_values_list_in_current_y.append(compare_pixels_dict[key]['x'])
+            x_values_list_in_current_y.append(xy[0])
 
       
          # we need to sort x values so that we can work with neighbor x values
@@ -3249,21 +3227,21 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
 
 
 
-   original_smallest_y = min(int(d['y']) for d in original_pixels_dict.values())
-   original_largest_y = max(int(d['y']) for d in original_pixels_dict.values())
+   original_smallest_y = min( int(xy[1]) for xy in original_pixels_dict )
+   original_largest_y = max( int(xy[1]) for xy in original_pixels_dict )
    
    original_shape_height = original_largest_y - original_smallest_y
 
-   original_smallest_x = min(int(d['x']) for d in original_pixels_dict.values())
-   original_largest_x = max(int(d['x']) for d in original_pixels_dict.values())
+   original_smallest_x = min( int(xy[0]) for xy in original_pixels_dict )
+   original_largest_x = max( int(xy[0]) for xy in original_pixels_dict )
 
 
-   compare_smallest_y = min(int(d['y']) for d in compare_pixels_dict.values())
-   compare_largest_y = max(int(d['y']) for d in compare_pixels_dict.values())
+   compare_smallest_y = min( int(xy[1]) for xy in compare_pixels_dict )
+   compare_largest_y = max( int(xy[1]) for xy in compare_pixels_dict )
    
    compare_shape_height = compare_largest_y - compare_smallest_y
 
-   # as we take each one of original pixels and compare it with compare shape, there is no need to look at every pixel of the compare shape. Because for example, if I 
+   # as I take each one of original pixels and compare it with compare shape, there is no need to look at every pixel of the compare shape. Because for example, if I 
    # take top original pixel and compare it with every pixel of compare shape, there is no way I find top original pixel at the bottom of the compare shape.
    # + 1 is added because same height becomes 0 so adding 1 enables 1 top pixel comparison with 1 top pixel in compare shape
    search_until = abs( original_shape_height - compare_shape_height ) + 1
@@ -3281,20 +3259,19 @@ def find_shapes_in_diff_frames(original_pixels_dict, compare_pixels_dict, algori
    
    
       # pixel_ids_with_current_y contains all xy coordinate pairs that have the current running y value.
-      pixel_ids_with_current_y = [k for k in original_pixels_dict  if (int(original_pixels_dict[k]['y'])) == y]
+      pixel_ids_with_current_y = [ xy for xy in original_pixels_dict  if int(xy[1]) == y ]
       
       
-      # we first obtain all x values for the current running y value
+      # I first obtain all x values for the current running y value
       x_values_list_in_current_y = []
       
-      
-      # key is the coordinate pair id.  
-      for key in pixel_ids_with_current_y:
+  
+      for xy in pixel_ids_with_current_y:
          # putting all x values for all xy coordinates that have current running y vaule
-         x_values_list_in_current_y.append(original_pixels_dict[key]['x'])
+         x_values_list_in_current_y.append(xy[0])
 
       
-      # we need to sort x values so that we can work with neighbor x values
+      # I need to sort x values so that I can work with neighbor x values
       x_values_list_in_current_y.sort()
       
       

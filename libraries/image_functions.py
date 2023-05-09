@@ -35,7 +35,7 @@ def get_image_areas( im_file, directory ):
       print("ERROR at get_image_areas method. No image divider found")
       sys.exit()
    
-   image_areas = []
+   image_areas = {}
    
    column_num = 0
    for column_num in range(0, image_divider):
@@ -53,11 +53,9 @@ def get_image_areas( im_file, directory ):
          else:
             top = ( column_num * im_area_height ) + 1
             bottom = ( column_num * im_area_height ) + im_area_height
-      
-         temp = {}
-         temp[row_num + 1 + ( column_num * image_divider ) ] = {'left': left, 'right': right, 'top': top, 'bottom': bottom }
-      
-         image_areas.append(temp)
+         
+         image_area = str( row_num + 1 + ( column_num * image_divider ) )
+         image_areas[image_area ] = ( left, right, top, bottom )
 
    return image_areas
 
@@ -318,9 +316,32 @@ def cr_im_from_shapeslist2( imfname, imdir, in_shapes, save_filepath=None , shap
 
 
 
+# pixels -> [ indexes as strings ] or [ ( x, y ), ... ]
+#
+# pixels_rgb -> ( r, g, b ) r,g,b are integers
+def cr_im_from_pixels( imfname, imdir, pixels, save_filepath=None , pixels_rgb=None ):
+   original_image = Image.open(top_images_dir + imdir + imfname + ".png")
+   original_pixel = original_image.getdata()
+   image_width, image_height = original_image.size
+   
+   if pixels_rgb is None:
+      pixels_rgb = ( 255, 0, 0 )
+
+   if type( list(pixels)[0] ) is str or type( list(pixels)[0] ) is int:
+      for pixel in pixels:   
+         y = math.floor( int(pixel) / image_width)
+         x  = int(pixel) % image_width
+
+         original_image.putpixel( (x , y) , pixels_rgb )
+   elif type( list(pixels)[0] ) is tuple:
+      for pixel in pixels:
+         original_image.putpixel( pixel, pixels_rgb )
 
 
-
+   if save_filepath is not None:
+      original_image.save( save_filepath )
+   elif save_filepath is None:
+      original_image.show()
 
 
 
