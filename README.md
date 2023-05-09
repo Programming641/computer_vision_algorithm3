@@ -308,26 +308,17 @@ original
 execute  recreate_internal_s_pixc_shapes.py to see the results
 
 
-## algorithms/spixc/find_spixc_shapes_nbrs_among_frames.py
+## algorithms/pixch/find_consecutive_sty_pixch_shapes.py
 
 ### required scripts
 
-- find_spixc_shapes_nbrs.py
-- find_spixc_shapes_nbrs_btwn_frames.py
-- recreate_shapes/spixc_shapes_nbrs.py
+- algorithms/pixch/find_staying_shapes.py
+- algorithms/pixch/verify_staying_shapes.py
 
-![無題](https://user-images.githubusercontent.com/56218301/229273162-75bf416d-48b8-4827-ab74-e8203d386250.png)
+![無題](https://user-images.githubusercontent.com/56218301/237042010-fa79626a-308d-4d5e-95d0-926b01f380e1.png)
 
+## other algorithms result look like the above but they find different shapes.
 
-
-## algorithms/spixc/find_spixcShp_w_sameLshapes_among_frames.py
-
-### required scripts
-- find_spixcShp_Dnbr_sharing_Lshapes.py
-- find_spixcShp_w_sameLshape_btwn_frames.py
-- recreate_shapes/spixcShp_w_same_Lshapes.py
-
-![無題](https://user-images.githubusercontent.com/56218301/229276676-35483f83-e46d-49ba-9169-69f40abdb2d5.png)
 
 
 
