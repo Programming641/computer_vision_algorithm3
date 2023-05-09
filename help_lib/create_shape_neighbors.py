@@ -38,11 +38,8 @@ def find_all_shape_neighbors( shapes, shapes_in_im_areas, shapes_boundaries ):
             if not same_im_area:
                continue
       
-
             # returned value example. {'src': {'x': 33, 'y': 33}, 1: {'x': 33, 'y': 34}, 2: {'x': 34, 'y': 34}}
             matched_neighbor_coords = pixel_shapes_functions.find_direct_neighbors( shapes_boundaries[src_shapeid] , shapes_boundaries[candidate_shapeid] )
-
-
 
             if matched_neighbor_coords:
 
@@ -80,14 +77,17 @@ def do_create( im_file, directory, shapes_type=None ):
 
    if shapes_type == "normal":
 
-      shape_locations_path = top_shapes_dir + directory + "locations/" + im_file + "_loc.txt"
+      shape_locations_path = top_shapes_dir + directory + "locations/" + im_file + "_loc.data"
       shape_neighbors_path = top_shapes_dir + directory + 'shape_nbrs/'
 
       if not os.path.isdir(shape_neighbors_path):
          os.makedirs(shape_neighbors_path)
 
 
-      s_locations = read_files_functions.rd_ldict_k_v_l( im_file, directory, shape_locations_path )
+      with open (shape_locations_path, 'rb') as fp:
+         #  {'79971': ['25'], '79999': ['25'], ... }
+         shapes_in_im_areas = pickle.load(fp)
+      fp.close()
 
       shape_neighbor_file = open(shape_neighbors_path + im_file + "_shape_nbrs.txt" , "w" )
 
@@ -97,18 +97,19 @@ def do_create( im_file, directory, shapes_type=None ):
       # shapes[shapes_id][pixel_index]['y'] = y
       shapes = read_files_functions.rd_shapes_file(im_file, directory)
 
-      shapes_in_im_areas = {}
-      for shapeid in shapes:
-   
-         for s_locs in s_locations:
-            if shapeid in s_locs.keys():
-               shapes_in_im_areas[shapeid] = s_locs[ list(s_locs.keys())[0] ]
-               break
 
       shapes_boundaries = {}
       # get boundary pixels of all shapes
       for shapeid in shapes:
-         shapes_boundaries[shapeid] = pixel_shapes_functions.get_boundary_pixels(shapes[shapeid] )
+         cur_shape_pixels = set()
+         for pindex in pindexes:
+            
+            y = math.floor( int(pindex) / im_width)
+            x  = int(pindex) % im_width 
+      
+            cur_shape_pixels.add( (x,y) )
+
+         shapes_boundaries[shapeid] = pixel_shapes_functions.get_boundary_pixels(cur_shape_pixels )
 
       
       all_shape_neighbors = find_all_shape_neighbors( shapes, shapes_in_im_areas, shapes_boundaries )
@@ -121,7 +122,7 @@ def do_create( im_file, directory, shapes_type=None ):
    elif shapes_type == "intnl_spixcShp":
       s_pixcShp_intnl_dir = top_shapes_dir + directory + "spixc_shapes/" + internal + "/"
       s_pixcShp_intnl_loc_dir = s_pixcShp_intnl_dir + "locations/"
-      shape_locations_path = s_pixcShp_intnl_loc_dir + im_file + "_loc.txt"
+      shape_locations_path = s_pixcShp_intnl_loc_dir + im_file + "_loc.data"
       shape_neighbors_path = s_pixcShp_intnl_dir + 'shape_nbrs/'
 
       shapes_dir = s_pixcShp_intnl_dir + "shapes/"
@@ -138,40 +139,30 @@ def do_create( im_file, directory, shapes_type=None ):
       fp.close()
 
 
-      s_locations = read_files_functions.rd_ldict_k_v_l( im_file, directory, shape_locations_path )
+      with open (shape_locations_path, 'rb') as fp:
+         #  {'79971': ['25'], '79999': ['25'], ... }
+         s_locations = pickle.load(fp)
+      fp.close()
 
       shape_neighbor_file = open(shape_neighbors_path + im_file + "_shape_nbrs.txt" , "w" )
 
       all_shape_neighbors = []
-      
-
- 
-      shapes_in_im_areas = {}
-      for shapeid in shapes:
-   
-         for s_locs in s_locations:
-            if shapeid in s_locs.keys():
-               shapes_in_im_areas[shapeid] = s_locs[ list(s_locs.keys())[0] ]
-               break
 
 
       shapes_boundaries = {}
       # get boundary pixels of all shapes
       for shapeid, pindexes in shapes.items():
-         cur_shape_pixels = { }
+         cur_shape_pixels = set()
          for pindex in pindexes:
-            cur_shape_pixels[pindex] = {}
             
             y = math.floor( int(pindex) / im_width)
             x  = int(pindex) % im_width 
       
-            cur_shape_pixels[pindex]['x'] = x
-            cur_shape_pixels[pindex]['y'] = y
-
+            cur_shape_pixels.add( (x,y) )
 
          shapes_boundaries[shapeid] = pixel_shapes_functions.get_boundary_pixels(cur_shape_pixels )
 
-      all_shape_neighbors = find_all_shape_neighbors( shapes, shapes_in_im_areas, shapes_boundaries )
+      all_shape_neighbors = find_all_shape_neighbors( shapes, s_locations, shapes_boundaries )
             
             
       shape_neighbor_file.write(str( all_shape_neighbors ) )

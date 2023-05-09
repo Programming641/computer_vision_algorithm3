@@ -13,7 +13,7 @@ import math
 # intnl_spixcShp are shapes that incorporate internal small pixel count shapes
 def do_create( im_fname , directory, shapes_type=None ):
 
-   location_fname = im_fname + "_loc.txt"
+   location_fname = im_fname + "_loc.data"
 
    # directory is specified but does not contain /
    if directory != "" and directory[-1] != '/':
@@ -22,7 +22,7 @@ def do_create( im_fname , directory, shapes_type=None ):
    original_image = Image.open(top_images_dir + directory + im_fname + ".png")
    im_width, im_height = original_image.size
 
-   shape_locations = []
+
    if shapes_type == "normal":
 
       if os.path.exists(top_shapes_dir + directory + "locations/" ) == False:
@@ -34,22 +34,21 @@ def do_create( im_fname , directory, shapes_type=None ):
       # shapes[shapes_id][pixel_index]['y'] = y
       shapes = read_files_functions.rd_shapes_file(im_fname, directory)
       
+      shapes_locations = {}
       for shapeid in shapes:
 
-         shape_location = pixel_shapes_functions.get_shape_im_locations(im_fname, directory, shapes[shapeid], shapeid  )
+         temp_shape_location = pixel_shapes_functions.get_shape_im_locations(im_fname, directory, shapes[shapeid], shapeid  )
          # for saving data to file, convert all data into string.
-         temp = { shapeid: [] }
-         for src_s_loc in shape_location[ list(shape_location.keys())[0] ]:
-            temp[shapeid].append( str(src_s_loc) )
-   
-   
-         shape_locations.append( temp )
-      
+         shapes_locations[shapeid] = []
+         for src_s_loc in temp_shape_location[ list(temp_shape_location.keys())[0] ]:
+            shapes_locations[shapeid].append( str(src_s_loc) )
+
+  
       print("saving file " + top_shapes_dir + directory + "locations/" + location_fname  )
       print()
-      file = open(top_shapes_dir + directory + "locations/" + location_fname, 'w')
-      file.write(str(shape_locations))
-      file.close()
+      with open(top_shapes_dir + directory + "locations/" + location_fname, 'wb') as fp:
+         pickle.dump(shapes_locations, fp)
+      fp.close()
      
       
    
@@ -67,7 +66,8 @@ def do_create( im_fname , directory, shapes_type=None ):
          # { 'shapeid': [ pixel indexes ], ... }
          shapes = pickle.load(fp)
       fp.close()
-   
+      
+      shapes_locations = {}
       for shapeid, pindexes in shapes.items():
          cur_shape_pixels = { }
          for pindex in pindexes:
@@ -80,20 +80,18 @@ def do_create( im_fname , directory, shapes_type=None ):
             cur_shape_pixels[pindex]['y'] = y
 
 
-         shape_location = pixel_shapes_functions.get_shape_im_locations(im_fname, directory, cur_shape_pixels, shapeid  )
+         temp_shape_location = pixel_shapes_functions.get_shape_im_locations(im_fname, directory, cur_shape_pixels, shapeid  )
          # for saving data to file, convert all data into string.
-         temp = { shapeid: [] }
-         for src_s_loc in shape_location[ list(shape_location.keys())[0] ]:
-            temp[shapeid].append( str(src_s_loc) )
+         shapes_locations[shapeid] = []
+         for src_s_loc in temp_shape_location[ list(temp_shape_location.keys())[0] ]:
+            shapes_locations[shapeid].append( str(src_s_loc) )
 
-        
-         shape_locations.append( temp ) 
 
       print("saving file " + s_pixcShp_intnl_loc_dir + location_fname  )
       print()
-      file = open(s_pixcShp_intnl_loc_dir + location_fname, 'w')
-      file.write(str(shape_locations))
-      file.close()
+      with open(s_pixcShp_intnl_loc_dir + location_fname , 'wb') as fp:
+         pickle.dump(shapes_locations, fp)
+      fp.close()
 
 
      
@@ -105,7 +103,7 @@ def do_create( im_fname , directory, shapes_type=None ):
 
 
 if __name__ == '__main__':
-   im1file = "14"
+   im1file = "15"
    directory = "videos/street3/resized/min"
    
    do_create( im1file, directory, "normal" )
