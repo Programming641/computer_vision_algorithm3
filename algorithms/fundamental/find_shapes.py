@@ -13,9 +13,8 @@ from collections import OrderedDict
 from libraries.cv_globals import top_shapes_dir, top_images_dir
 
 
-image_filename = '14'
-
-directory = "videos/street3/resized/min"
+image_filename = '2'
+directory = "tests/min"
 
 if len(sys.argv) >= 2:
    image_filename = sys.argv[0][0: len( sys.argv[0] ) - 4 ]
