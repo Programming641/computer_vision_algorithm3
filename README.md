@@ -175,9 +175,27 @@ At least two consecutive frames are needed.
 
 you can use **ffmpeg** to get frames from the video
 
+### running example
+
 example video
 
-https://user-images.githubusercontent.com/56218301/140649130-48e34f72-b9c7-4533-877d-94d96134cf73.mp4
+https://github.com/Programming641/computer_vision_algorithm3/assets/56218301/beed8f24-f020-48ec-9ad8-b0a916d16880
+
+frames of video
+
+https://github.com/Programming641/computer_vision_algorithm3/assets/56218301/8ffae863-6394-42e5-a8a0-e5849bb08507
+
+example of video analysis results. just very few example matches of about 200 to 250 matches. I checked every one of the entire matches
+and all were correct! but for this video only. video that I was previously working on was very difficult one and percentage of 
+correct matches on that was about 97 to 99%. still very high but they have to be 100% because for example you don't want the part of the car 
+to be a part of the wall.
+
+https://github.com/Programming641/computer_vision_algorithm3/assets/56218301/214bad2c-8eae-4a53-8352-3a0a2392864b
+
+entire results video
+
+https://www.youtube.com/watch?v=7xaMYHdiYwg
+
 
 ## pixel change analysis between video frames ( usually between two consecutive frames from the same video )
 
