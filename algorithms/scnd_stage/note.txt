@@ -1,0 +1,36 @@
+shape_nbrs_matches_from_only_Nfnd_pixch_sty.py is omitted.
+
+----    execution order before execute_scripts.ps1    ----
+
+shape_nbrs_matches_from_only_Nfnd_pixch_sty2.py
+verify_s_nbrs_m_frm_only_Nfnd_pixch_sty.py
+
+cross_check_all_LL_algo_acrs_cur_files.py
+cross_check_all_low_level_algo_acrs_all_files.py
+
+find_shapes_match_types2.py           # horrible results. omit it
+
+
+
+------------      get possible matches for still missing shapes     ---------
+
+find_consecutively_missing_shapes4.py
+
+algorithms/pixch/most_ch_shapes_frm_whichShp_in_prev_frm.py
+
+find_nbr_matches_from_Nfnd_shapes.py
+
+
+-----------       get matches from possible matches     -----------
+
+find_consecutively_missing_shapes5.py
+
+
+
+
+
+
+
+
+
+
