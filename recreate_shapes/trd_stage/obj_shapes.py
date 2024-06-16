@@ -5,7 +5,7 @@ import math
 import copy, shutil
 import os, sys
 from libraries.cv_globals import top_temp_dir, top_shapes_dir, top_images_dir, internal, scnd_stg_all_files
-from libraries import read_files_functions, pixel_shapes_functions, image_functions, pixel_functions, same_shapes_functions
+from libraries import pixel_shapes_functions, image_functions, pixel_functions, same_shapes_functions
 import winsound
 
 
