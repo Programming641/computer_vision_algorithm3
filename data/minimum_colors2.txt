@@ -1,0 +1,164 @@
+
+
+
+
+
+1. LavenderBlush 	#FFF0F5 	(255, 240, 245)
+
+2 AliceBlue 	#F0F8FF 	(240, 248, 255)
+
+
+
+
+
+
+
+
+3. White 	#FFFFFF 	(255, 255, 255)
+
+
+4. Black 	#000000 	( 0,   0,   0)
+5. DarkSlateGray 	#2F4F4F 	( 47,  79,  79)
+
+
+6. Gray 	#808080 	(128, 128, 128)
+7. LightSlateGray 	#778899 	(119, 136, 153)
+
+8. Silver 	#C0C0C0 	(192, 192, 192)
+
+
+
+
+
+9.Red 	#FF0000 	(255,   0,   0)
+
+10. Crimson 	#DC143C 	(220,  20,  60)
+11 IndianRed 	#CD5C5C 	(205,  92,  92)
+
+
+
+12. LightSalmon 	#FFA07A 	(255, 160, 122)
+
+
+13 DarkGreen 	#006400 	( 0, 100,   0)
+
+
+
+
+14. Olive 	#808000 	(128, 128,   0)
+15 OliveDrab 	#6B8E23 	(107, 142,  35)
+
+16. LimeGreen 	#32CD32 	( 50, 205,  50)
+17. Lime 	#00FF00 	( 0, 255,   0)
+
+18. MediumSpringGreen 	#00FA9A 	( 0, 250, 154)
+19. DarkSeaGreen 	#8FBC8F 	(143, 188, 143)
+20. MediumAquamarine 	#66CDAA 	(102, 205, 170)
+
+
+
+
+21. GreenYellow 	#ADFF2F 	(173, 255,  47)
+22. PaleGreen 	#98FB98 	(152, 251, 152)
+
+
+
+
+23. MediumBlue 	#0000CD 	( 0,   0, 205)
+24. Blue 	#0000FF 	( 0,   0, 255)
+25. MidnightBlue 	#191970 	( 25,  25, 112)
+
+26. SteelBlue 	#4682B4 	( 70, 130, 180)
+27. DodgerBlue 	#1E90FF 	( 30, 144, 255)
+28. DeepSkyBlue 	#00BFFF 	( 0, 191, 255)
+29. CornflowerBlue 	#6495ED 	(100, 149, 237)
+
+30. LightSkyBlue 	#87CEFA 	(135, 206, 250)
+31 LightSteelBlue 	#B0C4DE 	(176, 196, 222)
+
+
+
+
+32. Indigo 	#4B0082 	( 75,   0, 130)
+
+
+
+
+
+33. BlueViolet 	#8A2BE2 	(138,  43, 226)
+
+
+34. Magenta 	#FF00FF 	(255,   0, 255)
+35. SlateBlue 	#6A5ACD 	(106,  90, 205)
+
+36. MediumOrchid 	#BA55D3 	(186,  85, 211)
+37. MediumPurple 	#9370DB 	(147, 112, 219)
+
+38. Violet 	#EE82EE 	(238, 130, 238)
+39. Plum 	#DDA0DD 	(221, 160, 221)
+40. Thistle 	#D8BFD8 	(216, 191, 216)
+
+
+
+41. MediumVioletRed 	#C71585 	(199,  21, 133)
+42. DeepPink 	#FF1493 	(255,  20, 147)
+43. PaleVioletRed 	#DB7093 	(219, 112, 147)
+
+
+
+
+
+
+
+
+
+44. Orange 	#FFA500 	(255, 165,   0)
+
+
+45 Teal 	#008080 	( 0, 128, 128)
+
+46. LightSeaGreen 	#20B2AA 	( 32, 178, 170)
+47. CadetBlue 	#5F9EA0 	( 95, 158, 160)
+
+
+
+48. Cyan 	#00FFFF 	( 0, 255, 255)
+
+49. PaleTurquoise 	#AFEEEE 	(175, 238, 238)
+50. LightCyan 	#E0FFFF 	(224, 255, 255)
+
+
+51. DarkKhaki 	#BDB76B 	(189, 183, 107)
+52. Gold 	#FFD700 	(255, 215,   0)
+
+
+53. Yellow 	#FFFF00 	(255, 255,   0)
+54. PaleGoldenrod 	#EEE8AA 	(238, 232, 170)
+
+55. PapayaWhip 	#FFEFD5 	(255, 239, 213)
+
+
+
+
+
+56. Maroon 	#800000 	(128,   0,   0)
+57. Brown 	#A52A2A 	(165,  42,  42)
+58. SaddleBrown 	#8B4513 	(139,  69,  19)
+59. Sienna 	#A0522D 	(160,  82,  45)
+60. Chocolate 	#D2691E 	(210, 105,  30)
+61. DarkGoldenrod 	#B8860B 	(184, 134,  11)
+62. Peru 	#CD853F 	(205, 133,  63)
+63. RosyBrown 	#BC8F8F 	(188, 143, 143)
+64. Goldenrod 	#DAA520 	(218, 165,  32)
+
+65. Tan 	#D2B48C 	(210, 180, 140)
+66. Burlywood 	#DEB887 	(222, 184, 135)
+
+67. NavajoWhite 	#FFDEAD 	(255, 222, 173)
+
+
+68. Cornsilk 	#FFF8DC 	(255, 248, 220)
+
+
+
+
