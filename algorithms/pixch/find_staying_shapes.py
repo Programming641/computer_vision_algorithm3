@@ -1,6 +1,6 @@
 # if most of pixel changes occur near the shape boundaries and not inside the shape, then the shape
 # moved only a little
-from libraries import pixel_functions, read_files_functions, pixel_shapes_functions, btwn_amng_files_functions
+from libraries import pixel_functions, pixel_shapes_functions, btwn_amng_files_functions
 
 from PIL import Image
 import math
