@@ -6,7 +6,7 @@ from statistics import mean
 import math
 import pickle
 
-from libraries import read_files_functions, image_functions, pixel_functions
+from libraries import image_functions, pixel_functions
 from libraries.cv_globals import proj_dir, top_images_dir, top_shapes_dir, spixc_shapes, internal
 
 
