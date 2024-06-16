@@ -36,95 +36,17 @@ go to
 shapes\videos\street3\resized\min1\trd_stage\obj_shapes\objects1
 
 
-## Directory structure
-
-![無題](https://user-images.githubusercontent.com/56218301/229271311-e689ada3-ed6c-4e5c-b516-8d734e57c071.png)
-
-
-### Instructions
-
-#### preparation before executing python scripts.
-
-- set PYTHONPATH environment variable
-
-this needs to be the project top directory
-
-in windows 10
-
-~~~
-set PYTHONPATH= "this project top directory"
-~~~
-
-also set global variable of top project directory
-
-#### libraries/cv_globals.py
-
-![global top_directory](https://user-images.githubusercontent.com/56218301/223993262-cba3c9d3-4d73-4340-9b2e-0e87ec0ee180.png)
-
-#### algorithms/fundamental/putpix_into_clgrp.py 
-
-![putpix_into_clrgrp](https://user-images.githubusercontent.com/56218301/223995514-43e1f79c-5b7d-4bef-96b0-2301c54bc904.png)
-
+## introducing algorithms
 
 ~~~
 py  algorithms/fundamental/putpix_into_clgrp.py 
 ~~~
-
-examples of results
 
 original
 
 ![1](https://user-images.githubusercontent.com/56218301/223995965-405a2f40-f1e0-4f1f-8bf2-e7468c6c5fbf.png)
 
 ![1](https://user-images.githubusercontent.com/56218301/223996102-4571793b-8cbd-4440-9cd2-d94277af52d4.png)
-
-
-#### algorithms/fundamental/find_shapes.py
-
-![find_shapes](https://user-images.githubusercontent.com/56218301/223996977-9bc09cd2-aabe-45cb-bd16-197db59a3717.png)
-
-execute "find_shapes.py" without any parameters just like many of the other python scripts of this project.
-
-
-![find_shapes2](https://user-images.githubusercontent.com/56218301/223997693-1ac5aa6a-cff7-4768-87d0-9c029285941e.png)
-
-
-after executing it, 
-
-"filename"_shapes.txt will be created under shapes folder
-
-![shapes files](https://user-images.githubusercontent.com/56218301/223998871-8408ec9f-d0ee-4785-94b5-f4b1ffa48acf.png)
-
-
-- Then, execute "recreate_shapes.py". This is needed by some python scripts below to show images of shapes.
-
-![recreate_shapes](https://user-images.githubusercontent.com/56218301/223999818-49c7df2a-7611-4bd8-bf1d-f2027efae418.png)
-
-execute it without parameters
-
-~~~
-py recreate_shapes.py
-~~~
-
-### scripts that need to be executed to run most of the scripts
-
-- putpix_into_clrgrp.py
-- find_shapes.py
-- create_shape_locations.py
-- create_shape_neighbors.py
-- find_edges.py
-- findim_pixch.py
-- recreate_shapes.py
-
-#### help_lib/create_shape_locations.py
-
-
-![無題](https://user-images.githubusercontent.com/56218301/229271689-67c681ef-bc8a-4c2f-9cb1-ce16bc3d6d42.png)
-
-#### help_lib/create_shape_neighbors.py
-
-![無題](https://user-images.githubusercontent.com/56218301/229272104-e1d86de2-6635-40dc-90a2-f6bafa48c524.png)
-
 
 
 ## edge detection
