@@ -3,7 +3,7 @@
 # shape is still at the same location.
 import tkinter
 from PIL import ImageTk, Image
-from libraries import pixel_shapes_functions, same_shapes_btwn_frames, image_functions, pixel_functions, cv_globals
+from libraries import pixel_shapes_functions, image_functions, pixel_functions, cv_globals
 from libraries.cv_globals import  top_shapes_dir, top_images_dir, styLshapes, spixc_shapes
 import pickle
 import math
