@@ -25,6 +25,15 @@ when script asks for directory. input videos/street3/resized
 
 at the another prumpt, min1
 
+when execute_scripts.ps1 finishes. run
+
+py recreate_shapes/trd_stage/obj_shapes.py
+
+go to
+
+shapes\videos\street3\resized\min1\trd_stage\obj_shapes\objects1
+
+
 ## Directory structure
 
 ![無題](https://user-images.githubusercontent.com/56218301/229271311-e689ada3-ed6c-4e5c-b516-8d734e57c071.png)
