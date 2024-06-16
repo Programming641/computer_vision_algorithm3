@@ -1,5 +1,5 @@
 
-from libraries import pixel_shapes_functions, read_files_functions, pixel_functions, image_functions
+from libraries import pixel_shapes_functions, pixel_functions, image_functions
 from libraries.cv_globals import top_shapes_dir, top_images_dir
 from libraries import cv_globals
 
