@@ -21,6 +21,10 @@ just run the powershell script
 
 ./execute_scripts.ps1
 
+when script asks for directory. input videos/street3/resized
+
+at the another prumpt, min1
+
 ## Directory structure
 
 ![無題](https://user-images.githubusercontent.com/56218301/229271311-e689ada3-ed6c-4e5c-b516-8d734e57c071.png)
