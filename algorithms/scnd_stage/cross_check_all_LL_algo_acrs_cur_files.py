@@ -1,6 +1,6 @@
 import tkinter
 from PIL import ImageTk, Image
-from libraries import read_files_functions, btwn_amng_files_functions
+from libraries import btwn_amng_files_functions
 from libraries.cv_globals import top_shapes_dir, pixch_sty_dir, styLshapes, styLshapes_wo_pixch, internal, snd_stg_alg_shp_nbrs_dir
 from libraries.cv_globals import scnd_stg_all_files
 import pickle
