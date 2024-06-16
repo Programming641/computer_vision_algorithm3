@@ -1,7 +1,7 @@
 
 import tkinter
 from PIL import ImageTk, Image
-from libraries import pixel_shapes_functions, read_files_functions, shapes_results_functions, pixel_functions
+from libraries import pixel_shapes_functions, shapes_results_functions, pixel_functions
 from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir, styLshapes_wo_pixch, spixc_shapes, internal
 import pickle
 import sys, os
