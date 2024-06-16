@@ -4,7 +4,7 @@
 # take out the pixel changes from the shape. then match based on the non-changed pixels.
 import tkinter
 from PIL import ImageTk, Image
-from libraries import pixel_shapes_functions, same_shapes_btwn_frames, cv_globals, image_functions, pixel_functions
+from libraries import pixel_shapes_functions, btwn_amng_files_functions, cv_globals, image_functions, pixel_functions
 from libraries.cv_globals import proj_dir, top_shapes_dir, top_images_dir, styLshapes_wo_pixch, spixc_shapes, internal
 import pickle
 import math
