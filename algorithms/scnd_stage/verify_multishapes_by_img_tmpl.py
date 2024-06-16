@@ -1,6 +1,6 @@
 import tkinter
 from PIL import ImageTk, Image
-from libraries import btwn_amng_files_functions, read_files_functions, pixel_shapes_functions, same_shapes_functions, pixel_functions, image_functions
+from libraries import btwn_amng_files_functions, pixel_shapes_functions, same_shapes_functions, pixel_functions, image_functions
 from libraries import shapes_results_functions
 from libraries.cv_globals import top_shapes_dir, top_images_dir, internal, scnd_stg_all_files
 import pickle
