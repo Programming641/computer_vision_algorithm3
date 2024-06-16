@@ -14,7 +14,11 @@ execute the following and see how it works for yourself!!!
 
 **Caution:** image format must NOT be JPG!!! JPG does not work! Use PNG instead.
 
-**recent update:** all fundamental algorithms are now complete for now.. the rest is to analyze and combine the results from them!
+**recent update:** this is still work in progress.
+
+## run sample video
+just run the powershell script
+./execute_scripts.ps1
 
 ## Directory structure
 
