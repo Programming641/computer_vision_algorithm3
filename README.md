@@ -6,6 +6,8 @@ Windows 10
 
 Python 3
 
+powershell 7.4.2
+
 ## Note
 
 Please note that I am not using any conventional computer vision algorithm! algorithm are entirely created by me! The advantages of my algorithm are straightforward and intuitive, because for one, I am not using heavy mathmatics.
