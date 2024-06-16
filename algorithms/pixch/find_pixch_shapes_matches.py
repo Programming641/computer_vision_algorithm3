@@ -1,4 +1,4 @@
-from libraries import pixel_functions, read_files_functions, pixel_shapes_functions, image_functions, same_shapes_functions
+from libraries import pixel_functions, pixel_shapes_functions, image_functions, same_shapes_functions
 from libraries import shapes_results_functions, btwn_amng_files_functions, cv_globals
 
 from PIL import Image
