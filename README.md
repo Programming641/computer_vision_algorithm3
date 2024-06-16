@@ -4,7 +4,7 @@ finding shapes based on the appearance change. my first attempt to analyze pictu
 ## Operating environment
 Windows 10
 
-Python 3
+Python 3.9.5 pillow 8.2.0
 
 powershell 7.4.2
 
