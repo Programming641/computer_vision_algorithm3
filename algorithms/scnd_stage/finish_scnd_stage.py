@@ -1,5 +1,5 @@
 
-from libraries import  read_files_functions, pixel_shapes_functions, pixel_functions, image_functions, btwn_amng_files_functions
+from libraries import pixel_shapes_functions, pixel_functions, image_functions, btwn_amng_files_functions
 
 
 from PIL import ImageTk, Image
