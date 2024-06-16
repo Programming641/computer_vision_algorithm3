@@ -2,7 +2,6 @@
 import os, sys
 from PIL import ImageTk, Image
 from libraries import pixel_shapes_functions, pixel_functions
-from libraries import read_files_functions
 from libraries.cv_globals import top_shapes_dir, top_images_dir, internal
 import pickle
 import math
