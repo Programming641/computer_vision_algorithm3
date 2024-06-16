@@ -18,6 +18,7 @@ execute the following and see how it works for yourself!!!
 
 ## run sample video
 just run the powershell script
+
 ./execute_scripts.ps1
 
 ## Directory structure
