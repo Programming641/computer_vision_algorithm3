@@ -1,5 +1,5 @@
 
-from libraries import pixel_functions, read_files_functions, pixel_shapes_functions, shapes_results_functions, btwn_amng_files_functions
+from libraries import pixel_functions, pixel_shapes_functions, shapes_results_functions, btwn_amng_files_functions
 
 from PIL import Image
 import math
